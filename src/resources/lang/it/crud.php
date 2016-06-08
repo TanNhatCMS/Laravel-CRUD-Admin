@@ -87,6 +87,4 @@ return [
     'reorder_error_title'          => 'Errore',
     'reorder_error_message'        => 'Il tuo ordinamento non è stato salvato.',
 
-    'rules_text'    => "<strong>Avviso: </strong> Non tradurre le parole che iniziano con due punti (es: ':number_of_items'). Queste verranno sostituite automaticamente con un valore adeguato. Se tradotte, smetteranno di funzionare.",
-
 ];
