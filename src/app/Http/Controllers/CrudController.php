@@ -70,8 +70,7 @@ class CrudController extends BaseController
         $this->crud->hasAccessOrFail('create');
 
         // fallback to global request instance
-        if(is_null($request))
-        {
+        if (is_null($request)) {
             $request = \Request::instance();
         }
 
@@ -124,10 +123,9 @@ class CrudController extends BaseController
     public function updateCrud(UpdateRequest $request = null)
     {
         $this->crud->hasAccessOrFail('update');
-        
+
         // fallback to global request instance
-        if(is_null($request))
-        {
+        if (is_null($request)) {
             $request = \Request::instance();
         }
 
