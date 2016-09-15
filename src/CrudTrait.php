@@ -189,7 +189,7 @@ trait CrudTrait
     }
 
     /**
-     * Handles the retrieval of an image by variant:
+     * Handles the retrieval of an image by variant:.
      *
      * @param  [type] $attribute        Name of the attribute within the model that contains the json
      * @param  [type] $variant          Name of the variant you want to extract
@@ -200,19 +200,18 @@ trait CrudTrait
         $image = $this->attributes['image'];
         $url = null;
 
-        if( !empty($image) ){
-
-            if( !is_array($image) ){
+        if (! empty($image)) {
+            if (! is_array($image)) {
                 $image = json_decode($image);
             }
 
-            if( $disk ){
+            if ($disk) {
                 $url = \Storage::disk($disk)->url(trim($image->{$variant}, '/'));
-            }
-            else {
+            } else {
                 $url = url($image->{$variant});
             }
         }
+
         return $url;
     }
 
@@ -235,18 +234,18 @@ trait CrudTrait
      */
     public function uploadImageToDisk($value, $attribute_name, $disk, $destination_path, $variations = null)
     {
-        if (!$variations || !is_array($variations)) {
-            $variations = ['original' => null, 'thumb' => [150,150]];
+        if (! $variations || ! is_array($variations)) {
+            $variations = ['original' => null, 'thumb' => [150, 150]];
         }
 
         //Needed for the original image
-        if( !array_key_exists('original', $variations) ){
+        if (! array_key_exists('original', $variations)) {
             $variations['original'] = null;
         }
 
         //Needed for admin thumbnails
-        if( !array_key_exists('thumb', $variations) ){
-            $variations['thumb'] = [150,150];
+        if (! array_key_exists('thumb', $variations)) {
+            $variations['thumb'] = [150, 150];
         }
 
         $request = \Request::instance();
@@ -257,10 +256,9 @@ trait CrudTrait
         $disk_root = $disk_config['root'];
 
         //if the disk is public, we need to know the public path
-        if( $disk_config['visibility'] == 'public' ){
+        if ($disk_config['visibility'] == 'public') {
             $public_path = str_replace(public_path(), '', $disk_root);
-        }
-        else {
+        } else {
             $public_path = $disk_root;
         }
 
@@ -268,7 +266,7 @@ trait CrudTrait
         if ($request->hasFile($attribute_name) &&
             $this->{$attribute_name} &&
             is_array($this->{$attribute_name})) {
-            foreach($this->{$attribute_name} as $variant){
+            foreach ($this->{$attribute_name} as $variant) {
                 \Storage::disk($disk)->delete($variant);
             }
             $this->attributes[$attribute_name] = null;
@@ -276,9 +274,10 @@ trait CrudTrait
 
         // if the file input is empty, delete the file from the disk
         if (empty($value) && is_array($this->{$attribute_name})) {
-            foreach($this->{$attribute_name} as $variant){
+            foreach ($this->{$attribute_name} as $variant) {
                 \Storage::disk($disk)->delete($variant);
             }
+
             return $this->attributes[$attribute_name] = null;
         }
 
@@ -295,37 +294,32 @@ trait CrudTrait
             $image_variations = [];
 
             // 3. but only if they have the ability to crop/handle images
-            if(class_exists('\Intervention\Image\ImageManagerStatic')){
-
+            if (class_exists('\Intervention\Image\ImageManagerStatic')) {
                 $img = \Intervention\Image\ImageManagerStatic::make($file);
 
-                foreach( $variations as $variant => $dimensions ){
-
+                foreach ($variations as $variant => $dimensions) {
                     $variant_name = $new_file_name.'-'.$variant.'.'.$file->getClientOriginalExtension();
-                    $variant_file = $destination_path . '/' . $variant_name;
+                    $variant_file = $destination_path.'/'.$variant_name;
 
-                    if( $dimensions ){
-                        $width  = $dimensions[0];
+                    if ($dimensions) {
+                        $width = $dimensions[0];
                         $height = $dimensions[1];
 
-                        if( $img->width() > $width || $img->height() > $height ){
-                            $img->resize($width, $height, function($constraint){
+                        if ($img->width() > $width || $img->height() > $height) {
+                            $img->resize($width, $height, function ($constraint) {
                                 $constraint->aspectRatio();
                             })
                             ->save($disk_root.'/'.$variant_file);
-                        }
-                        else {
+                        } else {
                             $img->save($disk_root.'/'.$variant_file);
                         }
 
                         $image_variations[$variant] = $public_path.'/'.$variant_file;
-                    }
-                    else {
+                    } else {
                         $image_variations['original'] = $public_path.'/'.$file_path;
                     }
                 }
-            }
-            else {
+            } else {
                 $image_variations['original'] = $public_path.'/'.$file_path;
                 $image_variations['thumb'] = $public_path.'/'.$file_path;
             }
