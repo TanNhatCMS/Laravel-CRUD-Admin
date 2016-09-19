@@ -77,8 +77,8 @@ return [
     'please_fix' => 'Veuillez corriger les erreurs suivantes:',
 
     // global crud - success / error notification bubbles
-    'insert_success' => 'L'élément a été ajouté avec succès.',
-    'update_success' => 'L'élément a été modifié avec succès.',
+    'insert_success' => 'L’élément a été ajouté avec succès.',
+    'update_success' => 'L’élément a été modifié avec succès.',
 
     // CRUD reorder view
     'reorder'                      => 'Réordonner',
