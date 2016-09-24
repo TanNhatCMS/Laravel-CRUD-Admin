@@ -24,20 +24,20 @@ class CrudController extends BaseController
         $this->middleware(function ($request, $next) {
             $this->crud = new CrudPanel();
             $this->setUp();
+
             return $next($request);
         });
     }
 
     /**
-     * Configures the setup of your crud entity
+     * Configures the setup of your crud entity.
      */
     public function setUp()
     {
-
     }
 
     /**
-     * Configures the tear down of your crud entity
+     * Configures the tear down of your crud entity.
      */
     public function tearDown()
     {
