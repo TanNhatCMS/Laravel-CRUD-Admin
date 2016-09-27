@@ -29,30 +29,3 @@
         <p class="help-block">{!! $field['hint'] !!}</p>
     @endif
 </div>
-
-{{-- FIELD EXTRA JS --}}
-{{-- push things in the after_scripts section --}}
-
-    @push('crud_fields_scripts')
-        <!-- no scripts -->
-        <script>
-	        $(".file-clear-button").click(function(e) {
-	        	e.preventDefault();
-	        	var container = $(this).parent().parent();
-	        	var parent = $(this).parent();
-	        	// remove the filename and button
-	        	parent.remove();
-	        	// if the file container is empty, remove it
-	        	if ($.trim(container.html())=='') {
-	        		container.remove();
-	        	}
-	        	$("<input type='hidden' name='clear_{{ $field['name'] }}[]' value='"+$(this).data('filename')+"'>").insertAfter("#{{ $field['name'] }}_file_input");
-	        });
-
-	        $("#{{ $field['name'] }}_file_input").change(function() {
-	        	console.log($(this).val());
-	        	// remove the hidden input, so that the setXAttribute method is no longer triggered
-	        	$(this).next("input[type=hidden]").remove();
-	        });
-        </script>
-    @endpush

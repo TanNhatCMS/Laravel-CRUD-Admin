@@ -32,6 +32,12 @@
 @endsection
 
 @section('after_scripts')
+	<script>
+		window.ASSET_DIR = '{{ asset('') }}';
+		window.CKEDITOR_FILEBROWSE_URL = '{{ url('admin/elfinder/ckeditor') }}';
+		window.ELFINDER_BROWSE_URL_BASE = '{{ url(config('elfinder.route.prefix').'/popup/') }}';
+	</script>
+	<script src="{{ asset('vendor/backpack/crud/bundle.js')  }}"></script>
 	<!-- CRUD FORM CONTENT - crud_fields_scripts stack -->
 	@stack('crud_fields_scripts')
 

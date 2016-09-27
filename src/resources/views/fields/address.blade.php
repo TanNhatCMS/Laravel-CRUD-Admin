@@ -56,41 +56,6 @@ if (isset($field['value']) && (is_array($field['value']) || is_object($field['va
         </style>
     @endpush
 
-    {{-- FIELD JS - will be loaded in the after_scripts section --}}
-    @push('crud_fields_scripts')
-    <script src="https://cdn.jsdelivr.net/places.js/1/places.min.js"></script>
-    <script>
-        jQuery(document).ready(function($){
-            window.AlgoliaPlaces = window.AlgoliaPlaces || {};
-
-            $('[data-address]').each(function(){
-
-                var $this      = $(this),
-                $addressConfig = $this.data('address'),
-                $field = $('[name="'+$addressConfig.field+'"]'),
-                $place = places({
-                    container: $this[0]
-                });
-
-                if( $addressConfig.full ){
-
-                    $place.on('change', function(e){
-                        var result = JSON.parse(JSON.stringify(e.suggestion));
-                        delete(result.highlight); delete(result.hit); delete(result.hitIndex);
-                        delete(result.rawAnswer); delete(result.query);
-                        $field.val( JSON.stringify(result) );
-                    });
-
-                    var existingData = JSON.parse($field.val());
-                    $this.val(existingData.value);
-                }
-
-                window.AlgoliaPlaces[ $addressConfig.field ] = $place;
-            });
-        });
-    </script>
-    @endpush
-
 @endif
 {{-- End of Extra CSS and JS --}}
 {{-- ########################################## --}}

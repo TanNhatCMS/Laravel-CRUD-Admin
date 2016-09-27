@@ -13,6 +13,7 @@
     <div>
         <button class="btn btn-default " role="iconpicker" data-icon="{{ old($field['name']) ? old($field['name']) : (isset($field['value']) ? $field['value'] : (isset($field['default']) ? $field['default'] : '' )) }}" data-iconset="{{ $field['iconset'] }}"></button>
         <input
+            data-iconpicker
             type="hidden"
             name="{{ $field['name'] }}"
             value="{{ old($field['name']) ? old($field['name']) : (isset($field['value']) ? $field['value'] : (isset($field['default']) ? $field['default'] : '' )) }}"
@@ -120,21 +121,6 @@
     @push('crud_fields_styles')
         <!-- Bootstrap-Iconpicker -->
         <link rel="stylesheet" href="{{ asset('vendor/backpack/bootstrap-iconpicker/bootstrap-iconpicker/css/bootstrap-iconpicker.min.css') }}"/>
-    @endpush
-
-    {{-- FIELD EXTRA JS --}}
-    @push('crud_fields_scripts')
-        <!-- Bootstrap-Iconpicker -->
-        <script type="text/javascript" src="{{ asset('vendor/backpack/bootstrap-iconpicker/bootstrap-iconpicker/js/bootstrap-iconpicker.min.js') }}"></script>
-
-        {{-- Bootstrap-Iconpicker - set hidden input value --}}
-        <script>
-            jQuery(document).ready(function($) {
-                $('button[role=iconpicker]').on('change', function(e) {
-                    $(this).siblings('input[type=hidden]').val(e.icon);
-                });
-            });
-        </script>
     @endpush
 
 @endif

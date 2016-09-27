@@ -4,6 +4,7 @@
 
     <label>{!! $field['label'] !!}</label>
 	<input
+		data-file-manager
 		type="text"
 		id="{{ $field['name'] }}-filemanager"
 
@@ -38,42 +39,7 @@
 		<link href="{{ asset('vendor/backpack/colorbox/example2/colorbox.css') }}" rel="stylesheet" type="text/css" />
 	@endpush
 
-	@push('crud_fields_scripts')
-		<!-- include browse server js -->
-		<script src="{{ asset('vendor/backpack/colorbox/jquery.colorbox-min.js') }}"></script>
-	@endpush
-
 @endif
-
-{{-- FIELD JS - will be loaded in the after_scripts section --}}
-@push('crud_fields_scripts')
-	<script>
-		$(document).on('click','.popup_selector[data-inputid={{ $field['name'] }}-filemanager]',function (event) {
-		    event.preventDefault();
-
-		    // trigger the reveal modal with elfinder inside
-		    var triggerUrl = "{{ url(config('elfinder.route.prefix').'/popup/'.$field['name']."-filemanager") }}";
-		    $.colorbox({
-		        href: triggerUrl,
-		        fastIframe: true,
-		        iframe: true,
-		        width: '70%',
-		        height: '50%'
-		    });
-		});
-
-		// function to update the file selected by elfinder
-		function processSelectedFile(filePath, requestingField) {
-		    $('#' + requestingField).val(filePath);
-		}
-
-		$(document).on('click','.clear_elfinder_picker[data-inputid={{ $field['name'] }}-filemanager]',function (event) {
-		    event.preventDefault();
-		    var updateID = $(this).attr('data-inputid'); // Btn id clicked
-		    $("#"+updateID).val("");
-		});
-	</script>
-@endpush
 
 {{-- End of Extra CSS and JS --}}
 {{-- ########################################## --}}
