@@ -4,19 +4,26 @@ class Table {
 
 	constructor() {
 
+		const _this = this;
+
 		$S([
-			'https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js',
-			'https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js',
-			'https://cdnjs.cloudflare.com/ajax/libs/angular-ui-sortable/0.14.3/sortable.min.js',
-		], this.init);
+			'https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.5.8/angular.min.js'
+		], function() {
+			$S(['https://cdnjs.cloudflare.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js'], function() {
+				$S(['https://cdnjs.cloudflare.com/ajax/libs/angular-ui-sortable/0.14.3/sortable.min.js'], _this.init)
+			});
+		});
 
 	}
 
 	init() {
-		angular.module('backpackTable', ['ui.sortable'], function($interpolateProvider){
+		const app = angular.module('backpackTable', ['ui.sortable'], function($interpolateProvider){
 			$interpolateProvider.startSymbol('<%');
 			$interpolateProvider.endSymbol('%>');
-		}).controller('tableController', function($scope){
+		});
+		app.controller('tableController', function($scope){
+			
+			console.log($scope);
 
 			$scope.sortableOptions = {
 				handle: '.sort-handle'
@@ -70,6 +77,9 @@ class Table {
 					$scope.addItem();
 				}
 			}
+		});
+		angular.element('[data-table]').ready(function() {
+			angular.bootstrap('[data-table]', ['backpackTable']);
 		});
 	}
 

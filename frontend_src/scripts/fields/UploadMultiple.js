@@ -1,7 +1,7 @@
 class UploadMultiple {
 
 	constructor() {
-		$(".file-clear-button").click(function(e) {
+		$("[data-file-clear]").click(function(e) {
 			e.preventDefault();
 			var container = $(this).parent().parent();
 			var parent = $(this).parent();
@@ -11,12 +11,14 @@ class UploadMultiple {
 			if ($.trim(container.html())=='') {
 				container.remove();
 			}
-			// $("<input type='hidden' name='clear_{{ $field['name'] }}[]' value='"+$(this).data('filename')+"'>").insertAfter("#{{ $field['name'] }}_file_input");
-			// TODO
+
+			const name = $(this).attr('data-file-clear');
+			const id = '#' + name + '_file_input';
+
+			$("<input type='hidden' name='clear_' + name + '[]' value='"+$(this).data('filename')+"'>").insertAfter(id);
 		});
 
-		// $("#{{ $field['name'] }}_file_input").change(function() {
-		$("file_input").change(function() { // TODO
+		$("[data-file-input-multiple]").change(function() {
 			console.log($(this).val());
 			// remove the hidden input, so that the setXAttribute method is no longer triggered
 			$(this).next("input[type=hidden]").remove();

@@ -8,7 +8,7 @@
     	@foreach($field['value'] as $key => $file_path)
     		<div class="file-preview">
 	    		<a target="_blank" href="{{ isset($field['disk'])?asset(\Storage::disk($field['disk'])->url($file_path)):asset($file_path) }}">{{ $file_path }}</a>
-		    	<a id="{{ $field['name'] }}_{{ $key }}_clear_button" href="#" class="btn btn-default btn-xs pull-right file-clear-button" title="Clear file" data-filename="{{ $file_path }}"><i class="fa fa-remove"></i></a>
+		    	<a data-file-clear="{{ $field['name'] }}" id="{{ $field['name'] }}_{{ $key }}_clear_button" href="#" class="btn btn-default btn-xs pull-right file-clear-button" title="Clear file" data-filename="{{ $file_path }}"><i class="fa fa-remove"></i></a>
 		    	<div class="clearfix"></div>
 	    	</div>
     	@endforeach
@@ -16,6 +16,7 @@
     @endif
 	{{-- Show the file picker on CREATE form. --}}
 	<input
+		data-file-input-multiple
         type="file"
         id="{{ $field['name'] }}_file_input"
         name="{{ $field['name'] }}[]"

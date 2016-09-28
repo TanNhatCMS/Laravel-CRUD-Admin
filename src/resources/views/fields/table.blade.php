@@ -17,7 +17,8 @@
         $items = '[]';
     }
 ?>
-<div ng-app="backpackTable" ng-controller="tableController" @include('crud::inc.field_wrapper_attributes') >
+{{--<div data-table ng-app="backpackTable" ng-controller="tableController" @include('crud::inc.field_wrapper_attributes') >--}}
+<div id="angulartest" data-table ng-controller="tableController" @include('crud::inc.field_wrapper_attributes') >
 
     <label>{!! $field['label'] !!}</label>
 

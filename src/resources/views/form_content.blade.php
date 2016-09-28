@@ -36,6 +36,7 @@
 		window.ASSET_DIR = '{{ asset('') }}';
 		window.CKEDITOR_FILEBROWSE_URL = '{{ url('admin/elfinder/ckeditor') }}';
 		window.ELFINDER_BROWSE_URL_BASE = '{{ url(config('elfinder.route.prefix').'/popup/') }}';
+		window.TINYMCE_ELFINDER = '{{ url('admin/elfinder/tinymce4') }}';
 	</script>
 	<script src="{{ asset('vendor/backpack/crud/bundle.js')  }}"></script>
 	<!-- CRUD FORM CONTENT - crud_fields_scripts stack -->

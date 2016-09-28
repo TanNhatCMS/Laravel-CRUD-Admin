@@ -6,13 +6,14 @@
     @if (isset($field['value']) && $field['value']!=null)
     <div class="well well-sm">
     	<a target="_blank" href="{{ isset($field['disk'])?asset(\Storage::disk($field['disk'])->url($field['value'])):asset($field['disk']) }}">{{ $field['value'] }}</a>
-    	<a id="{{ $field['name'] }}_file_clear_button" href="#" class="btn btn-default btn-xs pull-right" title="Clear file"><i class="fa fa-remove"></i></a>
+    	<a data-file-clear="{{ $field['name'] }}" id="{{ $field['name'] }}_file_clear_button" href="#" class="btn btn-default btn-xs pull-right" title="Clear file"><i class="fa fa-remove"></i></a>
     	<div class="clearfix"></div>
     </div>
     @endif
 
 	{{-- Show the file picker on CREATE form. --}}
 	<input
+		data-file-input
         type="file"
         id="{{ $field['name'] }}_file_input"
         name="{{ $field['name'] }}"
