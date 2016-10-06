@@ -116,7 +116,8 @@ class CrudController extends BaseController
         switch ($request->input('redirect_after_save')) {
             case 'current_item_edit':
                 return \Redirect::to($this->crud->route.'/'.$item->getKey().'/edit');
-
+            case 'return_item_new':
+                return $item;
             default:
                 return \Redirect::to($request->input('redirect_after_save'));
         }
