@@ -26,6 +26,12 @@ All Notable changes to `Backpack CRUD` will be documented in this file
 - bug fix for 'table' field type - you can now have multiple fields on the same form;
 
 
+## [3.1.25] - 2016-09-28
+
+### Fixed
+- table field JSON bug;
+
+
 ## [3.1.24] - 2016-09-27
 
 ### Added
