@@ -80,7 +80,7 @@
 			  	for (var component in field.components) {
 			    	document.getElementById(field.components[component].name).readOnly = false;
 			    	if (val[component]){
-			    		document.getElementById(field.components[component].name).value = val[component][field.components[component].type];	
+			    		document.getElementById(field.components[component].name).value = typeof val[component][field.components[component].type] !== 'undefined' ? val[component][field.components[component].type] : val[component]['long_name'];	
 			    	} else {
 			    		document.getElementById(field.components[component].name).value = '';
 			    	}
