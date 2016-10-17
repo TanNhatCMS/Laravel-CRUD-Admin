@@ -38,6 +38,24 @@
 
 @endforeach
 
+{{-- Modal window with an error message in case Google API doesn't provide the components for the address --}}
+<div class="modal fade" id ="modal_error" role="dialog" tabindex="-1" aria-labelledby="ModalLabel" style="display: none;"> 
+	<div class="modal-dialog modal-lg" role="document"> 
+		<div class="modal-content"> 
+			<div class="modal-header"> 
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">×</span>
+				</button> 
+				<h4 class="modal-title" id="ModalLabel">Oops something went wrong...</h4> 
+			</div>
+			<div class="modal-body">
+				<p>It looks like Google doesn't provide all the info for this address... </p>
+				<p>The fields must be filled manually...</p>
+			</div>
+		</div>
+	</div> 
+</div>
+
 {{-- Note: you can use  to only load some CSS/JS once, even though there are multiple instances of it --}}
 
 {{-- ########################################## --}}
@@ -69,22 +87,34 @@
 			  	// Get the place details from the autocomplete object.
 			 	var place = autocomplete.getPlace();
 			   	var val = [];
+
+			   	if (place.address_components){ // Google API provids the components for the address
 			  	
-			  	// Get each component of the address from the place details
-			  	for (var i = 0; i < place.address_components.length; i++) {
-			    	var addressType = place.address_components[i].types[0];
-			    	val[addressType] = place.address_components[i];
-			  	}
-				
-				// Fill the corresponding field on the form if it exists.
-			  	for (var component in field.components) {
-			    	document.getElementById(field.components[component].name).readOnly = false;
-			    	if (val[component]){
-			    		document.getElementById(field.components[component].name).value = typeof val[component][field.components[component].type] !== 'undefined' ? val[component][field.components[component].type] : val[component]['long_name'];	
-			    	} else {
-			    		document.getElementById(field.components[component].name).value = '';
-			    	}
-			  	}
+				  	// Get each component of the address from the place details
+				  	for (var i = 0; i < place.address_components.length; i++) {
+				    	var addressType = place.address_components[i].types[0];
+				    	val[addressType] = place.address_components[i];
+				  	}
+					
+					// Fill the corresponding field on the form if it exists.
+				  	for (var component in field.components) {
+				    	document.getElementById(field.components[component].name).readOnly = false;
+				    	if (val[component]){
+				    		document.getElementById(field.components[component].name).value = typeof val[component][field.components[component].type] !== 'undefined' ? val[component][field.components[component].type] : val[component]['long_name'];	
+				    	} else {
+				    		document.getElementById(field.components[component].name).value = '';
+				    	}
+				  	}
+
+				} else { // Google API doesn't provide the components for the address
+					
+					for (var component in field.components) {
+						document.getElementById(field.components[component].name).value = '';
+				    	document.getElementById(field.components[component].name).readOnly = false;
+				    }
+
+				    $('#modal_error').modal('show');	
+				}
 			}
 
         </script>
