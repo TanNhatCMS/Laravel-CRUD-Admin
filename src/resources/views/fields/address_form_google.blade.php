@@ -11,8 +11,8 @@
     <label>{!! $field['label'] !!}</label>       
     <input 
       	type="text" 
-      	name="{{$field['name']}}" 
-      	id="{{$field['name']}}"
+      	name="{{ $field['name'] }}" 
+      	id="{{ $field['name'] }}"
       	@include('crud::inc.field_attributes')   
     >
    
@@ -28,8 +28,8 @@
 	    <label>{!! $attribute['label'] !!}</label>
 	    <input 
 	      	type="text" 
-	      	name="{{$attribute['name']}}"
-	      	id="{{$attribute['name']}}"
+	      	name="{{ $attribute['name'] }}"
+	      	id="{{ $attribute['name'] }}"
 	      	value="{{ old($attribute['name'], isset($entity_column[$attribute['name']]) ? $entity_column[$attribute['name']] : null) }}"
 	      	readonly
 	      	@include('crud::inc.field_attributes')
@@ -88,16 +88,9 @@
 			}
 
         </script>
-        <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_API_KEY')}}&libraries=places&callback=initAutocomplete" async defer></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key={{ $field['google_api_key'] }}&libraries=places&callback=initAutocomplete" async defer></script>
     @endpush
 
 @endif
 {{-- End of Extra CSS and JS --}}
 {{-- ########################################## --}}
-
-
-
-
-
-
-
