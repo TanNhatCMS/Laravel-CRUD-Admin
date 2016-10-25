@@ -5,6 +5,12 @@
     if( isset($id) && $id ){
     	$entity_column = $entity_model::find($id)->getAttributes();
 	}
+
+	$googleApiKey = isset( $field['google_api_key'] ) ? $field['google_api_key']  : ( config('backpack.google_api_key', env('GOOGLE_API_KEY', null)));
+
+	$notification = new stdClass();
+	$notification->title = trans('backpack::crud.address_google_error_title');
+	$notification->message = trans('backpack::crud.address_google_error_message');
 ?>
 
 <div @include('crud::inc.field_wrapper_attributes')>
@@ -38,24 +44,6 @@
 
 @endforeach
 
-{{-- Modal window with an error message in case Google API doesn't provide the components for the address --}}
-<div class="modal fade" id ="modal_error" role="dialog" tabindex="-1" aria-labelledby="ModalLabel" style="display: none;"> 
-	<div class="modal-dialog modal-lg" role="document"> 
-		<div class="modal-content"> 
-			<div class="modal-header"> 
-				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-					<span aria-hidden="true">×</span>
-				</button> 
-				<h4 class="modal-title" id="ModalLabel">Oops something went wrong...</h4> 
-			</div>
-			<div class="modal-body">
-				<p>It looks like Google doesn't provide all the info for this address... </p>
-				<p>The fields must be filled manually...</p>
-			</div>
-		</div>
-	</div> 
-</div>
-
 {{-- Note: you can use  to only load some CSS/JS once, even though there are multiple instances of it --}}
 
 {{-- ########################################## --}}
@@ -72,8 +60,9 @@
     {{-- FIELD JS - will be loaded in the after_scripts section --}}
     @push('crud_fields_scripts')
         <script>
-
+    
 			var field = <?php echo json_encode($field); ?>;
+			var notification = <?php echo json_encode($notification); ?>;
 
 			function initAutocomplete() {
   
@@ -113,12 +102,18 @@
 				    	document.getElementById(field.components[component].name).readOnly = false;
 				    }
 
-				    $('#modal_error').modal('show');	
+				    $(function(){
+				        new PNotify({
+				            title: notification['title'],
+				            text: notification['message'],
+				            icon: false,
+				        });
+				    });	
 				}
 			}
 
         </script>
-        <script src="https://maps.googleapis.com/maps/api/js?key={{ $field['google_api_key'] }}&libraries=places&callback=initAutocomplete" async defer></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key={{ $googleApiKey }}&libraries=places&callback=initAutocomplete" async defer></script>
     @endpush
 
 @endif
