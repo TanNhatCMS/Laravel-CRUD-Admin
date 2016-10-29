@@ -61,8 +61,8 @@
     @push('crud_fields_scripts')
         <script>
     
-			var field = <?php echo json_encode($field); ?>;
-			var notification = <?php echo json_encode($notification); ?>;
+			var field = {!! json_encode($field) !!}  
+			var notification = {!! json_encode($notification) !!}
 
 			function initAutocomplete() {
   
@@ -113,7 +113,7 @@
 			}
 
         </script>
-        <script src="https://maps.googleapis.com/maps/api/js?key={{ $googleApiKey }}&libraries=places&callback=initAutocomplete" async defer></script>
+        <script src="https://maps.googleapis.com/maps/api/js?key={{ $googleApiKey }}&amp;libraries=places&amp;callback=initAutocomplete" async defer></script>
     @endpush
 
 @endif
