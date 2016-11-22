@@ -2,8 +2,9 @@
 <div @include('crud::inc.field_wrapper_attributes') >
     <label>{!! $field['label'] !!}</label>
     <select
-        name="{{ $field['name'] }}"
+        name="{{ $field['name'] }}@if (isset($field['allows_multiple']) && $field['allows_multiple']==true)[]@endif"
         @include('crud::inc.field_attributes')
+        @if (isset($field['allows_multiple']) && $field['allows_multiple']==true)multiple @endif
     	>
 
         @if (isset($field['allows_null']) && $field['allows_null']==true)
@@ -13,7 +14,9 @@
 	    	@if (count($field['options']))
 	    		@foreach ($field['options'] as $key => $value)
 	    			<option value="{{ $key }}"
-                        @if ((isset($field['value']) && $key==$field['value']) || ( ! is_null( old($field['name']) ) && old($field['name']) == $key) )
+                        @if ((isset($field['value']) && $key==$field['value']) 
+                            || ( ! is_null( old($field['name']) ) && old($field['name']) == $key)
+                            || (is_array($field['value']) && in_array($key, $field['value'])) )
 							 selected
 						@endif
 	    			>{{ $value }}</option>
