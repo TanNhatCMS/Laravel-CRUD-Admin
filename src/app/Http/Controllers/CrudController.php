@@ -113,7 +113,7 @@ class CrudController extends BaseController
         }
 
         // insert item in the db
-        $item = $this->crud->create($request->except(['redirect_after_save', '_token']));
+        $this->crud->entry = $this->crud->create($request->except(['redirect_after_save', '_token']));
 
         // show a success message
         \Alert::success(trans('backpack::crud.insert_success'))->flash();
@@ -121,7 +121,7 @@ class CrudController extends BaseController
         // redirect the user where he chose to be redirected
         switch ($request->input('redirect_after_save')) {
             case 'current_item_edit':
-                return \Redirect::to($this->crud->route.'/'.$item->getKey().'/edit');
+                return \Redirect::to($this->crud->route.'/'.$this->crud->entry->getKey().'/edit');
 
             default:
                 return \Redirect::to($request->input('redirect_after_save'));
@@ -175,7 +175,7 @@ class CrudController extends BaseController
         }
 
         // update the row in the db
-        $this->crud->update($request->get($this->crud->model->getKeyName()),
+        $this->crud->entry = $this->crud->update($request->get($this->crud->model->getKeyName()),
                             $request->except('redirect_after_save', '_token'));
 
         // show a success message
