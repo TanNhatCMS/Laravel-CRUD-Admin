@@ -47,9 +47,9 @@ trait CrudTrait
         $instance = new static();
 
         // register the enum column type, because Doctrine doesn't support it
-        DB::connection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+        DB::connection($instance->getConnectionName())->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
 
-        return ! DB::connection()->getDoctrineColumn($instance->getTable(), $column_name)->getNotnull();
+        return ! DB::connection($instance->getConnectionName())->getDoctrineColumn($instance->getTable(), $column_name)->getNotnull();
     }
 
     /*
