@@ -5,9 +5,12 @@
     @if (isset($field['model']))
 
         <?php
-        $pivot_entries = $entry->{$field['entity']}->keyBy(function($item) {
-            return $item->getKey();
-        });
+            $pivot_entries = null;
+            if (isset($entry)) {
+                $pivot_entries = $entry->{$field['entity']}->keyBy(function($item) {
+                    return $item->getKey();
+                });
+            }
         ?>
 
         @if(isset($field['pivotFields']))
@@ -16,13 +19,13 @@
             </a>
 
             @push('crud_fields_scripts')
-            <script>
-                jQuery(document).ready(function($) {
-                    $('#trigger-toggle-all').on('click', function () {
-                        $('div.collapse').collapse('toggle');
+                <script>
+                    jQuery(document).ready(function($) {
+                        $('#trigger-toggle-all').on('click', function () {
+                            $('div.collapse').collapse('toggle');
+                        });
                     });
-                });
-            </script>
+                </script>
             @endpush
         @endif
 
@@ -52,16 +55,18 @@
                                 <div class="row">
                                     @foreach ($pivot_chunk as $pivot_field => $pivot_name)
                                         <?php
-                                        $pivot_attr = null;
-                                        if ($pivot_entries->has($connected_entity_entry->getKey())) {
-                                            $pivot = $pivot_entries->get($connected_entity_entry->getKey())->pivot;
-                                            $pivot_attr = $pivot->getAttribute($pivot_field);
-                                        }
+                                            $pivot_attr = null;
+                                            if ($pivot_entries) {
+                                                if ($pivot_entries->has($connected_entity_entry->getKey())) {
+                                                    $pivot = $pivot_entries->get($connected_entity_entry->getKey())->pivot;
+                                                    $pivot_attr = $pivot->getAttribute($pivot_field);
+                                                }
+                                            }
                                         ?>
 
                                         <div class="col-sm-6">
                                             <label>{!! $pivot_name !!}</label>
-                                            <input type="text" name="{!! $pivot_field !!}[{{ $connected_entity_entry->getKey() }}]" value="{{ $pivot_attr or null }}" @include('crud::inc.field_attributes') />
+                                            <input type="text" name="{!! $pivot_field !!}[{{ $connected_entity_entry->getKey() }}]" value="{{ $pivot_attr }}" @include('crud::inc.field_attributes') />
                                         </div>
                                     @endforeach
                                 </div>
