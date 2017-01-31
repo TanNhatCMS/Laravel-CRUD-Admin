@@ -1,3 +1,8 @@
+<?php
+    if(!isset($field['url_prefix'])){
+        $field['url_prefix'] = '';
+    }
+?>
   <div class="form-group col-md-12 image" data-preview="#{{ $field['name'] }}" data-aspectRatio="{{ isset($field['aspect_ratio']) ? $field['aspect_ratio'] : 0 }}" data-crop="{{ isset($field['crop']) ? $field['crop'] : false }}" @include('crud::inc.field_wrapper_attributes')>
     <div>
         <label>{!! $field['label'] !!}</label>
@@ -5,7 +10,7 @@
     <!-- Wrap the image or canvas element with a block element (container) -->
     <div class="row">
         <div class="col-sm-6" style="margin-bottom: 20px;">
-            <img id="mainImage" src="{{ url(old($field['name']) ? old($field['name']) : (isset($field['value']) ? $field['value'] : (isset($field['default']) ? $field['default'] : '') )) }}">
+            <img id="mainImage" src="{{ old($field['name']) ? url(old($field['url_prefix'].$field['name'])) : (isset($field['value']) ? url($field['url_prefix'].$field['value']) : (isset($field['default']) ? url($field['url_prefix'].$field['default']) : '') ) }}">
         </div>
         @if(isset($field['crop']) && $field['crop'])
         <div class="col-sm-3">
