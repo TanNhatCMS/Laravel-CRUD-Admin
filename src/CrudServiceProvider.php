@@ -5,6 +5,7 @@ namespace Backpack\CRUD;
 use Route;
 use Illuminate\Support\ServiceProvider;
 
+
 class CrudServiceProvider extends ServiceProvider
 {
     /**
@@ -92,31 +93,31 @@ class CrudServiceProvider extends ServiceProvider
         Route::post($name.'/search', [
             'as' => 'crud.'.$name.'.search',
             'uses' => $controller.'@search',
-          ]);
+        ]);
         Route::get($name.'/reorder', [
             'as' => 'crud.'.$name.'.reorder',
             'uses' => $controller.'@reorder',
-          ]);
+        ]);
         Route::post($name.'/reorder', [
             'as' => 'crud.'.$name.'.save.reorder',
             'uses' => $controller.'@saveReorder',
-          ]);
+        ]);
         Route::get($name.'/{id}/details', [
             'as' => 'crud.'.$name.'.showDetailsRow',
             'uses' => $controller.'@showDetailsRow',
-          ]);
+        ]);
         Route::get($name.'/{id}/translate/{lang}', [
             'as' => 'crud.'.$name.'.translateItem',
             'uses' => $controller.'@translateItem',
-          ]);
+        ]);
         Route::get($name.'/{id}/revisions', [
             'as' => 'crud.'.$name.'.listRevisions',
             'uses' => $controller.'@listRevisions',
-          ]);
+        ]);
         Route::post($name.'/{id}/revisions/{revisionId}/restore', [
             'as' => 'crud.'.$name.'.restoreRevision',
             'uses' => $controller.'@restoreRevision',
-          ]);
+        ]);
 
         $options_with_default_route_names = array_merge([
             'names' => [
@@ -131,5 +132,7 @@ class CrudServiceProvider extends ServiceProvider
             ], $options);
 
         Route::resource($name, $controller, $options_with_default_route_names);
+
+        return new CrudInjectable($name, $controller, $options);
     }
 }
