@@ -177,7 +177,7 @@ class CrudController extends BaseController
 
         // update the row in the db
         $item = $this->crud->update($request->get($this->crud->model->getKeyName()),
-                            $request->except('redirect_after_save', '_token'));
+                            $request->except('redirect_after_save', '_token', '_method'));
         $this->data['entry'] = $this->crud->entry = $item;
 
         // show a success message
