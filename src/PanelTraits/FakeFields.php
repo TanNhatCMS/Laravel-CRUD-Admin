@@ -28,7 +28,7 @@ trait FakeFields
                 // add it to the request in its appropriate variable - the one defined, if defined
                 if (isset($fields[$k]['store_in'])) {
                     // json_decoded value is an object, not an array, so we need to cast it
-                    $request[$fields[$k]['store_in']] = (array)$request[$fields[$k]['store_in']];
+                    $request[$fields[$k]['store_in']] = (array) $request[$fields[$k]['store_in']];
                     $request[$fields[$k]['store_in']][$fields[$k]['name']] = $request[$fields[$k]['name']];
 
                     // remove the fake field
