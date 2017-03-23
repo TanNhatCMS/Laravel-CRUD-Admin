@@ -20,6 +20,35 @@ All Notable changes to `Backpack CRUD` will be documented in this file
 - Nothing
 
 
+## [3.2.7] - 2017-03-16
+
+### Added
+- Simplified Chinese translation - thanks to [Zhongwei Sun](https://github.com/sunzhongwei);
+- date and date_range filters - thanks to [adriancaamano](https://github.com/adriancaamano);
+
+### Fixed
+- fixed horizontal scrollbar showing on list view;
+- fixed edit and create extended CSS and JS files not loading;
+- fixed AjaxDataTables + filters bug (encoded URL strings);
+- replaced camel_case() with str_slug() in tab ids, to provide multibyte support;
+
+
+## [3.2.6] - 2017-03-13
+
+### Fixed
+- custom created_at and updated_at columns threw errors on PHP 5.6;
+
+
+## [3.2.5] - 2017-03-12
+
+### Fixed
+- SaveActions typo - fixes #504;
+- Allow for custom created_at and updated_at db columns - fixes #518;
+- base64_image field - preserve the original image format when uploading cropped image;
+- fix bug where n-n relationship on CREATE only triggers error - fixes #512;
+- reduce the number of queries when using the Tabs feature - fixes #461;
+
+
 ## [3.2.4] - 2017-02-24
 
 ### Fixed
