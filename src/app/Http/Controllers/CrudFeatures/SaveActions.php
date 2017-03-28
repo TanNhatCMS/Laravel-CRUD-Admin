@@ -67,6 +67,7 @@ trait SaveActions
     public function performSaveAction($itemId = null)
     {
         $saveAction = \Request::input('save_action', config('backback.crud.default_save_action', 'save_and_back'));
+        $returnUrl = \Request::input('return_url', $this->crud->route);
         $itemId = $itemId ? $itemId : \Request::input('id');
 
         switch ($saveAction) {
@@ -81,7 +82,7 @@ trait SaveActions
                 break;
             case 'save_and_back':
             default:
-                $redirectUrl = $this->crud->route;
+                $redirectUrl = $returnUrl;
                 break;
         }
 
@@ -108,4 +109,24 @@ trait SaveActions
                 break;
         }
     }
+
+    /**
+     * Get the referring URL if it is on the same site as backpack.
+     * Otherwise get the list all crud route.
+     * @return string the return url.
+     */
+     private function getReturnUrl()
+     {
+         if (!isset($_SERVER['HTTP_REFERER']) || !isset($_SERVER['HTTP_HOST'])) {
+             return $this->crud->route;
+         }
+
+         $referer = parse_url($_SERVER['HTTP_REFERER']);
+
+         if ($referer['host'] === $_SERVER['HTTP_HOST'] && stripos($referer['path'], $this->crud->route)) {
+             return $_SERVER['HTTP_REFERER'];
+         }
+
+         return $this->crud->route;
+     }
 }

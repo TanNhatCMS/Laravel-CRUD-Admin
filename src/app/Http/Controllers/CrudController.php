@@ -83,6 +83,7 @@ class CrudController extends BaseController
         // prepare the fields you need to show
         $this->data['crud'] = $this->crud;
         $this->data['saveAction'] = $this->getSaveAction();
+        $this->data['returnUrl'] = $this->getReturnUrl();
         $this->data['fields'] = $this->crud->getCreateFields();
         $this->data['title'] = trans('backpack::crud.add').' '.$this->crud->entity_name;
 
@@ -114,7 +115,7 @@ class CrudController extends BaseController
         }
 
         // insert item in the db
-        $item = $this->crud->create($request->except(['save_action', '_token', '_method']));
+        $item = $this->crud->create($request->except(['return_url', 'save_action', '_token', '_method']));
         $this->data['entry'] = $this->crud->entry = $item;
 
         // show a success message
@@ -141,6 +142,7 @@ class CrudController extends BaseController
         $this->data['entry'] = $this->crud->getEntry($id);
         $this->data['crud'] = $this->crud;
         $this->data['saveAction'] = $this->getSaveAction();
+        $this->data['returnUrl'] = $this->getReturnUrl();
         $this->data['fields'] = $this->crud->getUpdateFields($id);
         $this->data['title'] = trans('backpack::crud.edit').' '.$this->crud->entity_name;
 
@@ -175,7 +177,7 @@ class CrudController extends BaseController
 
         // update the row in the db
         $item = $this->crud->update($request->get($this->crud->model->getKeyName()),
-                            $request->except('save_action', '_token', '_method'));
+                            $request->except('return_url', 'save_action', '_token', '_method'));
         $this->data['entry'] = $this->crud->entry = $item;
 
         // show a success message

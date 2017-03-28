@@ -1,5 +1,6 @@
 <div id="saveActions" class="form-group">
 
+    <input type="hidden" name="return_url" value="{{ old('return_url') ? old('return_url') : $returnUrl }}">
     <input type="hidden" name="save_action" value="{{ $saveAction['active']['value'] }}">
 
     <div class="btn-group">
