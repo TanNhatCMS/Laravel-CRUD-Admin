@@ -7,7 +7,6 @@
         @if(isset($field['prefix'])) <div class="input-group-addon">{!! $field['prefix'] !!}</div> @endif
         <input
         	type="number"
-            step="any"
         	name="{{ $field['name'] }}"
             id="{{ $field['name'] }}"
             value="{{ old($field['name']) ? old($field['name']) : (isset($field['value']) ? $field['value'] : (isset($field['default']) ? $field['default'] : '' )) }}"
