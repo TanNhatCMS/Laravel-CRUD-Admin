@@ -2,13 +2,15 @@
 <div @include('crud::inc.field_wrapper_attributes') >
     <label>{!! $field['label'] !!}</label>
     <?php $entity_model = $crud->model; ?>
+
+    <?php 
+    /** Initialize Field Value */
+    $field['value'] = isset($field['value']) ? $field['value'] : (old($field['name'])? old($field['name']) : 0);
+    ?>
+    
     <input type="hidden" name="{{ $field['name'] }}" id="select2_ajax_{{ $field['name'] }}"
-        @if(isset($field['value']))
+        @if($field['value'])
             value="{{ $field['value'] }}"
-        @else
-	        @if(old($field['name']))
-	            value="{{ old($field['name']) }}"
-	        @endif
         @endif
     @include('crud::inc.field_attributes', ['default_class' =>  'form-control'])
     >
@@ -87,7 +89,7 @@
                         // the input tag has a value attribute preloaded that points to a preselected repository's id
                         // this function resolves that id attribute to an object that select2 can render
                         // using its formatResult renderer - that way the repository name is shown preselected
-                        $.ajax("{{ $field['data_source'] }}" + '/' + "{{ $field['value'] ?? ( old($field['name']) ?? 0 ) }}", {
+                        $.ajax("{{ $field['data_source'] }}" + '/' + "{{ $field['value'] }}", {
                             dataType: "json"
                         }).done(function(data) {
                             textField = "{{ $field['attribute'] }}";
