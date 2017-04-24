@@ -56,7 +56,7 @@ return [
     'delete_confirmation_title'               => 'Запись удалена',
     'delete_confirmation_message'             => 'Запись была успешно удалена',
     'delete_confirmation_not_title'           => 'НЕ удалено',
-    'delete_confirmation_not_message'         => "Произошла ошибка. Запись не была удалена",
+    'delete_confirmation_not_message'         => 'Произошла ошибка. Запись не была удалена',
     'delete_confirmation_not_deleted_title'   => 'Не удалено',
     'delete_confirmation_not_deleted_message' => 'Ничего не произошло. Ваша запись сохранена/',
 
