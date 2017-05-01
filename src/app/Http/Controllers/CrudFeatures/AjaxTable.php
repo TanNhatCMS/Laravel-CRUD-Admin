@@ -2,13 +2,15 @@
 
 namespace Backpack\CRUD\app\Http\Controllers\CrudFeatures;
 
+use Illuminate\Http\Request;
+
 trait AjaxTable
 {
     /**
      * Respond with the JSON of one or more rows, depending on the POST parameters.
      * @return JSON Array of cells in HTML form.
      */
-    public function search()
+    public function search(Request $request)
     {
         $this->crud->hasAccessOrFail('list');
 
@@ -22,6 +24,19 @@ trait AjaxTable
                     // add the primary key, otherwise the buttons won't work
                     ->merge($this->crud->model->getKeyName())
                     ->toArray();
+
+        // dont pass an order by through the query, but send a default order if one doesn't exist in the request
+        $default_orders = $this->crud->query->getQuery()->orders;
+        $this->crud->query->getQuery()->orders = null;
+        $order = $request->input('order');
+        if (!$order) {
+            $order = [];
+            foreach ($default_orders as $default_order) {
+                $order[] = ['column' => (string) array_search($default_order['column'], $columns), 'dir' => $default_order['direction']];
+            }
+            // we have to add to $_POST as EloquentDatatables checks this not the request.
+            $_POST['order'] = $order;
+        }
 
         // structure the response in a DataTable-friendly way
         $dataTable = new \LiveControl\EloquentDataTable\DataTable($this->crud->query, $columns);
