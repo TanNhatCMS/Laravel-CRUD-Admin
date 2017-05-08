@@ -123,6 +123,7 @@
 @section('after_styles')
   <!-- DATA TABLES -->
   <link href="{{ asset('vendor/adminlte/plugins/datatables/dataTables.bootstrap.css') }}" rel="stylesheet" type="text/css" />
+  <link href="{{ asset('vendor/backpack/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="{{ asset('vendor/backpack/crud/css/crud.css') }}">
   <link rel="stylesheet" href="{{ asset('vendor/backpack/crud/css/form.css') }}">
   <link rel="stylesheet" href="{{ asset('vendor/backpack/crud/css/list.css') }}">
@@ -134,6 +135,7 @@
 @section('after_scripts')
   	<!-- DATA TABLES SCRIPT -->
     <script src="{{ asset('vendor/adminlte/plugins/datatables/jquery.dataTables.js') }}" type="text/javascript"></script>
+    <script src="{{ asset('vendor/backpack/sweetalert2/sweetalert2.min.js') }}"></script>
 
     <script src="{{ asset('vendor/backpack/crud/js/crud.js') }}"></script>
     <script src="{{ asset('vendor/backpack/crud/js/form.js') }}"></script>
