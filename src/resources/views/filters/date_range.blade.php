@@ -41,6 +41,7 @@
 {{-- push things in the after_styles section --}}
 
 @push('crud_list_styles')
+	<link href="{{ asset('vendor/backpack/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
     <!-- include select2 css-->
 	<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
 	<style>
@@ -55,6 +56,7 @@
 {{-- push things in the after_scripts section --}}
 
 @push('crud_list_scripts')
+	<script src="{{ asset('vendor/backpack/sweetalert2/sweetalert2.min.js') }}"></script>
 	<script type="text/javascript" src="//cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
 	<script type="text/javascript" src="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.js"></script>
   <script>
@@ -77,7 +79,7 @@
 				autoUpdateInput: true
 			},
 			function (start, end) {
-				alert(start);
+				swal(start);
 				var dates = {
 					'from': start.format('YYYY-MM-DD'),
 					'to': end.format('YYYY-MM-DD')
