@@ -54,6 +54,7 @@ if (is_array($value)) {
     @push('crud_fields_styles')
     {{-- @push('crud_fields_styles')
         {{-- YOUR CSS HERE --}}
+        <link href="{{ asset('vendor/backpack/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
         <style media="screen">
             .video-previewSuffix {
                 border: 0;
@@ -86,6 +87,7 @@ if (is_array($value)) {
     {{-- FIELD JS - will be loaded in the after_scripts section --}}
     @push('crud_fields_scripts')
         {{-- YOUR JS HERE --}}
+        <script src="{{ asset('vendor/backpack/sweetalert2/sweetalert2.min.js') }}"></script>
         <script>
             jQuery(document).ready(function($) {
 
@@ -316,7 +318,7 @@ if (is_array($value)) {
                                     else {
                                         pDummy.show();
                                         pWrap.hide();
-                                        alert(videoJson.message);
+                                        swal(videoJson.message);
                                     }
 
                                     videoParsing = false;
@@ -337,7 +339,7 @@ if (is_array($value)) {
 
                 $('form').on('submit', function(e){
                     if( videoParsing ){
-                        alert('Video details are still loading, please wait a moment and try again');
+                        swal('Video details are still loading, please wait a moment and try again');
                         e.preventDefault();
                         return false;
                     }
