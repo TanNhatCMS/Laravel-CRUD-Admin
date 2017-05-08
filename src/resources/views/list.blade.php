@@ -267,8 +267,11 @@
           e.preventDefault();
           var delete_button = $(this);
           var delete_url = $(this).attr('href');
-
-          if (confirm("{{ trans('backpack::crud.delete_confirm') }}") == true) {
+          swal({
+              title: '{{ trans('backpack::crud.delete_confirm') }}',
+              type: 'warning',
+              showCancelButton: true,
+            }).then(function () {
               $.ajax({
                   url: delete_url,
                   type: 'DELETE',
@@ -291,13 +294,13 @@
                       });
                   }
               });
-          } else {
+            }, function() {
               new PNotify({
                   title: "{{ trans('backpack::crud.delete_confirmation_not_deleted_title') }}",
                   text: "{{ trans('backpack::crud.delete_confirmation_not_deleted_message') }}",
                   type: "info"
               });
-          }
+          });
         });
       }
 
