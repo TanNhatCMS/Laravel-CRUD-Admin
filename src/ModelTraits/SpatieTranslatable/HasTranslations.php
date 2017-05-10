@@ -62,8 +62,6 @@ trait HasTranslations
 
         // do the actual saving
         foreach ($attributes as $attribute => $value) {
-            if(in_array($attribute,$this->guarded))
-                continue;
             if ($model->isTranslatableAttribute($attribute)) { // the attribute is translatable
                 $model->setTranslation($attribute, $locale, $value);
             } else { // the attribute is NOT translatable
