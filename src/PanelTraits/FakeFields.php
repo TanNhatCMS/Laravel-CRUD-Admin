@@ -58,7 +58,7 @@ trait FakeFields
                 if (property_exists($this->model, 'translatable') && in_array($value, $this->model->getTranslatableAttributes(), true)) {
                     // don't json_encode spatie/translatable fake columns
                     $request[$value] = $request[$value];
-                } elseif (!key_exists($value, $casted_fields) || $casted_fields[$value] != 'array') {
+                } elseif (! key_exists($value, $casted_fields) || $casted_fields[$value] != 'array') {
                     // the fake field will not be automatically casted by the model
                     $request[$value] = json_encode($request[$value]);
                 }
