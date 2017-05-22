@@ -29,7 +29,7 @@ trait AjaxTable
         $default_orders = $this->crud->query->getQuery()->orders;
         $this->crud->query->getQuery()->orders = null;
         $order = $request->input('order');
-        if (!$order) {
+        if (! $order) {
             $order = [];
             foreach ($default_orders as $default_order) {
                 $order[] = ['column' => (string) array_search($default_order['column'], $columns), 'dir' => $default_order['direction']];
