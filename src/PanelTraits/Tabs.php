@@ -87,13 +87,14 @@ trait Tabs
         return $this->getLastTab() == $label;
     }
 
-    public function getFieldsWithoutATab() {
+    public function getFieldsWithoutATab()
+    {
         $all_fields = $this->getCurrentFields();
-        
+
         $fields_without_a_tab = collect($all_fields)->filter(function ($value, $key) {
             return ! isset($value['tab']);
         });
-        
+
         return $fields_without_a_tab;
     }
 
