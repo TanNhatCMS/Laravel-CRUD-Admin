@@ -59,6 +59,23 @@ trait Update
                 } else {
                     $fields[$k]['value'] = $entry->{$field['name']};
                 }
+                
+                //Menu type field tweak
+
+                if(isset($field['types'])) {
+
+                    $fields[$k]['values'] = [];
+
+                    foreach ($field['types'] as $key => $type) {
+
+                        $fields[$k]['values'][$type['name']] = $entry->{$type['name']};
+                    }
+
+                } else {
+
+                    $fields[$k]['value'] = $entry->{$field['name']};
+
+                }
             }
         }
 
