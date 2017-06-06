@@ -56,7 +56,7 @@ return [
     'delete_confirmation_title'                   => 'Eintrag gelöscht',
     'delete_confirmation_message'                 => 'Der Eintrag wurde erfolgreich gelöscht.',
     'delete_confirmation_not_title'               => 'NICHT gelöscht',
-    'delete_confirmation_not_message'             => "Ein Fehler ist aufgetreten. Der Eintrag wurde möglicherweise nicht gelöscht.",
+    'delete_confirmation_not_message'             => 'Ein Fehler ist aufgetreten. Der Eintrag wurde möglicherweise nicht gelöscht.',
     'delete_confirmation_not_deleted_title'       => 'Nicht gelöscht',
     'delete_confirmation_not_deleted_message'     => 'Nichts passiert. Der eintrag wurde nicht gelöscht.',
 
