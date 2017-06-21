@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Backpack\CRUD\PanelTraits;
 
 trait Details
 {
