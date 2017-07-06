@@ -102,7 +102,12 @@ return [
     // CRUD yes/no
     'yes'                                     => 'Да',
     'no'                                      => 'Нет',
-
+    
+    // CRUD filters navbar view
+    'filters'                                 => 'Фильтры',
+    'toggle_filters'                          => 'Переключить фильтры',
+    'remove_filters'                          => 'Очистить фильтры',
+    
     // Fields
     'browse_uploads'                          => 'Загрузить файлы',
     'clear'                                   => 'Очистить',
