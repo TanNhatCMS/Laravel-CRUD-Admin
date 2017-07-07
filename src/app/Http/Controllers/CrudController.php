@@ -38,7 +38,9 @@ class CrudController extends BaseController
                 $this->crud->request = $request;
                 $this->setup();
 
-                $this->crud->setFromDb();
+                if(config('backpack.crud.setFromDB', false)) {
+                    $this->crud->setFromDb();
+                }
 
                 return $next($request);
             });
