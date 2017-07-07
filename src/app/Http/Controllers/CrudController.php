@@ -38,6 +38,8 @@ class CrudController extends BaseController
                 $this->crud->request = $request;
                 $this->setup();
 
+                $this->crud->setFromDb();
+
                 return $next($request);
             });
         }
@@ -61,6 +63,8 @@ class CrudController extends BaseController
 
         $this->data['crud'] = $this->crud;
         $this->data['title'] = ucfirst($this->crud->entity_name_plural);
+
+        $this->crud->removeColumns($this->crud->model->crudListHidden);
 
         // get all entries if AJAX is not enabled
         if (! $this->data['crud']->ajaxTable()) {
