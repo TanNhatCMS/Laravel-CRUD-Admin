@@ -9,6 +9,7 @@ use Backpack\CRUD\PanelTraits\Views;
 use Backpack\CRUD\PanelTraits\Access;
 use Backpack\CRUD\PanelTraits\Create;
 use Backpack\CRUD\PanelTraits\Delete;
+use Backpack\CRUD\PanelTraits\Details;
 use Backpack\CRUD\PanelTraits\Errors;
 use Backpack\CRUD\PanelTraits\Fields;
 use Backpack\CRUD\PanelTraits\Update;
@@ -24,7 +25,7 @@ use Backpack\CRUD\PanelTraits\ViewsAndRestoresRevisions;
 
 class CrudPanel
 {
-    use Create, Read, Update, Delete, Errors, Reorder, Access, Columns, Fields, Query, Buttons, AutoSet, FakeFields, FakeColumns, ViewsAndRestoresRevisions, AutoFocus, Filters, Tabs, Views;
+    use Create, Read, Update, Delete, Details, Errors, Reorder, Access, Columns, Fields, Query, Buttons, AutoSet, FakeFields, FakeColumns, ViewsAndRestoresRevisions, AutoFocus, Filters, Tabs, Views;
 
     // --------------
     // CRUD variables
@@ -54,6 +55,10 @@ class CrudPanel
     public $columns = []; // Define the columns for the table view as an array;
     public $create_fields = []; // Define the fields for the "Add new entry" view as an array;
     public $update_fields = []; // Define the fields for the "Edit entry" view as an array;
+
+
+    public $statistics_array = []; // Define the details to display on a side, best used for info boxes with quick stats.
+    public $details_array = []; // Define the details to display within a table format
 
     public $query;
     public $entry;
