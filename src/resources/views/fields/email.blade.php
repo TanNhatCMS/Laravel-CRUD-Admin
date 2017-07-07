@@ -1,3 +1,8 @@
+<?php
+$entity_model = $crud->model;
+$isRequired = isset($field['attributes']['required']) || (Schema::hasColumn($entity_model->getTable(), $field['name']) && !$entity_model::isColumnNullable($field['name']));
+$dbdefault = method_exists($entity_model, 'getDefaultValue') ? $entity_model::getDefaultValue($field['name']) : '';
+?>
 <!-- text input -->
 <div @include('crud::inc.field_wrapper_attributes') >
     <label>{!! $field['label'] !!}</label>
