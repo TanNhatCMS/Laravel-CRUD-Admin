@@ -1,4 +1,4 @@
-<!-- text input -->
+{{-- text input --}}
 <?php
 
 $value = old($field['name']) ? (old($field['name'])) : (isset($field['value']) ? ($field['value']) : (isset($field['default']) ? ($field['default']) : '' ));

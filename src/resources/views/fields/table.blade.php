@@ -1,4 +1,4 @@
-<!-- array input -->
+{{-- array input --}}
 
 <?php
     $max = isset($field['max']) && (int) $field['max'] > 0 ? $field['max'] : -1;
@@ -84,7 +84,7 @@
 
     {{-- FIELD CSS - will be loaded in the after_styles section --}}
     @push('crud_fields_styles')
-    {{-- @push('crud_fields_styles')
+    {{-- @push('crud_fields_styles')--}}
         {{-- YOUR CSS HERE --}}
     @endpush
 

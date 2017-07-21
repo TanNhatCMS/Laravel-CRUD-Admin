@@ -58,7 +58,7 @@ function tree_element($entry, $key, $all_entries, $crud)
         <a href="{{ url($crud->route) }}"><i class="fa fa-angle-double-left"></i> {{ trans('backpack::crud.back_to_all') }} <span>{{ $crud->entity_name_plural }}</span></a><br><br>
     @endif
 
-        <!-- Default box -->
+        {{-- Default box --}}
         <div class="box">
 
             <div class="box-header with-border">
@@ -83,8 +83,8 @@ function tree_element($entry, $key, $all_entries, $crud)
 
                 <button id="toArray" class="btn btn-success ladda-button" data-style="zoom-in"><span class="ladda-label"><i class="fa fa-save"></i> {{ trans('backpack::crud.save') }}</span></button>
 
-            </div><!-- /.box-body -->
-        </div><!-- /.box -->
+            </div>{{-- /.box-body --}}
+        </div>{{-- /.box --}}
     </div>
 </div>
 @endsection

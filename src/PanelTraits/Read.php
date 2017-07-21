@@ -87,8 +87,10 @@ trait Read
     /**
      * Check if the create/update form has upload fields.
      * Upload fields are the ones that have "upload" => true defined on them.
+     *
      * @param  [form] create / update / both - defaults to 'both'
      * @param  [id] id of the entity - defaults to false
+     *
      * @return bool
      */
     public function hasUploadFields($form, $id = false)
@@ -103,7 +105,6 @@ trait Read
 
     /**
      * Enable the DETAILS ROW functionality:.
-     *
      * In the table view, show a plus sign next to each entry.
      * When clicking that plus sign, an AJAX call will bring whatever content you want from the EntityCrudController::showDetailsRow($id) and show it to the user.
      */
@@ -162,6 +163,7 @@ trait Read
 
     /**
      * Check if ajax is enabled for the table view.
+     *
      * @return bool
      */
     public function ajaxTable()
@@ -171,7 +173,9 @@ trait Read
 
     /**
      * Get the HTML of the cells in a table row, for a certain DB entry.
+     *
      * @param  Entity $entry A db entry of the current entity;
+     *
      * @return array         Array of HTML cell contents.
      */
     public function getRowViews($entry)
@@ -186,8 +190,10 @@ trait Read
 
     /**
      * Get the HTML of a cell, using the column types.
-     * @param  array $column
-     * @param  Entity $entry   A db entry of the current entity;
+     *
+     * @param  array  $column
+     * @param  Entity $entry A db entry of the current entity;
+     *
      * @return HTML
      */
     public function getCellView($column, $entry)
@@ -207,6 +213,26 @@ trait Read
         }
     }
 
+    /**
+     * Add field/column name to include in select query when using ajax tables
+     *
+     * @param string $field field/column name
+     */
+    public function addAjaxExtraField($field)
+    {
+        array_push($this->ajax_extra_fields, $field);
+    }
+
+    /**
+     * Extra fields/columns name to include in select query when using ajax tables
+     *
+     * @return array string array of field/column names
+     */
+    public function getAjaxExtraFields()
+    {
+        return array_unique($this->ajax_extra_fields);
+    }
+
     /*
     |--------------------------------------------------------------------------
     |                                EXPORT BUTTONS
@@ -223,6 +249,7 @@ trait Read
 
     /**
      * Check if export buttons are enabled for the table view.
+     *
      * @return bool
      */
     public function exportButtons()

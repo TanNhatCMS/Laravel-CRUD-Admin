@@ -46,7 +46,7 @@
 {{-- push things in the after_scripts section --}}
 
 @push('crud_list_scripts')
-	<!-- include select2 js-->
+	{{-- include select2 js--}}
 	<script type="text/javascript" src="{{ asset('vendor/adminlte/plugins/datepicker/bootstrap-datepicker.js') }}"></script>
   <script>
 		jQuery(document).ready(function($) {

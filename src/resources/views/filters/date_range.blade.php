@@ -41,7 +41,7 @@
 {{-- push things in the after_styles section --}}
 
 @push('crud_list_styles')
-    <!-- include select2 css-->
+    {{-- include select2 css--}}
 	<link rel="stylesheet" type="text/css" href="//cdn.jsdelivr.net/bootstrap.daterangepicker/2/daterangepicker.css" />
 	<style>
 		.input-group.date {

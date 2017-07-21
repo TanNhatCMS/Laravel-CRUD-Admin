@@ -1,4 +1,4 @@
-<!-- checkbox field -->
+{{-- checkbox field --}}
 
 <div @include('crud::inc.field_wrapper_attributes') >
     @include('crud::inc.field_translatable_icon')

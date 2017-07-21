@@ -1,4 +1,4 @@
-<!-- radio -->
+{{-- radio --}}
 @php
     $optionPointer = 0;
     $optionValue = old($field['name']) ? old($field['name']) : (isset($field['value']) ? $field['value'] : (isset($field['default']) ? $field['default'] : '' ));

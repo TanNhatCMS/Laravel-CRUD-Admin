@@ -15,9 +15,9 @@
 {{-- FILTERS EXTRA CSS  --}}
 {{-- push things in the after_styles section --}}
 
-    {{-- @push('crud_list_styles')
-        <!-- no css -->
-    @endpush --}}
+    {{-- @push('crud_list_styles')--}}
+        {{-- no css --}}
+    {{--@endpush --}}
 
 
 {{-- FILTERS EXTRA JS --}}

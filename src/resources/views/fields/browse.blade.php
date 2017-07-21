@@ -1,4 +1,4 @@
-<!-- browse server input -->
+{{-- browse server input --}}
 
 <div @include('crud::inc.field_wrapper_attributes') >
 
@@ -35,7 +35,7 @@
 
 	{{-- FIELD CSS - will be loaded in the after_styles section --}}
 	@push('crud_fields_styles')
-		<!-- include browse server css -->
+		{{-- include browse server css --}}
 		<link href="{{ asset('vendor/backpack/colorbox/example2/colorbox.css') }}" rel="stylesheet" type="text/css" />
 		<style>
 			#cboxContent, #cboxLoadedContent, .cboxIframe {
@@ -45,7 +45,7 @@
 	@endpush
 
 	@push('crud_fields_scripts')
-		<!-- include browse server js -->
+		{{-- include browse server js --}}
 		<script src="{{ asset('vendor/backpack/colorbox/jquery.colorbox-min.js') }}"></script>
 	@endpush
 

@@ -1,4 +1,4 @@
-<!-- upload multiple input -->
+{{-- upload multiple input --}}
 <div @include('crud::inc.field_wrapper_attributes') >
     <label>{!! $field['label'] !!}</label>
     @include('crud::inc.field_translatable_icon')
@@ -36,7 +36,7 @@
 {{-- push things in the after_scripts section --}}
 
     @push('crud_fields_scripts')
-        <!-- no scripts -->
+        {{-- no scripts --}}
         <script>
 	        $(".file-clear-button").click(function(e) {
 	        	e.preventDefault();

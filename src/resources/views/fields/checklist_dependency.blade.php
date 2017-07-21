@@ -1,4 +1,4 @@
-<!-- dependencyJson -->
+{{-- dependencyJson --}}
 <div class="form-group col-md-12 checklist_dependency"  data-entity ="{{ $field['field_unique_name'] }}" @include('crud::inc.field_wrapper_attributes')>
     <label>{!! $field['label'] !!}</label>
     @include('crud::inc.field_translatable_icon')
@@ -176,7 +176,7 @@
 
     {{-- FIELD JS - will be loaded in the after_scripts section --}}
     @push('crud_fields_scripts')
-    <!-- include checklist_dependency js-->
+    {{-- include checklist_dependency js--}}
     <script>
       jQuery(document).ready(function($) {
 

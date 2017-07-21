@@ -16,7 +16,7 @@
     <link rel="stylesheet" href="{{ asset('vendor/backpack/crud/css/form.css') }}">
     <link rel="stylesheet" href="{{ asset('vendor/backpack/crud/css/'.$action.'.css') }}">
 
-    <!-- CRUD FORM CONTENT - crud_fields_styles stack -->
+    {{-- CRUD FORM CONTENT - crud_fields_styles stack --}}
     @stack('crud_fields_styles')
 @endsection
 
@@ -25,7 +25,7 @@
     <script src="{{ asset('vendor/backpack/crud/js/form.js') }}"></script>
     <script src="{{ asset('vendor/backpack/crud/js/'.$action.'.js') }}"></script>
 
-    <!-- CRUD FORM CONTENT - crud_fields_scripts stack -->
+    {{-- CRUD FORM CONTENT - crud_fields_scripts stack --}}
     @stack('crud_fields_scripts')
 
     <script>

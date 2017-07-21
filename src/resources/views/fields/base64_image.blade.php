@@ -3,7 +3,7 @@
         <label>{!! $field['label'] !!}</label>
         @include('crud::inc.field_translatable_icon')
     </div>
-    <!-- Wrap the image or canvas element with a block element (container) -->
+    {{-- Wrap the image or canvas element with a block element (container) --}}
     <div class="row">
         <div class="col-sm-6" style="margin-bottom: 20px;">
             <img id="mainImage" src="{{ isset($field['src']) ? $entry->find($entry->id)->{$field['src']}() : (isset($field['value']) ? $field['value'] : (isset($field['default']) ? $field['default'] : '' )) }}">

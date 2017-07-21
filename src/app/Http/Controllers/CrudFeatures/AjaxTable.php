@@ -21,6 +21,7 @@ trait AjaxTable
                     ->pluck('name')
                     // add the primary key, otherwise the buttons won't work
                     ->merge($this->crud->model->getKeyName())
+                    ->merge($this->crud->getAjaxExtraFields())
                     ->toArray();
 
         // structure the response in a DataTable-friendly way

@@ -1,4 +1,4 @@
-<!-- bootstrap daterange picker input -->
+{{-- bootstrap daterange picker input --}}
 
 <?php
     // if the column has been cast to Carbon or Date (using attribute casting)

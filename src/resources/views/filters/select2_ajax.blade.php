@@ -18,7 +18,7 @@
 {{-- push things in the after_styles section --}}
 
 @push('crud_list_styles')
-    <!-- include select2 css-->
+    {{-- include select2 css--}}
     <link href="{{ asset('vendor/backpack/select2/select2.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('vendor/backpack/select2/select2-bootstrap-dick.css') }}" rel="stylesheet" type="text/css" />
     <style>
@@ -46,7 +46,7 @@
 {{-- push things in the after_scripts section --}}
 
 @push('crud_list_scripts')
-	<!-- include select2 js-->
+	{{-- include select2 js--}}
     <script src="{{ asset('vendor/backpack/select2/select2.js') }}"></script>
     <script>
         jQuery(document).ready(function($) {

@@ -1,4 +1,4 @@
-<!-- number input -->
+{{-- number input --}}
 <div @include('crud::inc.field_wrapper_attributes') >
     <label for="{{ $field['name'] }}">{!! $field['label'] !!}</label>
     @include('crud::inc.field_translatable_icon')

@@ -18,7 +18,7 @@
 		<a href="{{ url($crud->route) }}"><i class="fa fa-angle-double-left"></i> {{ trans('backpack::crud.back_to_all') }} <span>{{ $crud->entity_name_plural }}</span></a><br><br>
 	@endif
 
-	<!-- Default box -->
+	{{-- Default box --}}
 	  <div class="box">
 	    <div class="box-header with-border">
 	      <h3 class="box-title">
@@ -28,8 +28,8 @@
 	    </div>
 	    <div class="box-body">
 	      {{ dump($entry) }}
-	    </div><!-- /.box-body -->
-	  </div><!-- /.box -->
+	    </div>{{-- /.box-body --}}
+	  </div>{{-- /.box --}}
 
 @endsection
 

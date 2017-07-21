@@ -1,4 +1,4 @@
-<!-- hidden input -->
+{{-- hidden input --}}
 <div @include('crud::inc.field_wrapper_attributes') >
   <input
   	type="hidden"

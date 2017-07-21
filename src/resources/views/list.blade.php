@@ -15,10 +15,10 @@
 @endsection
 
 @section('content')
-<!-- Default box -->
+{{-- Default box --}}
   <div class="row">
 
-    <!-- THE ACTUAL CONTENT -->
+    {{-- THE ACTUAL CONTENT --}}
     <div class="col-md-12">
       <div class="box">
         <div class="box-header {{ $crud->hasAccess('create')?'with-border':'' }}">
@@ -94,7 +94,7 @@
             <tfoot>
               <tr>
                 @if ($crud->details_row)
-                  <th></th> <!-- expand/minimize button column -->
+                  <th></th> {{-- expand/minimize button column --}}
                 @endif
 
                 {{-- Table columns --}}
@@ -109,11 +109,11 @@
             </tfoot>
           </table>
 
-        </div><!-- /.box-body -->
+        </div>{{-- /.box-body --}}
 
         @include('crud::inc.button_stack', ['stack' => 'bottom'])
 
-      </div><!-- /.box -->
+      </div>{{-- /.box --}}
     </div>
 
   </div>
@@ -121,18 +121,18 @@
 @endsection
 
 @section('after_styles')
-  <!-- DATA TABLES -->
+  {{-- DATA TABLES --}}
   <link href="{{ asset('vendor/adminlte/plugins/datatables/dataTables.bootstrap.css') }}" rel="stylesheet" type="text/css" />
   <link rel="stylesheet" href="{{ asset('vendor/backpack/crud/css/crud.css') }}">
   <link rel="stylesheet" href="{{ asset('vendor/backpack/crud/css/form.css') }}">
   <link rel="stylesheet" href="{{ asset('vendor/backpack/crud/css/list.css') }}">
 
-  <!-- CRUD LIST CONTENT - crud_list_styles stack -->
+  {{-- CRUD LIST CONTENT - crud_list_styles stack --}}
   @stack('crud_list_styles')
 @endsection
 
 @section('after_scripts')
-  	<!-- DATA TABLES SCRIPT -->
+  	{{-- DATA TABLES SCRIPT --}}
     <script src="{{ asset('vendor/adminlte/plugins/datatables/jquery.dataTables.js') }}" type="text/javascript"></script>
 
     <script src="{{ asset('vendor/backpack/crud/js/crud.js') }}"></script>
@@ -365,6 +365,6 @@
 	  });
 	</script>
 
-  <!-- CRUD LIST CONTENT - crud_list_scripts stack -->
+  {{-- CRUD LIST CONTENT - crud_list_scripts stack --}}
   @stack('crud_list_scripts')
 @endsection

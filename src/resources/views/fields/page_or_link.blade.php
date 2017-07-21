@@ -1,5 +1,5 @@
-<!-- PAGE OR LINK field -->
-<!-- Used in Backpack\MenuCRUD -->
+{{-- PAGE OR LINK field --}}
+{{-- Used in Backpack\MenuCRUD --}}
 
 <?php
     $field['options'] = ['page_link' => trans('backpack::crud.page_link'), 'internal_link' => trans('backpack::crud.internal_link'), 'external_link' => trans('backpack::crud.external_link')];
@@ -36,7 +36,7 @@
         </select>
     </div>
     <div class="col-sm-9">
-        <!-- external link input -->
+        {{-- external link input --}}
           <div class="page_or_link_value <?php if (!isset($entry) || $entry->type != 'external_link') {
                 echo 'hidden';
 } ?>" id="page_or_link_external_link">
@@ -55,7 +55,7 @@
                 @endif
                 >
           </div>
-          <!-- internal link input -->
+          {{-- internal link input --}}
           <div class="page_or_link_value <?php if (!isset($entry) || $entry->type != 'internal_link') {
                 echo 'hidden';
 } ?>" id="page_or_link_internal_link">
@@ -74,7 +74,7 @@
                 @endif
                 >
           </div>
-          <!-- page slug input -->
+          {{-- page slug input --}}
           <div class="page_or_link_value <?php if (isset($entry) && $entry->type != 'page_link') {
                 echo 'hidden';
 } ?>" id="page_or_link_page">
