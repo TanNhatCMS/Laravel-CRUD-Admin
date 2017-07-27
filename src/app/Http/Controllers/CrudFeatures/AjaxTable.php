@@ -6,8 +6,7 @@ use Backpack\CRUD\CrudPanel;
 use LiveControl\EloquentDataTable\DataTable;
 
 /**
- * Trait AjaxTable
- * @package Backpack\CRUD\app\Http\Controllers\CrudFeatures
+ * Trait AjaxTable.
  *
  * @property CrudPanel $crud
  */
