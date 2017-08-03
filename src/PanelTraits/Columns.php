@@ -8,6 +8,8 @@ trait Columns
     // COLUMNS
     // ------------
 
+    public static $ANONYMOUS_COLUMN_PREFIX = 'anonymous_column_';
+
     /**
      * Add a bunch of column names and their details to the CRUD object.
      *
@@ -62,8 +64,8 @@ trait Columns
         $column_with_details = $this->addDefaultLabel($column);
 
         // make sure the column has a name
-        if (!array_key_exists('name', $column_with_details)) {
-            $column_with_details['name'] = 'anonymous_column_'.str_random(5);
+        if (! array_key_exists('name', $column_with_details)) {
+            $column_with_details['name'] = self::$ANONYMOUS_COLUMN_PREFIX.str_random(5);
         }
 
         array_filter($this->columns[$column_with_details['name']] = $column_with_details);
