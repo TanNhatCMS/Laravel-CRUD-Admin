@@ -22,12 +22,13 @@ trait Create
         $data = $this->decodeJsonCastedAttributes($data, 'create');
         $data = $this->compactFakeFields($data, 'create');
 
-        // ommit the n-n relationships when updating the eloquent item
+        // omit the n-n relationships when updating the eloquent item
         $nn_relationships = array_pluck($this->getRelationFieldsWithPivot('create'), 'name');
         $item = $this->model->create(array_except($data, $nn_relationships));
 
         // if there are any relationships available, also sync those
         $this->syncPivot($item, $data);
+        $this->createOneToOneRelations($item, $data);
 
         return $item;
     }
@@ -118,6 +119,20 @@ trait Create
                     $model->{$field['name']}()->create($values);
                 }
             }
+        }
+    }
+
+    private function createOneToOneRelations($item, $data, $form = 'create')
+    {
+        $fieldWithOneToOneRelations = collect($this->getRelationFields($form))->groupBy('model')->filter(function ($value, $key) {
+            return (!isset($value['pivot']) || (0 === strpos($value['type'], 'select')));
+        })->all();
+
+        foreach ($fieldWithOneToOneRelations as $relationModelName => $relationFields) {
+            $relationModel = new $relationModelName();
+            $attrKeys = collect($relationFields)->pluck('name')->all();
+            $modelInstance = $relationModel->create(array_only($data, $attrKeys));
+            $item->{collect($relationFields)->pluck('entity')->first()}()->save($modelInstance);
         }
     }
 }
