@@ -125,7 +125,7 @@ trait Create
     private function createOneToOneRelations($item, $data, $form = 'create')
     {
         $fieldWithOneToOneRelations = collect($this->getRelationFields($form))->groupBy('model')->filter(function ($value, $key) {
-            return (!isset($value['pivot']) || (0 === strpos($value['type'], 'select')));
+            return ! isset($value['pivot']) || (0 === strpos($value['type'], 'select'));
         })->all();
 
         foreach ($fieldWithOneToOneRelations as $relationModelName => $relationFields) {
