@@ -2,8 +2,8 @@
 
 namespace Backpack\CRUD\PanelTraits;
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 trait Create
 {
@@ -102,7 +102,8 @@ trait Create
      * @param array $data form data
      * @param string $form form type
      */
-    public function createRelations($item, $data, $form = 'create') {
+    public function createRelations($item, $data, $form = 'create')
+    {
         $this->syncPivot($item, $data, $form);
         $this->createOneToOneRelations($item, $data, $form);
     }
@@ -154,8 +155,8 @@ trait Create
                 if ($modelInstance != null) {
                     $relation->associate($modelInstance)->save();
                 }
-            } else if ($relation instanceof HasOne) {
-                if($parent->{$relationMethod} != null) {
+            } elseif ($relation instanceof HasOne) {
+                if ($parent->{$relationMethod} != null) {
                     $parent->{$relationMethod}->update($relationData['values']);
                     $modelInstance = $parent->{$relationMethod};
                 } else {
@@ -179,16 +180,17 @@ trait Create
     {
         $fieldWithOneToOneRelations = collect($this->getRelationFields($form))
             ->sortBy(function ($value) {
-                return substr_count($value['entity'], ".");
+                return substr_count($value['entity'], '.');
             })
             ->groupBy('entity')
             ->filter(function ($value) {
-                return (!isset($value['pivot']) || (0 === strpos($value['type'], 'select')));
+                return ! isset($value['pivot']) || (0 === strpos($value['type'], 'select'));
             })
-            ->map(function ($value) use ($data){
+            ->map(function ($value) use ($data) {
                 $relationArray['model'] = $value->pluck('model')->first();
                 $relationArray['parent'] = $this->getRelationModel($relationArray['model'], -1);
                 $relationArray['values'] = array_only($data, $value->pluck('name')->toArray());
+
                 return $relationArray;
             })
             ->filter(function ($value) {
@@ -196,23 +198,24 @@ trait Create
             })
             ->all();
 
-        $formattedData['relations'] = array();
+        $formattedData['relations'] = [];
         foreach ($fieldWithOneToOneRelations as $itemKey => $itemValue) {
             $itemKeys = collect(explode('.', $itemKey));
             $lastItemKey = $itemKeys->pop();
-            $path = "relations." . ($itemKeys->count() ? implode('.', $itemKeys->toArray()) . ".relations." . $lastItemKey : $itemKey);
+            $path = 'relations.'.($itemKeys->count() ? implode('.', $itemKeys->toArray()).'.relations.'.$lastItemKey : $itemKey);
             $this->setValue($formattedData, $path, $itemValue);
         }
 
         return $formattedData;
     }
 
-    function setValue(&$arr, $path, $value)
+    public function setValue(&$arr, $path, $value)
     {
         $location = &$arr;
         foreach (explode('.', $path) as $step) {
             $location = &$location[$step];
         }
+
         return $location = $value;
     }
 }
