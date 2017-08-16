@@ -101,7 +101,8 @@ trait Create
      * @param array $data form data
      * @param string $form form type
      */
-    public function createRelations($item, $data, $form = 'create') {
+    public function createRelations($item, $data, $form = 'create')
+    {
         $this->syncPivot($item, $data, $form);
         $this->createOneToOneRelations($item, $data, $form);
     }
@@ -170,16 +171,17 @@ trait Create
     {
         $fieldWithOneToOneRelations = collect($this->getRelationFields($form))
             ->sortBy(function ($value) {
-                return substr_count($value['entity'], ".");
+                return substr_count($value['entity'], '.');
             })
             ->groupBy('entity')
             ->filter(function ($value) {
-                return (!isset($value['pivot']) || (0 === strpos($value['type'], 'select'))); // TODO: also filter out null form data values
+                return ! isset($value['pivot']) || (0 === strpos($value['type'], 'select')); // TODO: also filter out null form data values
             })
-            ->map(function ($value) use ($data){
+            ->map(function ($value) use ($data) {
                 $relationArray['model'] = $value->pluck('model')->first();
                 $relationArray['parent'] = $this->getRelationModel($relationArray['model'], -1);
                 $relationArray['values'] = array_only($data, $value->pluck('name')->toArray());
+
                 return $relationArray;
             })
             ->filter(function ($value) {
@@ -187,23 +189,24 @@ trait Create
             })
             ->all();
 
-        $formattedData['relations'] = array();
+        $formattedData['relations'] = [];
         foreach ($fieldWithOneToOneRelations as $itemKey => $itemValue) {
             $itemKeys = collect(explode('.', $itemKey));
             $lastItemKey = $itemKeys->pop();
-            $path = "relations." . ($itemKeys->count() ? implode('.', $itemKeys->toArray()) . ".relations." . $lastItemKey : $itemKey);
+            $path = 'relations.'.($itemKeys->count() ? implode('.', $itemKeys->toArray()).'.relations.'.$lastItemKey : $itemKey);
             $this->setValue($formattedData, $path, $itemValue);
         }
 
         return $formattedData;
     }
 
-    function setValue(&$arr, $path, $value)
+    public function setValue(&$arr, $path, $value)
     {
         $location = &$arr;
         foreach (explode('.', $path) as $step) {
             $location = &$location[$step];
         }
+
         return $location = $value;
     }
 }
