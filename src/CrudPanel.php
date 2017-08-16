@@ -241,26 +241,27 @@ class CrudPanel
      * @param int $length Optionally specify a sub
      * @param mixed $model Optionally specify a different model than the one in the crud object
      *
-     * @return String relation model name
+     * @return string relation model name
      */
     public function getRelationModel($relationString, $length = null, $model = null)
     {
-        $relationArray = explode(".", $relationString);
-        if($length == null) {
+        $relationArray = explode('.', $relationString);
+        if ($length == null) {
             $length = count($relationArray);
         }
-        if($model == null) {
+        if ($model == null) {
             $model = $this->model;
         }
-        $result = array_reduce(array_splice($relationArray,0, $length), function ($obj, $method) {
+        $result = array_reduce(array_splice($relationArray, 0, $length), function ($obj, $method) {
             return $obj->$method()->getRelated();
         }, $model);
 
         return get_class($result);
     }
 
-    public function getNestedRelationsAttributes($model, $relationString, $attribute) {
-        $resultsArray = array();
+    public function getNestedRelationsAttributes($model, $relationString, $attribute)
+    {
+        $resultsArray = [];
 
         // TODO: refactor recursive method so there would be no need for this one
         $this->addRelationAttributes($model, $relationString, $attribute, $resultsArray);
@@ -268,19 +269,20 @@ class CrudPanel
         return $resultsArray;
     }
 
-    private function addRelationAttributes($model, $relationString, $attribute, &$resultedValues = array()) {
-        $relationArray = explode(".", $relationString);
+    private function addRelationAttributes($model, $relationString, $attribute, &$resultedValues = [])
+    {
+        $relationArray = explode('.', $relationString);
         if (count($relationArray) == 1 || get_class($model) == $this->getRelationModel($relationString, -1, $model)) {
             $resultedValues[] = $model->{$relationString}->{$attribute};
         } else {
             foreach ($relationArray as $relation) {
                 $results = $model->{$relation};
-                if($results != null) {
+                if ($results != null) {
                     if (count($results) == 1) {
-                        $this->addRelationAttributes($results, implode(".", array_diff($relationArray, array($relation))), $attribute, $resultedValues);
+                        $this->addRelationAttributes($results, implode('.', array_diff($relationArray, [$relation])), $attribute, $resultedValues);
                     } else {
                         foreach ($results as $result) {
-                            $this->addRelationAttributes($result, implode(".", array_diff($relationArray, array($relation))), $attribute, $resultedValues);
+                            $this->addRelationAttributes($result, implode('.', array_diff($relationArray, [$relation])), $attribute, $resultedValues);
                         }
                     }
                 }
