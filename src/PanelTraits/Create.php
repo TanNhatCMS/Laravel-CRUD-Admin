@@ -100,7 +100,8 @@ trait Create
      * @param mixed $item current model
      * @param array $data form data
      */
-    public function createRelations($item, $data) {
+    public function createRelations($item, $data)
+    {
         $this->syncPivot($item, $data);
         $this->createOneToOneRelations($item, $data);
     }
@@ -138,22 +139,23 @@ trait Create
     {
         $fieldWithOneToOneRelations = collect($this->getRelationFields($form))
             ->sortBy(function ($value) {
-                return substr_count($value['entity'], ".");
+                return substr_count($value['entity'], '.');
             })
             ->groupBy('entity')
             ->filter(function ($value) {
-                return (!isset($value['pivot']) || (0 === strpos($value['type'], 'select')));
+                return ! isset($value['pivot']) || (0 === strpos($value['type'], 'select'));
             })
             ->map(function ($value) {
                 $relationArray['model'] = $value->pluck('model')->first();
                 $relationArray['attributes'] = $value->pluck('name');
+
                 return $relationArray;
             })
             ->all();
 
         $currentItem = $item;
         foreach ($fieldWithOneToOneRelations as $relationString => $relation) {
-            $modelRelations = explode(".", $relationString);
+            $modelRelations = explode('.', $relationString);
             $currentRelation = $currentItem->{end($modelRelations)}();
 
             if ($currentRelation instanceof BelongsTo) {
