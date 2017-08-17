@@ -21,7 +21,7 @@ trait AjaxTable
                     ->pluck('name')
                     // add the primary key, otherwise the buttons won't work
                     ->merge($this->crud->model->getKeyName())
-                    // make $fillable attributes availables  in views
+                    // make $fillable attributes available in views
                     ->merge($this->crud->model->getFillable())
                     ->toArray();
 
