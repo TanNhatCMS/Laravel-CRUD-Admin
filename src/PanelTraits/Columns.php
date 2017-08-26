@@ -104,7 +104,7 @@ trait Columns
         $moving_col = array_pop($this->columns);
         $array = array_slice($this->columns, 0, $offset, true) +
             [$moving_col['name'] => $moving_col] +
-            array_slice($this->columns, $offset, NULL, true);
+            array_slice($this->columns, $offset, null, true);
 
         $this->columns = $array;
     }
@@ -122,7 +122,7 @@ trait Columns
         $moving_col = array_pop($this->columns);
         $array = array_slice($this->columns, 0, $offset, true) +
                  [$moving_col['name'] => $moving_col] +
-                 array_slice($this->columns, $offset, NULL, true);
+                 array_slice($this->columns, $offset, null, true);
 
         $this->columns = $array;
     }
