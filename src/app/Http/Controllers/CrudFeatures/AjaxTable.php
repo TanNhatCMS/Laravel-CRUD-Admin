@@ -21,10 +21,10 @@ trait AjaxTable
         $this->crud->hasAccessOrFail('list');
 
         // create an array with the names of the searchable columns
-        $columns = $this->tAjaxTableGetColumns();
+        $columns = $this->ajaxTableGetColumns();
 
         // structure the response in a DataTable-friendly way
-        $dataTable = $this->tAjaxTableGetDataTable($columns);
+        $dataTable = $this->ajaxTableGetDataTable($columns);
 
         return $dataTable->make();
     }
@@ -32,11 +32,11 @@ trait AjaxTable
     /**
      * @return array
      */
-    protected function tAjaxTableGetColumns()
+    protected function ajaxTableGetColumns()
     {
         return collect($this->crud->columns)
             ->reject(function ($column) {
-                return $this->tAjaxTableIsColumnSearchable($column);
+                return $this->ajaxTableIsColumnSearchable($column);
             })
             ->pluck('name')
             // add the primary key, otherwise the buttons won't work
@@ -48,7 +48,7 @@ trait AjaxTable
      * @param array $column
      * @return bool
      */
-    protected function tAjaxTableIsColumnSearchable($column)
+    protected function ajaxTableIsColumnSearchable($column)
     {
         // the select_multiple, model_function and model_function_attribute columns are not searchable
         return isset($column['type'])
@@ -61,7 +61,7 @@ trait AjaxTable
      * @param array $columns
      * @return DataTable
      */
-    protected function tAjaxTableGetDataTable($columns)
+    protected function ajaxTableGetDataTable($columns)
     {
         $dataTable = new DataTable($this->crud->query, $columns);
 
