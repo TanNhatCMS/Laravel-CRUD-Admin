@@ -52,11 +52,14 @@ trait FakeFields
 
         // json_encode all fake_value columns in the database, so they can be properly stored and interpreted
         if (count($fake_field_columns_to_encode)) {
+            $casted_fields = $this->getModelCasts();
+
             foreach ($fake_field_columns_to_encode as $key => $value) {
                 if (property_exists($this->model, 'translatable') && in_array($value, $this->model->getTranslatableAttributes(), true)) {
                     // don't json_encode spatie/translatable fake columns
                     $request[$value] = $request[$value];
-                } else {
+                } elseif (! array_key_exists($value, $casted_fields) || ! in_array($casted_fields[$value], ['array', 'object'])) {
+                    // the fake field will not be automatically casted by the model
                     $request[$value] = json_encode($request[$value]);
                 }
             }
@@ -65,5 +68,17 @@ trait FakeFields
         // if there are no fake fields defined, this will just return the original Request in full
         // since no modifications or additions have been made to $request
         return $request;
+    }
+
+    /**
+     * @return array
+     */
+    protected function getModelCasts()
+    {
+        $modelReflection = new \ReflectionClass($this->model);
+        $castsAttribute = $modelReflection->getProperty('casts');
+        $castsAttribute->setAccessible(true);
+
+        return $castsAttribute->getValue($this->model);
     }
 }
