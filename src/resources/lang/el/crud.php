@@ -35,6 +35,14 @@ return [
     'edit'                                    => 'Τροποποίηση',
     'save'                                    => 'Αποθήκευση',
 
+    // Filters
+    'filters'                                 => 'Filters', // TODO: translate
+    'remove_filters'                          => 'Remove filters', // TODO: translate
+    'toggle_filters'                          => 'Toggle filters', // TODO: translate
+
+    // Form save buttons
+    'toggle_save_dropdown'                    => 'Toggle Save Dropdown', // TODO: translate
+
     // Revisions
     'revisions'                               => 'Αναθεωρήσεις',
     'no_revisions'                            => 'Δεν βρέθηκαν αναθεωρήσεις',

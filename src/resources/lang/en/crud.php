@@ -29,6 +29,14 @@ return [
     'edit'                 => 'Edit',
     'save'                 => 'Save',
 
+    // Filters
+    'filters'              => 'Filters',
+    'remove_filters'       => 'Remove filters',
+    'toggle_filters'       => 'Toggle filters',
+
+    // Form save buttons
+    'toggle_save_dropdown' => 'Toggle Save Dropdown',
+
     // Revisions
     'revisions'            => 'Revisions',
     'no_revisions'         => 'No revisions found',

@@ -35,6 +35,14 @@ return [
     'edit'                 => 'Поправи',
     'save'                 => 'Запиши',
 
+    // Filters
+    'filters'              => 'Филтри',
+    'remove_filters'       => 'Remove filters', // TODO: translate
+    'toggle_filters'       => 'Toggle filters', // TODO: translate
+
+    // Form save buttons
+    'toggle_save_dropdown' => 'Toggle Save Dropdown', // TODO: translate
+
     // Revisions
     'revisions'            => 'Версии',
     'no_revisions'         => 'Не бяха открити версии',

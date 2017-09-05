@@ -29,6 +29,14 @@ return [
     'edit'                 => '編輯',
     'save'                 => '儲存',
 
+    // Filters
+    'filters'              => 'Filters', // TODO: translate
+    'remove_filters'       => 'Remove filters', // TODO: translate
+    'toggle_filters'       => 'Toggle filters', // TODO: translate
+
+    // Form save buttons
+    'toggle_save_dropdown' => 'Toggle Save Dropdown', // TODO: translate
+
     // Revisions
     'revisions'            => '修訂版本',
     'no_revisions'         => '找不到修訂版本',

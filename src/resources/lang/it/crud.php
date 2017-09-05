@@ -29,6 +29,14 @@ return [
     'edit'                 => 'Modifica',
     'save'                 => 'Salva',
 
+    // Filters
+    'filters'              => 'Filtri',
+    'remove_filters'       => 'Elimina filtri',
+    'toggle_filters'       => 'Toggle filters', // TODO: translate
+
+    // Form save buttons
+    'toggle_save_dropdown' => 'Toggle Save Dropdown', // TODO: translate
+
     // Revisions
     'revisions'            => 'Revisioni',
     'no_revisions'         => 'Nessuna revisione Trovato',
