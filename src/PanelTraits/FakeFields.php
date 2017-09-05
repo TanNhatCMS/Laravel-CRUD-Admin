@@ -26,26 +26,14 @@ trait FakeFields
             // if it's a fake field and the field is included in the request
             if (isset($fields[$k]['fake']) && $fields[$k]['fake'] == true && array_key_exists($fields[$k]['name'], $request)) {
                 // add it to the request in its appropriate variable - the one defined, if defined
-                if (isset($fields[$k]['store_in'])) {
-                    $request[$fields[$k]['store_in']][$fields[$k]['name']] = $request[$fields[$k]['name']];
+                $fake_store = isset($fields[$k]['store_in']) ? $fields[$k]['store_in'] : 'extras';
+                $request[$fake_store][$fields[$k]['name']] = $request[$fields[$k]['name']];
 
-                    // remove the fake field
-                    array_pull($request, $fields[$k]['name']);
+                // remove the fake field
+                array_pull($request, $fields[$k]['name']);
 
-                    if (! in_array($fields[$k]['store_in'], $fake_field_columns_to_encode, true)) {
-                        array_push($fake_field_columns_to_encode, $fields[$k]['store_in']);
-                    }
-                } else {
-                    //otherwise in the one defined in the $crud variable
-
-                    $request['extras'][$fields[$k]['name']] = $request[$fields[$k]['name']];
-
-                    // remove the fake field
-                    array_pull($request, $fields[$k]['name']);
-
-                    if (! in_array('extras', $fake_field_columns_to_encode, true)) {
-                        array_push($fake_field_columns_to_encode, 'extras');
-                    }
+                if (! in_array($fake_store, $fake_field_columns_to_encode, true)) {
+                    array_push($fake_field_columns_to_encode, $fake_store);
                 }
             }
         }
