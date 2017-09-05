@@ -42,9 +42,11 @@
                   <th data-orderable="false"></th> <!-- expand/minimize button column -->
                 @endif
 
-                {{-- Table columns --}}
+                {{-- Table columns (headers) --}}
                 @foreach ($crud->columns as $column)
-                  <th>{{ $column['label'] }}</th>
+                        <th class="{{ isset($column['class']) ? $column['class'] : ''}}">
+                            {{ $column['label'] }}
+                        </th>
                 @endforeach
 
                 @if ( $crud->buttons->where('stack', 'line')->count() )
@@ -97,7 +99,7 @@
                   <th></th> <!-- expand/minimize button column -->
                 @endif
 
-                {{-- Table columns --}}
+                {{-- Table columns (footers) --}}
                 @foreach ($crud->columns as $column)
                   <th>{{ $column['label'] }}</th>
                 @endforeach
@@ -157,27 +159,48 @@
 	  jQuery(document).ready(function($) {
 
       @if ($crud->exportButtons())
-      var dtButtons = function(buttons){
-          var extended = [];
-          for(var i = 0; i < buttons.length; i++){
-          var item = {
-              extend: buttons[i],
-              exportOptions: {
-              columns: [':visible']
-              }
-          };
-          switch(buttons[i]){
-              case 'pdfHtml5':
-              item.orientation = 'landscape';
-              break;
-          }
-          extended.push(item);
-          }
-          return extended;
-      }
+          var dtButtons = function (buttons) {
+                  var extended = [];
+                  for (var i = 0; i < buttons.length; i++) {
+                      var item = {
+                          extend: buttons[i],
+                          footer: true,
+                          exportOptions: {
+                              columns: [':visible']
+                          }
+                      };
+                      switch (buttons[i]) {
+                          case 'pdfHtml5':
+                              item.orientation = 'landscape';
+                              break;
+                      }
+                      extended.push(item);
+                  }
+                  return extended;
+              };
       @endif
 
 	  	var table = $("#crudTable").DataTable({
+        "drawCallback": function (row, data, start, end, display) {
+            this.api().columns('.has-sum').every(function () {
+                var column = this;
+
+                // extracts first integer/float from string (including decimals)
+                var intVal = function (i) {
+                    return typeof i === 'string' ? parseFloat(i.match(/[-]{0,1}[\d.]*[\d]+/g)[0], 10) :
+                    typeof i === 'number' ? i : 0;
+                };
+
+                var sum = column
+                    .data()
+                    .reduce(function (a, b) {
+                        return intVal(a) + intVal(b);
+                    }, 0);
+
+                // TODO: add option for custom prefix/suffix instead of adding to default header label
+                $(column.footer()).html($(column.header()).text() + ' (' + sum.toFixed(2) + ')');
+            });
+        },
         "pageLength": {{ $crud->getDefaultPageLength() }},
         /* Disable initial sort */
         "aaSorting": [],
