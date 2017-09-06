@@ -5,7 +5,7 @@ namespace Backpack\CRUD\app\Http\Controllers\CrudFeatures;
 trait Reorder
 {
     /**
-     * Filters entries collection before rendering the reorder view
+     * Filters entries collection before rendering the reorder view.
      */
     protected $reorder_filter_callback = null;
 
@@ -57,7 +57,7 @@ trait Reorder
     }
 
     /**
-     * Set a callable for filtering the items to reorder
+     * Set a callable for filtering the items to reorder.
      *
      * @param callable $callable
      * @internal param callable $reorder_filter_callback
