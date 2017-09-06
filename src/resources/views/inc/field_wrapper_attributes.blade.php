@@ -6,8 +6,16 @@
     @endforeach
 
     @if (!isset($field['wrapperAttributes']['class']))
-		class="form-group col-md-12"
+      @if (isset($default_class))
+        class="{{ $default_class }}"
+      @else
+        class="form-group col-md-12"
+      @endif
     @endif
 @else
-	class="form-group col-md-12"
+  @if (isset($default_class))
+    class="{{ $default_class }}"
+  @else
+    class="form-group col-md-12"
+  @endif
 @endif
