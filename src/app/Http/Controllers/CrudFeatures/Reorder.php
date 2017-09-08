@@ -27,7 +27,7 @@ trait Reorder
         // get all results for that entity
         $this->data['entries'] = $this->crud->getEntries();
 
-        if(is_callable($this->reorder_filter_callback)) {
+        if (is_callable($this->reorder_filter_callback)) {
             $this->data['entries'] = $this->data['entries']->filter($this->reorder_filter_callback);
         }
 
