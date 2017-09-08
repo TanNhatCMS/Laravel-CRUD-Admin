@@ -26,7 +26,11 @@ trait Reorder
 
         // get all results for that entity
         $this->data['entries'] = $this->crud->getEntries();
-        $this->data['entries'] = $this->data['entries']->filter($this->reorder_filter_callback);
+
+        if(is_callable($this->reorder_filter_callback)) {
+            $this->data['entries'] = $this->data['entries']->filter($this->reorder_filter_callback);
+        }
+
         $this->data['crud'] = $this->crud;
         $this->data['title'] = trans('backpack::crud.reorder').' '.$this->crud->entity_name;
 
