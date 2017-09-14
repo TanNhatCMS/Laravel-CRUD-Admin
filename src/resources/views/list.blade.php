@@ -44,7 +44,7 @@
 
                 {{-- Table columns --}}
                 @foreach ($crud->columns as $column)
-                  <th>{{ $column['label'] }}</th>
+                  <th class="{{ isset($column['exportable']) && $column['exportable'] ? 'exportable' : '' }}{{ isset($column['type']) && $column['type'] === 'hidden' ? ' hidden' : '' }}">{{ $column['label'] }}</th>
                 @endforeach
 
                 @if ( $crud->buttons->where('stack', 'line')->count() )
@@ -99,7 +99,7 @@
 
                 {{-- Table columns --}}
                 @foreach ($crud->columns as $column)
-                  <th>{{ $column['label'] }}</th>
+                  <th class="{{ isset($column['type']) && $column['type'] === 'hidden' ? 'hidden' : '' }}">{{ $column['label'] }}</th>
                 @endforeach
 
                 @if ( $crud->buttons->where('stack', 'line')->count() )
@@ -163,7 +163,7 @@
           var item = {
               extend: buttons[i],
               exportOptions: {
-              columns: [':visible']
+              columns: ['.exportable']
               }
           };
           switch(buttons[i]){
