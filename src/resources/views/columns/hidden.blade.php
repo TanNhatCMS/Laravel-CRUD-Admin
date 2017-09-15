@@ -1,2 +1,2 @@
 {{-- regular object attribute --}}
-<td class="hidden">{{ strip_tags($entry->{$column['name']}) }}</td>
+<td style="border: none !important; width: 0 !important; max-width: 0 !important; font-size:0 !important; padding:0 !important;">{{ strip_tags($entry->{$column['name']}) }}</td>
