@@ -27,7 +27,7 @@ trait FakeFields
             if (isset($fields[$k]['fake']) && $fields[$k]['fake'] == true && array_key_exists($fields[$k]['name'], $request)) {
                 // add it to the request in its appropriate variable - the one defined, if defined
                 if (isset($fields[$k]['store_in'])) {
-                    $request[$fields[$k]['store_in']][$fields[$k]['name']] = $request[$fields[$k]['name']];
+                    $request[$fields[$k]['store_in']][$fields[$k]['name']] = $request[$fields[$k]['name']] ? $request[$fields[$k]['name']] : '';
 
                     // remove the fake field
                     array_pull($request, $fields[$k]['name']);
@@ -37,8 +37,7 @@ trait FakeFields
                     }
                 } else {
                     //otherwise in the one defined in the $crud variable
-
-                    $request['extras'][$fields[$k]['name']] = $request[$fields[$k]['name']];
+                    $request['extras'][$fields[$k]['name']] = $request[$fields[$k]['name']] ? $request[$fields[$k]['name']] : '';
 
                     // remove the fake field
                     array_pull($request, $fields[$k]['name']);
