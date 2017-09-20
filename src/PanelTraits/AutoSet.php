@@ -29,6 +29,7 @@ trait AutoSet
             ];
             $this->create_fields[$field] = $new_field;
             $this->update_fields[$field] = $new_field;
+            $this->show_fields[$field] = $new_field;
 
             if (! in_array($field, $this->model->getHidden())) {
                 $this->columns[] = [

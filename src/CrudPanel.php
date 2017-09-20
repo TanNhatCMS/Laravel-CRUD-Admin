@@ -3,6 +3,7 @@
 namespace Backpack\CRUD;
 
 use Backpack\CRUD\PanelTraits\Read;
+use Backpack\CRUD\PanelTraits\Show;
 use Backpack\CRUD\PanelTraits\Tabs;
 use Backpack\CRUD\PanelTraits\Query;
 use Backpack\CRUD\PanelTraits\Views;
@@ -24,7 +25,7 @@ use Backpack\CRUD\PanelTraits\ViewsAndRestoresRevisions;
 
 class CrudPanel
 {
-    use Create, Read, Update, Delete, Errors, Reorder, Access, Columns, Fields, Query, Buttons, AutoSet, FakeFields, FakeColumns, ViewsAndRestoresRevisions, AutoFocus, Filters, Tabs, Views;
+    use Create, Read, Update, Delete, Errors, Reorder, Access, Columns, Fields, Query, Buttons, AutoSet, FakeFields, FakeColumns, ViewsAndRestoresRevisions, AutoFocus, Filters, Tabs, Views, Show;
 
     // --------------
     // CRUD variables
@@ -41,7 +42,7 @@ class CrudPanel
     public $entity_name_plural = 'entries'; // what name will show up on the buttons, in plural (ex: Delete 5 entities)
     public $request;
 
-    public $access = ['list', 'create', 'update', 'delete'/* 'revisions', reorder', 'show', 'details_row' */];
+    public $access = ['show', 'list', 'create', 'update', 'delete'/* 'revisions', reorder', 'details_row' */];
 
     public $reorder = false;
     public $reorder_label = false;
@@ -54,6 +55,7 @@ class CrudPanel
     public $columns = []; // Define the columns for the table view as an array;
     public $create_fields = []; // Define the fields for the "Add new entry" view as an array;
     public $update_fields = []; // Define the fields for the "Edit entry" view as an array;
+    public $show_fields = []; // Define the fields for the "Show entry" view as an array;
 
     public $query;
     public $entry;
