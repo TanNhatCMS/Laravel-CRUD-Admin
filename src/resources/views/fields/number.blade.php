@@ -10,6 +10,10 @@
         	name="{{ $field['name'] }}"
             id="{{ $field['name'] }}"
             value="{{ old($field['name']) ? old($field['name']) : (isset($field['value']) ? $field['value'] : (isset($field['default']) ? $field['default'] : '' )) }}"
+            @if(isset($field['min'])) min="{{ $field['min'] }}" @endif
+            @if(isset($field['max'])) max="{{ $field['max'] }}" @endif
+            @if(isset($field['maxlength'])) maxlength="{{ $field['maxlength'] }}" 
+            onKeyPress="if(this.value.length === {{$field['maxlength']}}) return false;" @endif
             @include('crud::inc.field_attributes')
         	>
         @if(isset($field['suffix'])) <div class="input-group-addon">{!! $field['suffix'] !!}</div> @endif
