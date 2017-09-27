@@ -51,6 +51,7 @@ return [
     'list'                      => 'List',
     'actions'                   => 'Actions',
     'preview'                   => 'Preview',
+    'show'                      => 'Show',
     'delete'                    => 'Delete',
     'admin'                     => 'Admin',
     'details_row'               => 'This is the details row. Modify as you please.',

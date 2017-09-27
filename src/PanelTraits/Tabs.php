@@ -110,6 +110,28 @@ trait Tabs
         return [];
     }
 
+    public function getTabShowFields($label) {
+        if ($this->tabExists($label)) {
+            $all_fields = $this->getShowFields($this->entry->getKey());
+
+            $fields_for_current_tab = collect($all_fields)->filter(function ($value, $key) use ($label) {
+                return isset($value['tab']) && $value['tab'] == $label;
+            });
+
+            if ($this->isLastTab($label)) {
+                $fields_without_a_tab = collect($all_fields)->filter(function ($value, $key) {
+                    return ! isset($value['tab']);
+                });
+
+                $fields_for_current_tab = $fields_for_current_tab->merge($fields_without_a_tab);
+            }
+
+            return $fields_for_current_tab;
+        }
+
+        return [];
+    }
+
     public function getTabs()
     {
         $tabs = [];

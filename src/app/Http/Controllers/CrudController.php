@@ -201,8 +201,8 @@ class CrudController extends BaseController
         // get the info for that entry
         $this->data['entry'] = $this->crud->getEntry($id);
         $this->data['crud'] = $this->crud;
-        $this->data['title'] = trans('backpack::crud.preview').' '.$this->crud->entity_name;
-
+        $this->data['fields'] = $this->crud->getShowFields($id);
+        $this->data['title'] = trans('backpack::crud.show').' '.$this->crud->entity_name;
         // load the view from /resources/views/vendor/backpack/crud/ if it exists, otherwise load the one in the package
         return view($this->crud->getShowView(), $this->data);
     }
