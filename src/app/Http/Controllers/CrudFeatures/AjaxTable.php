@@ -12,6 +12,8 @@ trait AjaxTable
     {
         $this->crud->hasAccessOrFail('list');
 
+        $this->crud->removeColumns($this->crud->model->crudListHidden);
+
         // create an array with the names of the searchable columns
         $columns = collect($this->crud->columns)
                     ->reject(function ($column, $key) {

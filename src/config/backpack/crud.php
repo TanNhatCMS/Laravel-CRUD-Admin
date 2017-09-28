@@ -8,6 +8,9 @@ return [
     |--------------------------------------------------------------------------
     */
 
+    // Do you want to automatically set columns and fields? Can be customized via models.
+    'setFromDB' => true,
+
     /*
     |------------
     | CREATE & UPDATE

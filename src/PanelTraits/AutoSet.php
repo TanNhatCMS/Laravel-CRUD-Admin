@@ -14,9 +14,23 @@ trait AutoSet
      */
     public function setFromDb()
     {
+        $this->setDoctrineTypesMapping();
         $this->getDbColumnTypes();
 
-        array_map(function ($field) {
+        $crudTypes = null;
+        $crudFakeFields = null;
+
+        if(!is_null($this->model->crudTypes)) {
+            $crudTypes = $this->model->crudTypes;
+        }
+
+        if(!is_null($this->model->crudFakeFields)) {
+            $crudFakeFields = $this->model->crudFakeFields;
+        }
+
+        //dd($crudTypes);
+
+        array_map(function ($field) use ($crudTypes) {
             // $this->labels[$field] = $this->makeLabel($field);
 
             $new_field = [
@@ -27,6 +41,19 @@ trait AutoSet
                 'values'     => [],
                 'attributes' => [],
             ];
+
+            if(!is_null($crudTypes) && isset($crudTypes[$field])) {
+                if(is_array($crudTypes[$field])) {
+                    foreach($crudTypes[$field] as $key => $value) {
+                        $new_field[$key] = $value;
+                    }
+                } else {
+                    $new_field['type'] = $crudTypes[$field];
+                }
+            }
+
+            if($new_field['type'] == 'check') { $new_field['type'] = 'checkbox'; }
+
             $this->create_fields[$field] = $new_field;
             $this->update_fields[$field] = $new_field;
 
@@ -36,8 +63,31 @@ trait AutoSet
                     'label' => ucfirst($field),
                     'type'  => $this->getFieldTypeFromDbColumnType($field),
                 ];
+
+                if(!is_null($crudTypes) && isset($crudTypes[$field])) {
+                    if(is_array($crudTypes[$field])) {
+                        foreach($crudTypes[$field] as $key => $value) {
+                            $this->columns[$field][$key] = $value;
+                        }
+                    } else {
+                        $this->columns[$field]['type'] = $crudTypes[$field];
+                    }
+                }
             }
+
         }, $this->getDbColumnsNames());
+
+        if(!is_null($crudFakeFields)) {
+            foreach($crudFakeFields as $key => $data) {
+                $data['name'] = $key;
+                $this->create_fields[$key] = $data;
+                $this->update_fields[$key] = $data;
+
+                $this->columns[$key] = $data;
+            }
+
+        }
+
     }
 
     /**
@@ -102,6 +152,9 @@ trait AutoSet
             break;
 
             case 'text':
+                return 'textarea';
+            break;
+
             case 'mediumtext':
             case 'longtext':
                 return 'textarea';
@@ -122,6 +175,18 @@ trait AutoSet
             default:
                 return 'text';
             break;
+        }
+    }
+
+    // Fix for DBAL not supporting enum
+    public function setDoctrineTypesMapping()
+    {
+        $types = ['enum' => 'string'];
+        $platform = \DB::getDoctrineConnection()->getDatabasePlatform();
+        foreach ($types as $type_key => $type_value) {
+            if (!$platform->hasDoctrineTypeMappingFor($type_key)) {
+                $platform->registerDoctrineTypeMapping($type_key, $type_value);
+            }
         }
     }
 
