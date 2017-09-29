@@ -15,9 +15,8 @@ trait Reorder
     {
         $this->crud->hasAccessOrFail('reorder');
 
-        if (! $this->crud->isReorderEnabled()) {
-            abort(403, 'Reorder is disabled.');
-        }
+        // check if Reorder is disabled
+        if (! $this->crud->isReorderEnabled()) abort(403, 'Reorder is disabled.');
 
         // get all results for that entity
         $this->data['entries'] = $this->crud->getEntries();

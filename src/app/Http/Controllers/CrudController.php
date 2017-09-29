@@ -232,7 +232,6 @@ class CrudController extends BaseController
     public function destroy($id)
     {
         $this->crud->hasAccessOrFail('delete');
-
         return $this->crud->delete($id);
     }
 }

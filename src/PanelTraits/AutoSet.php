@@ -83,9 +83,7 @@ trait AutoSet
 
         if ($field == 'password') {
             return 'password';
-        }
-
-        if ($field == 'email') {
+        } else if ($field == 'email') {
             return 'email';
         }
 
