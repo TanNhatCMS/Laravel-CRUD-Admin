@@ -4,8 +4,8 @@ We have been blessed with many wonderful people in our community. They help Back
 
 Contributors:
 
-[Cristian Tabacitu](https://github.com/tabacitu), Romania - [himself](http://tabacitu.ro); creator of [Backpack for Laravel](https://backpackforlaravel.com/) and [ScheduleThatEmail](https://schedulethatemail.com), CEO at [:DigitallyHappy](https://digitallyhappy.com/) and Managing Partner [UPDIVISION](http://updivision.com)
+[Cristian Tabacitu](https://github.com/tabacitu), **Romania** - [himself](http://tabacitu.ro); creator of [Backpack for Laravel](https://backpackforlaravel.com/) and [ScheduleThatEmail](https://schedulethatemail.com), CEO at [:DigitallyHappy](https://digitallyhappy.com/) and Managing Partner [UPDIVISION](http://updivision.com)
 
-[Owen Melbourne](https://github.com/owenmelbz), UK - creator of [ConsoleWatch](https://www.consolewatch.io/?utm_source=backpack_contributors_md&utm_medium=cpc), [freelancer](https://www.owenmelbourne.com/) and developer at [Selesti](https://www.selesti.com/)
+[Owen Melbourne](https://github.com/owenmelbz), **UK** - creator of [ConsoleWatch](https://www.consolewatch.io/?utm_source=backpack_contributors_md&utm_medium=cpc), [freelancer](https://www.owenmelbourne.com/) and developer at [Selesti](https://www.selesti.com/)
 
-[Guilherme Lopes](https://github.com/guiajlopes), Brazil - Drupal and PHP Developer
+[Guilherme Lopes](https://github.com/guiajlopes), **Brazil** - Drupal and PHP Developer
