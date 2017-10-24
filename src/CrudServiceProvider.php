@@ -4,6 +4,7 @@ namespace Backpack\CRUD;
 
 use Route;
 use Illuminate\Support\ServiceProvider;
+use Backpack\CRUD\Console\PermissionsCommand;
 
 class CrudServiceProvider extends ServiceProvider
 {
@@ -92,6 +93,12 @@ class CrudServiceProvider extends ServiceProvider
         // map the elfinder prefix
         if (! \Config::get('elfinder.route.prefix')) {
             \Config::set('elfinder.route.prefix', \Config::get('backpack.base.route_prefix').'/elfinder');
+        }
+
+        if ($this->app->runningInConsole()) {
+            $this->commands([
+                PermissionsCommand::class,
+            ]);
         }
     }
 
