@@ -1,6 +1,7 @@
 <?php
 
 namespace Backpack\CRUD\app\Http\Controllers\CrudFeatures;
+namespace LiveControl\EloquentDataTable\DataTable;
 
 trait AjaxTable
 {
@@ -24,7 +25,7 @@ trait AjaxTable
                     ->toArray();
 
         // structure the response in a DataTable-friendly way
-        $dataTable = new \LiveControl\EloquentDataTable\DataTable($this->crud->query, $columns);
+        $dataTable = new DataTable($this->crud->query, $columns);
 
         // make the datatable use the column types instead of just echoing the text
         $dataTable->setFormatRowFunction(function ($entry) {
