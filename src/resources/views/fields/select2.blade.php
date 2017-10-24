@@ -3,6 +3,7 @@
     <label>{!! $field['label'] !!}</label>
     @include('crud::inc.field_translatable_icon')
     <?php $entity_model = $crud->model; ?>
+    <?php $owner_key = !empty($field['entity']) && method_exists($entity_model, $field['entity']) ? call_user_func([$entity_model, $field['entity']])->getOwnerKey() : null ?>
     <select
         name="{{ $field['name'] }}"
         style="width: 100%"
@@ -15,8 +16,9 @@
 
             @if (isset($field['model']))
                 @foreach ($field['model']::all() as $connected_entity_entry)
-                    <option value="{{ $connected_entity_entry->getKey() }}"
-                        @if ( ( old($field['name']) && old($field['name']) == $connected_entity_entry->getKey() ) || (isset($field['value']) && $connected_entity_entry->getKey()==$field['value']))
+                    <?php $value = $owner_key === null ? $connected_entity_entry->getKey() : $connected_entity_entry->{$owner_key} ?>
+                    <option value="{{ $value }}"
+                        @if ( ( old($field['name']) && old($field['name']) == $value ) || (isset($field['value']) && $value == $field['value']))
                              selected
                         @endif
                     >{{ $connected_entity_entry->{$field['attribute']} }}</option>
