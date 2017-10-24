@@ -5,6 +5,11 @@ namespace Backpack\CRUD\app\Http\Controllers\CrudFeatures;
 trait Reorder
 {
     /**
+     * Filters entries collection before rendering the reorder view.
+     */
+    protected $reorder_filter_callback = null;
+
+    /**
      *  Reorder the items in the database using the Nested Set pattern.
      *
      *  Database columns needed: id, parent_id, lft, rgt, depth, name/title
@@ -21,6 +26,11 @@ trait Reorder
 
         // get all results for that entity
         $this->data['entries'] = $this->crud->getEntries();
+
+        if (is_callable($this->reorder_filter_callback)) {
+            $this->data['entries'] = $this->data['entries']->filter($this->reorder_filter_callback);
+        }
+
         $this->data['crud'] = $this->crud;
         $this->data['title'] = trans('backpack::crud.reorder').' '.$this->crud->entity_name;
 
@@ -48,5 +58,16 @@ trait Reorder
         }
 
         return 'success for '.$count.' items';
+    }
+
+    /**
+     * Set a callable for filtering the items to reorder.
+     *
+     * @param callable $callable
+     * @internal param callable $reorder_filter_callback
+     */
+    public function setReorderFilterCallback(callable $callable)
+    {
+        $this->reorder_filter_callback = $callable;
     }
 }
