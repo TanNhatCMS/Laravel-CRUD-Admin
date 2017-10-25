@@ -61,6 +61,9 @@ class CrudPanel
     public $db_column_types = [];
     public $default_page_length = false;
 
+    // extra columns to query when using ajax tables
+    public $ajax_extra_fields = [];
+
     // TONE FIELDS - TODO: find out what he did with them, replicate or delete
     public $sort = [];
 

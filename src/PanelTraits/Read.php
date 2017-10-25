@@ -207,6 +207,32 @@ trait Read
         }
     }
 
+    /**
+     * Add fields/columns names to include in select query when using ajax tables.
+     *
+     * @param string|array $fields fields/columns names.
+     */
+    public function addAjaxExtraFields($fields)
+    {
+        if (is_array($fields)) {
+            $this->ajax_extra_fields = array_merge($this->ajax_extra_fields, $fields);
+        } else {
+            if (is_string($fields)) {
+                array_push($this->ajax_extra_fields, $fields);
+            }
+        }
+    }
+
+    /**
+     * Extra fields/columns name to include in select query when using ajax tables
+     *
+     * @return array string array of field/column names
+     */
+    public function getAjaxExtraFields()
+    {
+        return array_unique($this->ajax_extra_fields);
+    }
+
     /*
     |--------------------------------------------------------------------------
     |                                EXPORT BUTTONS
