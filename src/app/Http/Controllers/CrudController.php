@@ -38,6 +38,8 @@ class CrudController extends BaseController
                 $this->crud->request = $request;
                 $this->setup();
 
+                $this->crud->setBreadcrumb();
+
                 return $next($request);
             });
         }
@@ -79,6 +81,7 @@ class CrudController extends BaseController
     public function create()
     {
         $this->crud->hasAccessOrFail('create');
+        $this->crud->addBreadcrumbEnd(trans('backpack::crud.add'));
 
         // prepare the fields you need to show
         $this->data['crud'] = $this->crud;
@@ -136,6 +139,7 @@ class CrudController extends BaseController
     public function edit($id)
     {
         $this->crud->hasAccessOrFail('update');
+        $this->crud->addBreadcrumbEnd(trans('backpack::crud.edit'));
 
         // get the info for that entry
         $this->data['entry'] = $this->crud->getEntry($id);
@@ -197,6 +201,7 @@ class CrudController extends BaseController
     public function show($id)
     {
         $this->crud->hasAccessOrFail('show');
+        $this->crud->addBreadcrumbEnd(trans('backpack::crud.preview'));
 
         // set columns from db
         $this->crud->setFromDb();

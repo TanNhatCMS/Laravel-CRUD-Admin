@@ -58,6 +58,7 @@ class CrudPanel
     public $query;
     public $entry;
     public $buttons;
+    public $breadcrumb;
     public $db_column_types = [];
     public $default_page_length = false;
 
@@ -149,6 +150,24 @@ class CrudPanel
     public function getRoute()
     {
         return $this->route;
+    }
+
+    /**
+     * Get the breadcrumb for this item
+     *
+     * @return [Eloquent Collection]
+     **/
+    public function getBreadcrumb()
+    {
+        return $this->breadcrumb;
+    }
+
+    /**
+     * Set the breadcrumb for this route.
+     */
+    public function setBreadcrumb()
+    {
+        $this->breadcrumb = $this->buildBreadcrumb();
     }
 
     /**
