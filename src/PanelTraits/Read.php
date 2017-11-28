@@ -20,8 +20,9 @@ trait Read
     public function getEntry($id)
     {
         if (! $this->entry) {
-            if(is_null($this->entry = $this->model->where($this->model->getKeyName(), $id)->get()->first()))
-                throw (new \Exception(get_class($this->model).' - not found:'. $id));
+            if (is_null($this->entry = $this->model->where($this->model->getKeyName(), $id)->get()->first())) {
+                throw (new \Exception(get_class($this->model).' - not found:'.$id));
+            }
             $this->entry = $this->entry->withFakes();
         }
 
