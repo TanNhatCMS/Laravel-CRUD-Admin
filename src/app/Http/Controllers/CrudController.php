@@ -118,7 +118,9 @@ class CrudController extends BaseController
         $this->data['entry'] = $this->crud->entry = $item;
 
         // show a success message
-        \Alert::success(trans('backpack::crud.insert_success'))->flash();
+        if($this->crud->model::find($item->id))
+         \Alert::success(trans('backpack::crud.insert_success'))->flash();
+
 
         // save the redirect choice for next time
         $this->setSaveAction();
