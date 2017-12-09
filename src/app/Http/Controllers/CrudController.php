@@ -127,7 +127,7 @@ class CrudController extends BaseController
 
         $redirectUrl = $this->performSaveAction($item->getKey());
 
-        return (\Request::instance()->ajax() ? response()->json(['redirect_url' => $redirectUrl->getTargetUrl(), 'message' => $message]) : \Redirect::to($redirectUrl));
+        return \Request::instance()->ajax() ? response()->json(['redirect_url' => $redirectUrl->getTargetUrl(), 'message' => $message]) : \Redirect::to($redirectUrl);
     }
 
     /**
@@ -192,7 +192,7 @@ class CrudController extends BaseController
 
         $redirectUrl = $this->performSaveAction($item->getKey());
 
-        return (\Request::instance()->ajax() ? response()->json(['redirect_url' => $redirectUrl->getTargetUrl(), 'message' => $message]) : \Redirect::to($redirectUrl));
+        return \Request::instance()->ajax() ? response()->json(['redirect_url' => $redirectUrl->getTargetUrl(), 'message' => $message]) : \Redirect::to($redirectUrl);
     }
 
     /**
