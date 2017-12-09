@@ -82,6 +82,7 @@ class CrudController extends BaseController
 
         // prepare the fields you need to show
         $this->data['crud'] = $this->crud;
+        $this->data['request'] = $this->request;
         $this->data['saveAction'] = $this->getSaveAction();
         $this->data['fields'] = $this->crud->getCreateFields();
         $this->data['title'] = trans('backpack::crud.add').' '.$this->crud->entity_name;
@@ -95,7 +96,7 @@ class CrudController extends BaseController
      *
      * @param StoreRequest $request - type injection used for validation using Requests
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return string|\Illuminate\Http\RedirectResponse
      */
     public function storeCrud(StoreRequest $request = null)
     {
@@ -118,12 +119,15 @@ class CrudController extends BaseController
         $this->data['entry'] = $this->crud->entry = $item;
 
         // show a success message
-        \Alert::success(trans('backpack::crud.insert_success'))->flash();
+        $message = trans('backpack::crud.insert_success');
+        \Alert::success($message)->flash();
 
         // save the redirect choice for next time
         $this->setSaveAction();
 
-        return $this->performSaveAction($item->getKey());
+        $redirectUrl = $this->performSaveAction($item->getKey());
+
+        return (\Request::instance()->ajax() ? response()->json(['redirect_url' => $redirectUrl->getTargetUrl(), 'message' => $message]) : \Redirect::to($redirectUrl));
     }
 
     /**
@@ -140,6 +144,7 @@ class CrudController extends BaseController
         // get the info for that entry
         $this->data['entry'] = $this->crud->getEntry($id);
         $this->data['crud'] = $this->crud;
+        $this->data['request'] = $this->request;
         $this->data['saveAction'] = $this->getSaveAction();
         $this->data['fields'] = $this->crud->getUpdateFields($id);
         $this->data['title'] = trans('backpack::crud.edit').' '.$this->crud->entity_name;
@@ -155,7 +160,7 @@ class CrudController extends BaseController
      *
      * @param UpdateRequest $request - type injection used for validation using Requests
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return string|\Illuminate\Http\RedirectResponse
      */
     public function updateCrud(UpdateRequest $request = null)
     {
@@ -179,12 +184,15 @@ class CrudController extends BaseController
         $this->data['entry'] = $this->crud->entry = $item;
 
         // show a success message
+        $message = trans('backpack::crud.update_success');
         \Alert::success(trans('backpack::crud.update_success'))->flash();
 
         // save the redirect choice for next time
         $this->setSaveAction();
 
-        return $this->performSaveAction($item->getKey());
+        $redirectUrl = $this->performSaveAction($item->getKey());
+
+        return (\Request::instance()->ajax() ? response()->json(['redirect_url' => $redirectUrl->getTargetUrl(), 'message' => $message]) : \Redirect::to($redirectUrl));
     }
 
     /**

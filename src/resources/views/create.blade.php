@@ -1,4 +1,5 @@
-@extends('backpack::layout')
+@extends($request->ajax() ? 'crud::ajax_layout' : 'backpack::layout')
+@section('title'){{ trans('backpack::crud.add_a_new') }} {{ $crud->entity_name }}@endsection
 
 @section('header')
 	<section class="content-header">
@@ -16,9 +17,9 @@
 
 @section('content')
 <div class="row">
-	<div class="col-md-8 col-md-offset-2">
+	<div @if (!$request->ajax())class="col-md-8 col-md-offset-2"@endif>
 		<!-- Default box -->
-		@if ($crud->hasAccess('list'))
+		@if ($crud->hasAccess('list') AND !$request->ajax())
 			<a href="{{ url($crud->route) }}"><i class="fa fa-angle-double-left"></i> {{ trans('backpack::crud.back_to_all') }} <span>{{ $crud->entity_name_plural }}</span></a><br><br>
 		@endif
 
@@ -27,9 +28,11 @@
 		  {!! Form::open(array('url' => $crud->route, 'method' => 'post', 'files'=>$crud->hasUploadFields('create'))) !!}
 		  <div class="box">
 
+			@if (!$request->ajax())
 		    <div class="box-header with-border">
-		      <h3 class="box-title">{{ trans('backpack::crud.add_a_new') }} {{ $crud->entity_name }}</h3>
+		      <h3 class="box-title">@yield('title')</h3>
 		    </div>
+			@endif
 		    <div class="box-body row">
 		      <!-- load the view from the application if it exists, otherwise load the one in the package -->
 		      @if(view()->exists('vendor.backpack.crud.form_content'))
@@ -38,7 +41,7 @@
 		      	@include('crud::form_content', [ 'fields' => $crud->getFields('create'), 'action' => 'create' ])
 		      @endif
 		    </div><!-- /.box-body -->
-		    <div class="box-footer">
+		    <div class="box-footer @if ($request->ajax()) text-right @endif">
 
                 @include('crud::inc.form_save_buttons')
 
