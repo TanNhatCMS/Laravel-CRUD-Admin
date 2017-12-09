@@ -20,6 +20,8 @@ crudForm.submit(function(event) {
                     type: 'success'
                 });
 
+                $('#crudTable').dataTable().api().ajax.reload();
+
                 switch (saveActionField.val()) {
                     case 'save_and_new':
                     case 'save_and_edit':
@@ -29,8 +31,7 @@ crudForm.submit(function(event) {
                         break;
                     case 'save_and_back':
                     default:
-                        // TODO: Add/update item dynamically into list
-                        window.location = response.redirect_url;
+                        $("#modal-ajax-crud").modal("hide");
                         break;
                 }
             }
