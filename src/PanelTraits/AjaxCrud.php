@@ -16,7 +16,7 @@ trait AjaxCrud
     public $ajax_crud = false;
 
     /**
-     * Check if ajax is enabled for crud.
+     * Check if AJAX is enabled for crud.
      *
      * @return bool
      */
