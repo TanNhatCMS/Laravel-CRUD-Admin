@@ -118,16 +118,25 @@ class CrudController extends BaseController
         $item = $this->crud->create($request->except(['save_action', '_token', '_method']));
         $this->data['entry'] = $this->crud->entry = $item;
 
-        // show a success message
+        // success message
         $message = trans('backpack::crud.insert_success');
-        \Alert::success($message)->flash();
 
         // save the redirect choice for next time
         $this->setSaveAction();
 
         $redirectUrl = $this->performSaveAction($item->getKey());
 
-        return \Request::instance()->ajax() ? response()->json(['redirect_url' => $redirectUrl->getTargetUrl(), 'message' => $message]) : \Redirect::to($redirectUrl);
+        if ($request->ajax()) {
+            return response()->json([
+                'redirect_url' => $redirectUrl->getTargetUrl(),
+                'message' => $message,
+            ]);
+        } else {
+            // show a success message
+            \Alert::success($message)->flash();
+
+            return \Redirect::to($redirectUrl);
+        }
     }
 
     /**
@@ -183,16 +192,25 @@ class CrudController extends BaseController
                             $request->except('save_action', '_token', '_method'));
         $this->data['entry'] = $this->crud->entry = $item;
 
-        // show a success message
+        // success message
         $message = trans('backpack::crud.update_success');
-        \Alert::success(trans('backpack::crud.update_success'))->flash();
 
         // save the redirect choice for next time
         $this->setSaveAction();
 
         $redirectUrl = $this->performSaveAction($item->getKey());
 
-        return \Request::instance()->ajax() ? response()->json(['redirect_url' => $redirectUrl->getTargetUrl(), 'message' => $message]) : \Redirect::to($redirectUrl);
+        if ($request->ajax()) {
+            return response()->json([
+                'redirect_url' => $redirectUrl->getTargetUrl(),
+                'message' => $message,
+            ]);
+        } else {
+            // show a success message
+            \Alert::success($message)->flash();
+
+            return \Redirect::to($redirectUrl);
+        }
     }
 
     /**
