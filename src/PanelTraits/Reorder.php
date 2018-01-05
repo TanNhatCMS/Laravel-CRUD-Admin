@@ -14,8 +14,8 @@ trait Reorder
      * Change the order and parents of the given elements, according to the NestedSortable AJAX call.
      *
      * Required database fields - all being 'integer' INT(10) - optionally unsigned:
-     *   normal: parent_id, depth, lft, rgt
-     *   simple: seq
+     *   - normal: parent_id, depth, lft, rgt
+     *   - simple: seq
      *
      * @param  array  $entries  The entire request from the NestedSortable AJAX Call.
      *                          List of items with following keys: parent_id, depth, lft, rgt.
@@ -55,8 +55,8 @@ trait Reorder
      * $this->crud->allowAccess('reorder');.
      *
      * Required database fields - all being 'integer' INT(10) - optionally unsigned:
-     *   normal: parent_id, depth, lft, rgt
-     *   simple: seq
+     *   - normal: parent_id, depth, lft, rgt
+     *   - simple: seq
      *
      * @param  string  $label      Column name that will be shown on the labels.
      * @param  int     $max_level  Maximum hierarchy level for nesting of entities (1 = no nesting, just reordering).
