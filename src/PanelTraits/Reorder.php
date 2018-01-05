@@ -13,10 +13,12 @@ trait Reorder
     /**
      * Change the order and parents of the given elements, according to the NestedSortable AJAX call.
      *
-     * If using simple reordering, the field 'seq' is required,
-     * otherwise the reordering required the fields 'parent_id', 'depth', 'lft' and 'rgt'.
+     * Required database fields - all being 'integer' INT(10) - optionally unsigned:
+     *   normal: parent_id, depth, lft, rgt
+     *   simple: seq
      *
      * @param  array  $entries  The entire request from the NestedSortable AJAX Call.
+     *                          List of items with following keys: parent_id, depth, lft, rgt.
      * @return int  The number of items whose position in the tree has been changed.
      */
     public function updateTreeOrder(array $entries)
@@ -25,20 +27,23 @@ trait Reorder
 
         foreach ($entries as $entry) {
             if (! empty($entry['item_id'])) {
-                $count++;
-                $fields = $this->reorder_simple ?
-                    [
-                        'seq' => $count,
-                    ] :
-                    [
-                        'parent_id' => $entry['parent_id'] ?: null,
-                        'depth'     => $entry['depth'] ?: null,
-                        'lft'       => $entry['lft'] ?: null,
-                        'rgt'       => $entry['rgt'] ?: null,
-                    ];
-                optional($this->model->find($entry['item_id']))
-                    ->fill($fields)
-                    ->save();
+                $entity = $this->model->find($entry['item_id']);
+                if (! empty($entity)) {
+                    $count++;
+                    $fields = $this->reorder_simple ?
+                        [
+                            'seq' => $count,
+                        ] :
+                        [
+                            'parent_id' => $entry['parent_id'] ?: null,
+                            'depth'     => $entry['depth'] ?: null,
+                            'lft'       => $entry['lft'] ?: null,
+                            'rgt'       => $entry['rgt'] ?: null,
+                        ];
+                    $entity
+                        ->fill($fields)
+                        ->save();
+                }
             }
         }
 
@@ -49,8 +54,9 @@ trait Reorder
      * Enable the Reorder functionality in the CRUD Panel for users that have the been given access to 'reorder' using:
      * $this->crud->allowAccess('reorder');.
      *
-     * If using simple reordering, the field 'seq' is required,
-     * otherwise the reordering required the fields 'parent_id', 'depth', 'lft' and 'rgt'.
+     * Required database fields - all being 'integer' INT(10) - optionally unsigned:
+     *   normal: parent_id, depth, lft, rgt
+     *   simple: seq
      *
      * @param  string  $label      Column name that will be shown on the labels.
      * @param  int     $max_level  Maximum hierarchy level for nesting of entities (1 = no nesting, just reordering).
