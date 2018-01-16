@@ -2,7 +2,7 @@
 
 namespace Backpack\CRUD;
 
-use Maatwebsite\Excel\ExcelServiceProvider;
+
 use Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -77,15 +77,12 @@ class CrudServiceProvider extends ServiceProvider
             return new CRUD($app);
         });
 
-//        dd(ExcelServiceProvider::class);
-
         // register its dependencies
         $this->app->register(\Backpack\Base\BaseServiceProvider::class);
         $this->app->register(\Collective\Html\HtmlServiceProvider::class);
         $this->app->register(\Barryvdh\Elfinder\ElfinderServiceProvider::class);
         $this->app->register(\Intervention\Image\ImageServiceProvider::class);
-
-        $this->app->register(ExcelServiceProvider::class);
+        $this->app->register(\Maatwebsite\Excel\ExcelServiceProvider::class);
 
         // register their aliases
         $loader = \Illuminate\Foundation\AliasLoader::getInstance();
