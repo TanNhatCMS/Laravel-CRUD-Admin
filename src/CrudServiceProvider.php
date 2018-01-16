@@ -85,7 +85,7 @@ class CrudServiceProvider extends ServiceProvider
         $this->app->register(\Barryvdh\Elfinder\ElfinderServiceProvider::class);
         $this->app->register(\Intervention\Image\ImageServiceProvider::class);
 
-        $this->app->register("Maatwebsite\Excel\ExcelServiceProvider");
+        $this->app->register(ExcelServiceProvider::class);
 
         // register their aliases
         $loader = \Illuminate\Foundation\AliasLoader::getInstance();
