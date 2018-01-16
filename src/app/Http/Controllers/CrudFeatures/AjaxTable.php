@@ -22,7 +22,6 @@ trait AjaxTable
         $result = $this->crud->query->get();
 
         $data = array();
-
         foreach ($result as $item) {
 
             if (!method_exists($item, 'toExport')) {
