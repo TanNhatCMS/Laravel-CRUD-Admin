@@ -266,4 +266,13 @@ class CrudPanel
 
         return get_class($result);
     }
+
+    public function enableServerSideExport()
+    {
+        $this->addFilter([
+            'type' => 'export',
+            'name' => 'exel_export',
+            'label'=> 'Exel Export'
+        ]);
+    }
 }

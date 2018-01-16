@@ -2,6 +2,9 @@
 
 namespace Backpack\CRUD\app\Http\Controllers\CrudFeatures;
 
+use Carbon\Carbon;
+use Maatwebsite\Excel\Facades\Excel;
+
 trait AjaxTable
 {
     /**
@@ -11,6 +14,37 @@ trait AjaxTable
      */
     public function search()
     {
+        $requestType = Request()->request_type;
+
+        // if ($requestType == 'exel') {
+        $table_name = $this->crud->model->getTable();
+        $filename = ucfirst($this->crud->entity_name_plural . '-' . Carbon::now()->toDateTimeString());
+        $result = $this->crud->query->get();
+
+        $data = array();
+
+        foreach ($result as $item) {
+
+            if (!method_exists($item, 'toExport')) {
+                $data[] = $item->toArray();
+            } else {
+                $data[] = $item->toExport();
+            }
+        }
+
+//        Excel::create(str_replace("_", " ", ucfirst($table_name)), function ($excel) use ($data) {
+//            $excel->sheet('Sheet', function ($sheet) use ($data) {
+//                $sheet->with($data);
+//            });
+//        })->store('xls');
+//
+//        return response()->json([
+//            'error' => "",
+//            'download' => url('/exports') . '/' . $filename . '.xls',
+//        ]);
+
+        // }
+
         $this->crud->hasAccessOrFail('list');
 
         $totalRows = $filteredRows = $this->crud->count();
