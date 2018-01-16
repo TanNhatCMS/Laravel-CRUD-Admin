@@ -270,12 +270,6 @@ class CrudPanel
         return get_class($result);
     }
 
-
-    /**
-     * Enables server side export button in filters bar
-     *
-     * @param null $filename
-     */
     public function enableServerSideExport($filename = null)
     {
         $this->excel_filename = $filename;
