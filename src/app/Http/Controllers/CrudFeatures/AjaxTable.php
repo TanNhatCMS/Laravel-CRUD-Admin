@@ -31,7 +31,7 @@ trait AjaxTable
                 }
             }
 
-            Excel::create($file, function ($excel) use ($data) {
+            Excel::create($filename, function ($excel) use ($data) {
                 $excel->sheet('Sheet', function ($sheet) use ($data) {
                     $sheet->with($data);
                 });
