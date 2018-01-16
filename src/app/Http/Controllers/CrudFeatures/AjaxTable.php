@@ -17,25 +17,19 @@ trait AjaxTable
         $requestType = Request()->request_type;
 
         if ($requestType == 'excel') {
-//            $table_name = $this->crud->model->getTable();
             $filename = ucfirst($this->crud->entity_name_plural . '-' . Carbon::now()->toDateString());
             $result = $this->crud->query->get();
 
             $data = array();
             foreach ($result as $item) {
-
-                if (!method_exists($item, 'toExport')) {
-                    $data[] = $item->toArray();
-                } else {
-                    $data[] = $item->toExport();
-                }
+                $data[] = !method_exists($item, 'toExport') ? $item->toArray() : $item->toExport();
             }
 
             Excel::create($filename, function ($excel) use ($data) {
                 $excel->sheet('Sheet', function ($sheet) use ($data) {
                     $sheet->with($data);
                 });
-            })->store('xls');
+            })->store('xls', public_path('exports'));
 
             return response()->json([
                 'error' => "",
@@ -57,31 +51,31 @@ trait AjaxTable
         }
 
 // start the results according to the datatables pagination
-if ($this->request->input('start')) {
-    $this->crud->skip($this->request->input('start'));
-}
+        if ($this->request->input('start')) {
+            $this->crud->skip($this->request->input('start'));
+        }
 
 // limit the number of results according to the datatables pagination
-if ($this->request->input('length')) {
-    $this->crud->take($this->request->input('length'));
-}
+        if ($this->request->input('length')) {
+            $this->crud->take($this->request->input('length'));
+        }
 
 // overwrite any order set in the setup() method with the datatables order
-if ($this->request->input('order')) {
-    $column_number = $this->request->input('order')[0]['column'];
-    if ($this->crud->details_row) {
-        $column_number = $column_number - 1;
+        if ($this->request->input('order')) {
+            $column_number = $this->request->input('order')[0]['column'];
+            if ($this->crud->details_row) {
+                $column_number = $column_number - 1;
+            }
+            $column_direction = $this->request->input('order')[0]['dir'];
+            $column = $this->crud->findColumnById($column_number);
+
+            if ($column['tableColumn']) {
+                $this->crud->orderBy($column['name'], $column_direction);
+            }
+        }
+
+        $entries = $this->crud->getEntries();
+
+        return $this->crud->getEntriesAsJsonForDatatables($entries, $totalRows, $filteredRows);
     }
-    $column_direction = $this->request->input('order')[0]['dir'];
-    $column = $this->crud->findColumnById($column_number);
-
-    if ($column['tableColumn']) {
-        $this->crud->orderBy($column['name'], $column_direction);
-    }
-}
-
-$entries = $this->crud->getEntries();
-
-return $this->crud->getEntriesAsJsonForDatatables($entries, $totalRows, $filteredRows);
-}
 }
