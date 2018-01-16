@@ -20,7 +20,7 @@ trait AjaxTable
             $filename = ucfirst($this->crud->entity_name_plural . '-' . Carbon::now()->toDateString());
             $result = $this->crud->query->get();
 
-            $data = array();
+            $data = [];
             foreach ($result as $item) {
                 $data[] = !method_exists($item, 'toExport') ? $item->toArray() : $item->toExport();
             }
@@ -35,11 +35,9 @@ trait AjaxTable
                 'error' => "",
                 'download' => url('/exports') . '/' . $filename . '.xls',
             ]);
-
         }
 
         $this->crud->hasAccessOrFail('list');
-
         $totalRows = $filteredRows = $this->crud->count();
 
         // if a search term was present
