@@ -22,6 +22,7 @@ use Backpack\CRUD\PanelTraits\AutoFocus;
 use Backpack\CRUD\PanelTraits\FakeFields;
 use Backpack\CRUD\PanelTraits\FakeColumns;
 use Backpack\CRUD\PanelTraits\ViewsAndRestoresRevisions;
+use Carbon\Carbon;
 
 class CrudPanel
 {
@@ -64,6 +65,8 @@ class CrudPanel
     // TONE FIELDS - TODO: find out what he did with them, replicate or delete
     public $sort = [];
 
+    private $excel_filename = null;
+
     // The following methods are used in CrudController or your EntityCrudController to manipulate the variables above.
 
     public function __construct()
@@ -86,7 +89,7 @@ class CrudPanel
      */
     public function setModel($model_namespace)
     {
-        if (! class_exists($model_namespace)) {
+        if (!class_exists($model_namespace)) {
             throw new \Exception('This model does not exist.', 404);
         }
 
@@ -134,9 +137,9 @@ class CrudPanel
      */
     public function setRouteName($route, $parameters = [])
     {
-        $complete_route = $route.'.index';
+        $complete_route = $route . '.index';
 
-        if (! \Route::has($complete_route)) {
+        if (!\Route::has($complete_route)) {
             throw new \Exception('There are no routes for this route name.', 404);
         }
 
@@ -180,7 +183,7 @@ class CrudPanel
      * Return the first element in an array that has the given 'type' attribute.
      *
      * @param string $type
-     * @param array  $array
+     * @param array $array
      *
      * @return array
      */
@@ -203,9 +206,9 @@ class CrudPanel
 
     public function sync($type, $fields, $attributes)
     {
-        if (! empty($this->{$type})) {
+        if (!empty($this->{$type})) {
             $this->{$type} = array_map(function ($field) use ($fields, $attributes) {
-                if (in_array($field['name'], (array) $fields)) {
+                if (in_array($field['name'], (array)$fields)) {
                     $field = array_merge($field, $attributes);
                 }
 
@@ -237,7 +240,7 @@ class CrudPanel
             }
 
             return $this->{$items} = array_merge($elements, array_filter($this->{$items}, function ($item) use ($items) {
-                return ! in_array($item['name'], $this->sort[$items]);
+                return !in_array($item['name'], $this->sort[$items]);
             }));
         }
 
@@ -267,12 +270,28 @@ class CrudPanel
         return get_class($result);
     }
 
-    public function enableServerSideExport()
+
+    /**
+     * Enables server side export button in filters bar
+     *
+     * @param null $filename
+     */
+    public function enableServerSideExport($filename = null)
     {
+        $this->excel_filename = $filename;
+
         $this->addFilter([
             'type' => 'export',
             'name' => 'exel_export',
-            'label'=> 'Exel Export'
+            'label' => 'Exel Export'
         ]);
+    }
+
+    public function getExcelFileName()
+    {
+        return ucfirst(
+            (empty($this->excel_filename) ? $this->entity_name_plural : $this->excel_filename)
+            . '-' . Carbon::now()->toDateString()
+        );
     }
 }

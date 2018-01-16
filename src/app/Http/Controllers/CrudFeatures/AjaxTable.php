@@ -17,7 +17,7 @@ trait AjaxTable
         $requestType = Request()->request_type;
 
         if ($requestType === 'excel') {
-            $filename = ucfirst($this->crud->entity_name_plural . '-' . Carbon::now()->toDateString());
+            $filename = $this->crud->getExcelFileName();
             $result = $this->crud->query->get();
 
             $data = [];
@@ -76,4 +76,6 @@ trait AjaxTable
 
         return $this->crud->getEntriesAsJsonForDatatables($entries, $totalRows, $filteredRows);
     }
+
+
 }
