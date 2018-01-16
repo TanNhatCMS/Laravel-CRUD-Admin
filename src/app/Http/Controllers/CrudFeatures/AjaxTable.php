@@ -50,17 +50,17 @@ trait AjaxTable
             $filteredRows = $this->crud->count();
         }
 
-// start the results according to the datatables pagination
+        // start the results according to the datatables pagination
         if ($this->request->input('start')) {
             $this->crud->skip($this->request->input('start'));
         }
 
-// limit the number of results according to the datatables pagination
+        // limit the number of results according to the datatables pagination
         if ($this->request->input('length')) {
             $this->crud->take($this->request->input('length'));
         }
 
-// overwrite any order set in the setup() method with the datatables order
+        // overwrite any order set in the setup() method with the datatables order
         if ($this->request->input('order')) {
             $column_number = $this->request->input('order')[0]['column'];
             if ($this->crud->details_row) {
