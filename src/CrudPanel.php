@@ -272,7 +272,7 @@ class CrudPanel
     /**
      * Enables server side export button in filters bar
      *
-     * @param null $filename
+     * @param string|null $filename  
      */
     public function enableServerSideExport($filename = null)
     {
