@@ -274,7 +274,7 @@ class CrudPanel
      *
      * @param string|null $filename  
      */
-    public function enableServerSideExport($filename = null)
+    public function enableServerSideExport( string $filename = null)
     {
         $this->excel_filename = $filename;
 
