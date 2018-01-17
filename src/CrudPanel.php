@@ -68,7 +68,6 @@ class CrudPanel
     private $excel_filename = null;
 
     // The following methods are used in CrudController or your EntityCrudController to manipulate the variables above.
-
     public function __construct()
     {
         $this->setErrorDefaults();
