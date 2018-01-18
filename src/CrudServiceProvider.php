@@ -59,7 +59,7 @@ class CrudServiceProvider extends ServiceProvider
 
         // use the vendor configuration file as fallback
         $this->mergeConfigFrom(
-            __DIR__ . '/config/backpack/crud.php',
+            __DIR__.'/config/backpack/crud.php',
             'backpack.crud'
         );
     }
@@ -87,7 +87,6 @@ class CrudServiceProvider extends ServiceProvider
         $loader->alias('Form', \Collective\Html\FormFacade::class);
         $loader->alias('Html', \Collective\Html\HtmlFacade::class);
         $loader->alias('Image', \Intervention\Image\Facades\Image::class);
-
 
         // map the elfinder prefix
         if (! \Config::get('elfinder.route.prefix')) {
