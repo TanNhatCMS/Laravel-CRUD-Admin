@@ -2,7 +2,6 @@
 
 namespace Backpack\CRUD\app\Http\Controllers\CrudFeatures;
 
-
 use Maatwebsite\Excel\Facades\Excel;
 
 trait AjaxTable
@@ -76,6 +75,4 @@ trait AjaxTable
 
         return $this->crud->getEntriesAsJsonForDatatables($entries, $totalRows, $filteredRows);
     }
-
-
 }
