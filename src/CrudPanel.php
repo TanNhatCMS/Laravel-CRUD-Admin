@@ -88,7 +88,7 @@ class CrudPanel
      */
     public function setModel($model_namespace)
     {
-        if (! class_exists( $model_namespace)) {
+        if (! class_exists($model_namespace)) {
             throw new \Exception('This model does not exist.', 404);
         }
 
