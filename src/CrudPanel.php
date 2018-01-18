@@ -88,7 +88,7 @@ class CrudPanel
      */
     public function setModel($model_namespace)
     {
-        if (!class_exists( $model_namespace)) {
+        if (! class_exists( $model_namespace)) {
             throw new \Exception('This model does not exist.', 404);
         }
 
@@ -289,7 +289,7 @@ class CrudPanel
     {
         return ucfirst(
             (empty($this->excel_filename) ? $this->entity_name_plural : $this->excel_filename)
-            .'-'. Carbon::now()->toDateString()
+            .'-'.Carbon::now()->toDateString()
         );
     }
 }

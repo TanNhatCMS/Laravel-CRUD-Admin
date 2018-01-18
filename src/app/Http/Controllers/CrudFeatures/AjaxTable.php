@@ -2,7 +2,7 @@
 
 namespace Backpack\CRUD\app\Http\Controllers\CrudFeatures;
 
-use Carbon\Carbon;
+
 use Maatwebsite\Excel\Facades\Excel;
 
 trait AjaxTable
@@ -22,7 +22,7 @@ trait AjaxTable
 
             $data = [];
             foreach ($result as $item) {
-                $data[] = !method_exists($item, 'toExport') ? $item->toArray() : $item->toExport();
+                $data[] = ! method_exists($item, 'toExport') ? $item->toArray() : $item->toExport();
             }
 
             Excel::create($filename, function ($excel) use ($data) {
@@ -32,8 +32,8 @@ trait AjaxTable
             })->store('xls', public_path('exports'));
 
             return response()->json([
-                'error' => "",
-                'download' => url('/exports') . '/' . $filename . '.xls',
+                'error' => '',
+                'download' => url('/exports').'/'.$filename.'.xls',
             ]);
         }
 
