@@ -11,7 +11,11 @@ trait SaveActions
      */
     public function getSaveAction()
     {
+        $cantCreate = ! $this->crud->hasAccess('create');
         $saveAction = session('save_action', config('backpack.crud.default_save_action', 'save_and_back'));
+        if ($saveAction == 'save_and_new' && $cantCreate) {
+            $saveAction = 'save_and_back';
+        }
         $saveOptions = [];
         $saveCurrent = [
             'value' => $saveAction,
@@ -32,6 +36,10 @@ trait SaveActions
                 $saveOptions['save_and_edit'] = $this->getSaveActionButtonName('save_and_edit');
                 $saveOptions['save_and_new'] = $this->getSaveActionButtonName('save_and_new');
                 break;
+        }
+
+        if ($cantCreate) {
+            unset($saveOptions['save_and_new']);
         }
 
         return [
