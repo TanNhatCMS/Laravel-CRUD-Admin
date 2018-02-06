@@ -2,7 +2,6 @@
 
 namespace Backpack\CRUD\app\Http\Controllers\CrudFeatures;
 
-use Carbon\Carbon;
 use Maatwebsite\Excel\Facades\Excel;
 
 trait AjaxTable
@@ -22,7 +21,7 @@ trait AjaxTable
 
             $data = [];
             foreach ($result as $item) {
-                $data[] = !method_exists($item, 'toExport') ? $item->toArray() : $item->toExport();
+                $data[] = ! method_exists($item, 'toExport') ? $item->toArray() : $item->toExport();
             }
 
             $path = config('backpack.crud.public_export_path');
@@ -79,6 +78,4 @@ trait AjaxTable
 
         return $this->crud->getEntriesAsJsonForDatatables($entries, $totalRows, $filteredRows);
     }
-
-
 }

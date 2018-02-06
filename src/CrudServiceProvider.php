@@ -2,7 +2,6 @@
 
 namespace Backpack\CRUD;
 
-
 use Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -23,30 +22,29 @@ class CrudServiceProvider extends ServiceProvider
     public function boot()
     {
         // LOAD THE VIEWS
-
         // - first the published/overwritten views (in case they have any changes)
         $this->loadViewsFrom(resource_path('views/vendor/backpack/crud'), 'crud');
         // - then the stock views that come with the package, in case a published view might be missing
-        $this->loadViewsFrom(realpath(__DIR__ . '/resources/views'), 'crud');
+        $this->loadViewsFrom(realpath(__DIR__.'/resources/views'), 'crud');
 
         // PUBLISH FILES
 
         // publish lang files
-        $this->publishes([__DIR__ . '/resources/lang' => resource_path('lang/vendor/backpack')], 'lang');
+        $this->publishes([__DIR__.'/resources/lang' => resource_path('lang/vendor/backpack')], 'lang');
 
         // publish views
-        $this->publishes([__DIR__ . '/resources/views' => resource_path('views/vendor/backpack/crud')], 'views');
+        $this->publishes([__DIR__.'/resources/views' => resource_path('views/vendor/backpack/crud')], 'views');
 
         // publish config file
-        $this->publishes([__DIR__ . '/config' => config_path()], 'config');
+        $this->publishes([__DIR__.'/config' => config_path()], 'config');
 
         // publish public Backpack CRUD assets
-        $this->publishes([__DIR__ . '/public' => public_path('vendor/backpack')], 'public');
+        $this->publishes([__DIR__.'/public' => public_path('vendor/backpack')], 'public');
 
         // publish custom files for elFinder
         $this->publishes([
-            __DIR__ . '/config/elfinder.php' => config_path('elfinder.php'),
-            __DIR__ . '/resources/views-elfinder' => resource_path('views/vendor/elfinder'),
+            __DIR__.'/config/elfinder.php' => config_path('elfinder.php'),
+            __DIR__.'/resources/views-elfinder' => resource_path('views/vendor/elfinder'),
         ], 'elfinder');
 
         // AUTO PUBLISH
@@ -61,7 +59,7 @@ class CrudServiceProvider extends ServiceProvider
 
         // use the vendor configuration file as fallback
         $this->mergeConfigFrom(
-            __DIR__ . '/config/backpack/crud.php',
+            __DIR__.'/config/backpack/crud.php',
             'backpack.crud'
         );
     }
@@ -90,10 +88,9 @@ class CrudServiceProvider extends ServiceProvider
         $loader->alias('Html', \Collective\Html\HtmlFacade::class);
         $loader->alias('Image', \Intervention\Image\Facades\Image::class);
 
-
         // map the elfinder prefix
-        if (!\Config::get('elfinder.route.prefix')) {
-            \Config::set('elfinder.route.prefix', \Config::get('backpack.base.route_prefix') . '/elfinder');
+        if (! \Config::get('elfinder.route.prefix')) {
+            \Config::set('elfinder.route.prefix', \Config::get('backpack.base.route_prefix').'/elfinder');
         }
     }
 
@@ -112,7 +109,7 @@ class CrudServiceProvider extends ServiceProvider
     {
         $crudPubPath = public_path('vendor/backpack/crud');
 
-        if (!is_dir($crudPubPath)) {
+        if (! is_dir($crudPubPath)) {
             return true;
         }
 
