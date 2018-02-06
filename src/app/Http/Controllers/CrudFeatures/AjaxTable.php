@@ -25,15 +25,18 @@ trait AjaxTable
                 $data[] = !method_exists($item, 'toExport') ? $item->toArray() : $item->toExport();
             }
 
+            $path = config('backpack.crud.public_export_path');
+            $pathDownload = config('backpack.crud.public_export_download_path');
+
             Excel::create($filename, function ($excel) use ($data) {
                 $excel->sheet('Sheet', function ($sheet) use ($data) {
                     $sheet->with($data);
                 });
-            })->store('xls', public_path('exports'));
+            })->store('xls', $path);
 
             return response()->json([
                 'error' => "",
-                'download' => url('/exports') . '/' . $filename . '.xls',
+                'download' => $pathDownload . '/' . $filename . '.xls',
             ]);
         }
 
