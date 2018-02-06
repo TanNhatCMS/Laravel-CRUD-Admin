@@ -34,8 +34,8 @@ trait AjaxTable
             })->store('xls', $path);
 
             return response()->json([
-                'error' => "",
-                'download' => $pathDownload . '/' . $filename . '.xls',
+                'error' => '',
+                'download' => $pathDownload.'/'.$filename.'.xls',
             ]);
         }
 
