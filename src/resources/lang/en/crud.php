@@ -47,6 +47,7 @@ return [
 
     // CRUD table view
     'all'                       => 'All ',
+    'all_f'                     => 'All ',
     'in_the_database'           => 'in the database',
     'list'                      => 'List',
     'actions'                   => 'Actions',

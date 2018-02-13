@@ -40,6 +40,7 @@ class CrudPanel
     public $route; // what route have you defined for your entity? used for links.
     public $entity_name = 'entry'; // what name will show up on the buttons, in singural (ex: Add entity)
     public $entity_name_plural = 'entries'; // what name will show up on the buttons, in plural (ex: Delete 5 entities)
+    public $entity_gender; // gender of entity
     public $request;
 
     public $access = ['list', 'create', 'update', 'delete'/* 'revisions', reorder', 'show', 'details_row' */];
@@ -165,11 +166,13 @@ class CrudPanel
      *
      * @param [string] Entity name, in singular. Ex: article
      * @param [string] Entity name, in plural. Ex: articles
+     * @param [string] Entity gender. Ex: f
      */
-    public function setEntityNameStrings($singular, $plural)
+    public function setEntityNameStrings($singular, $plural, $gender = null)
     {
         $this->entity_name = $singular;
         $this->entity_name_plural = $plural;
+        $this->entity_gender = $gender;
     }
 
     // ----------------------------------
