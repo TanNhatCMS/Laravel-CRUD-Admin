@@ -20,6 +20,9 @@ All Notable changes to `Backpack CRUD` will be documented in this file
 - Nothing
 -----------
 
+## Added
+- notification bubble if BACKPACK_LICENSE env variable is missing;
+
 
 ## [3.3.11] - 2018-02-23
 
