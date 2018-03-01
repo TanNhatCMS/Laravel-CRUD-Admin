@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace Backpack\CRUD\app\Http\Controllers;
 
-use App\CrudPanel;
+use Backpack\CRUD\CrudPanel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Form as Form;
 use Illuminate\Foundation\Bus\DispatchesJobs;

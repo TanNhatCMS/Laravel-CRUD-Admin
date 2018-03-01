@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace Backpack\CRUD;
 
 use Backpack\CRUD\PanelTraits\Read;
 use Backpack\CRUD\PanelTraits\Tabs;
-use App\Traits\Backpack\Query;
+use Backedin\BackpackTraits\Backpack\Query;
 use Backpack\CRUD\PanelTraits\Views;
 use Backpack\CRUD\PanelTraits\Access;
 use Backpack\CRUD\PanelTraits\Create;
@@ -14,7 +14,7 @@ use Backpack\CRUD\PanelTraits\Fields;
 use Backpack\CRUD\PanelTraits\Search;
 use Backpack\CRUD\PanelTraits\Update;
 use Backpack\CRUD\PanelTraits\AutoSet;
-use App\Traits\Backpack\Buttons;
+use Backedin\BackpackTraits\Backpack\Buttons;
 use Backpack\CRUD\PanelTraits\Columns;
 use Backpack\CRUD\PanelTraits\Filters;
 use Backpack\CRUD\PanelTraits\Reorder;
@@ -22,11 +22,10 @@ use Backpack\CRUD\PanelTraits\AutoFocus;
 use Backpack\CRUD\PanelTraits\FakeFields;
 use Backpack\CRUD\PanelTraits\FakeColumns;
 use Backpack\CRUD\PanelTraits\ViewsAndRestoresRevisions;
-use App\Traits\BackpackNestedRoute;
 
 class CrudPanel
 {
-    use Create, Read, Search, Update, Delete, Errors, Reorder, Access, Columns, Fields, Query, Buttons, AutoSet, FakeFields, FakeColumns, ViewsAndRestoresRevisions, AutoFocus, Filters, Tabs, Views, BackpackNestedRoute;
+    use Create, Read, Search, Update, Delete, Errors, Reorder, Access, Columns, Fields, Query, Buttons, AutoSet, FakeFields, FakeColumns, ViewsAndRestoresRevisions, AutoFocus, Filters, Tabs, Views;
 
     // --------------
     // CRUD variables
@@ -61,7 +60,7 @@ class CrudPanel
     public $buttons;
     public $db_column_types = [];
     public $default_page_length = false;
-    public $eagerLoad;
+    public $page_length_menu = false;
 
     // TONE FIELDS - TODO: find out what he did with them, replicate or delete
     public $sort = [];
@@ -170,8 +169,8 @@ class CrudPanel
      */
     public function setEntityNameStrings($singular, $plural)
     {
-        $this->entity_name = strtolower($singular);
-        $this->entity_name_plural = strtolower($plural);
+        $this->entity_name = $singular;
+        $this->entity_name_plural = $plural;
     }
 
     // ----------------------------------
