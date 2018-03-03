@@ -23,9 +23,14 @@
         @endif
 
     </div>
-
+    
+    @if($crud->hasAccess('list'))
     <a href="{{ url($crud->route) }}" class="btn btn-default"><span class="fa fa-ban"></span> &nbsp;{{ trans('backpack::crud.cancel') }}</a>
+    @endif
+    
+    @if($crud->hasAccess('delete'))
     @if(str_contains(url()->current(), '/edit'))
-     @include('backpack::crud.buttons.delete', ['size'=>''])
+     @include('crud::buttons.delete', ['size'=>''])
+    @endif
     @endif
 </div>

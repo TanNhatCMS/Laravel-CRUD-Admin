@@ -65,6 +65,8 @@ class CrudPanel
     // TONE FIELDS - TODO: find out what he did with them, replicate or delete
     public $sort = [];
 
+    public $eagerLoad = [];
+
     // The following methods are used in CrudController or your EntityCrudController to manipulate the variables above.
 
     public function __construct()
