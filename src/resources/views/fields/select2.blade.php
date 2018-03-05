@@ -14,7 +14,21 @@
         @endif
 
         @if (isset($field['model']))
-            @foreach ($field['model']::all() as $connected_entity_entry)
+            @php
+                if (isset($field['scope'])) {
+                    if (isset($field['scope_params'])) {
+                        $scope_params = $field['scope_params'];
+                    } else {
+                        $scope_params = array();
+                    }
+                    $query = call_user_func_array([$field['model'], $field['scope']], $scope_params);
+                    $entities = $query->get();
+                } else {
+                    $entities = $field['model']::all();
+                }       
+            @endphp
+
+            @foreach ($entities as $connected_entity_entry)
                 @if(old($field['name']) == $connected_entity_entry->getKey() || (is_null(old($field['name'])) && isset($field['value']) && $field['value'] == $connected_entity_entry->getKey()))
                     <option value="{{ $connected_entity_entry->getKey() }}" selected>{{ $connected_entity_entry->{$field['attribute']} }}</option>
                 @else
