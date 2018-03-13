@@ -20,6 +20,16 @@ All Notable changes to `Backpack CRUD` will be documented in this file
 - Nothing
 -----------
 
+## Unreleased
+
+## Fixed
+- ```checkbox``` field was using the default value over the DB value on edit; merges #1239;
+
+## [3.3.12] - 2018-03-09
+
+## Fixed
+- ```text``` column had a broken ```suffix``` attribute; fixed by merging #1261;
+- not calling trans() in the config file; merges #1270;
 
 ## [3.3.11] - 2018-02-23
 
