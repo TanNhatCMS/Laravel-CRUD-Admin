@@ -9,3 +9,8 @@
     padding-left: 15px;
     padding-right: 15px;
 }
+
+#crudTable_wrapper > .row {
+    margin-left:  0;
+    margin-right: 0;
+}
