@@ -32,6 +32,13 @@ class CrudRequest extends FormRequest
         ];
     }
 
+    public function messages()
+    {
+        return [
+            'file_upload_crud' => trans('backpack::crud.validation_file_upload_crud'),
+        ];
+    }
+
     // OPTIONAL OVERRIDE
     // public function forbiddenResponse()
     // {

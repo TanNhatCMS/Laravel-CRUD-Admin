@@ -143,4 +143,7 @@ return [
 
     // File manager
     'file_manager' => 'File Manager',
+
+    // Validations
+    'validation_file_upload_crud' => 'The :attribute must be a valid file.',
 ];

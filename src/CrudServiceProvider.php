@@ -3,7 +3,9 @@
 namespace Backpack\CRUD;
 
 use Route;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\Validator;
 
 class CrudServiceProvider extends ServiceProvider
 {
@@ -63,6 +65,19 @@ class CrudServiceProvider extends ServiceProvider
             __DIR__.'/config/backpack/crud.php',
             'backpack.crud'
         );
+
+        // Add a validation rule for "upload" field type
+        // Example of usage: 'document' => 'file_upload_crud:pdf,jpg',
+        Validator::extend('file_upload_crud', function ($attribute, $value, $parameters, $validator) {
+            $isValidFile = false;
+            if (is_a($value, UploadedFile::class)) {
+                $rules = [$attribute => 'mimes:'.implode(',', $parameters)];
+                $input = [$attribute => $value];
+                $isValidFile = Validator::make($input, $rules)->passes();
+            }
+
+            return is_string($value) || $isValidFile;
+        });
     }
 
     /**

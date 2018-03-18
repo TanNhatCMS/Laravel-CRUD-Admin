@@ -113,4 +113,6 @@ return [
         'external_link' => 'Lien externe',
         'choose_file' => 'Choisissez un fichier',
 
+    // Validations
+    'validation_file_upload_crud' => 'Le :attribute doit être un fichier valide.',
 ];
