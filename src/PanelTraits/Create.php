@@ -21,14 +21,22 @@ trait Create
     {
         $data = $this->decodeJsonCastedAttributes($data, 'create');
         $data = $this->compactFakeFields($data, 'create');
-
+        
         // ommit the n-n relationships when updating the eloquent item
         $nn_relationships = array_pluck($this->getRelationFieldsWithPivot('create'), 'name');
-        $item = $this->model->create(array_except($data, $nn_relationships));
-
+        $after_create = array_pluck($this->getAfterCreateFields(), 'name');
+        
+        $creationData = array_except($data, array_merge($nn_relationships, $after_create));
+        $item = $this->model->create($creationData);
+        
+        $afterCreateData = array_only($data, $after_create);
+        foreach ($afterCreateData as $key => $value) {
+            $item->{$key} = $value;
+        }
+        
         // if there are any relationships available, also sync those
         $this->syncPivot($item, $data);
-
+        
         return $item;
     }
 
@@ -42,6 +50,24 @@ trait Create
         return $this->create_fields;
     }
 
+    /**
+     * Get all fields that should be set after creation (after_create key set on field).
+     *
+     * @return [array] The fields with after_create key set.
+     */
+    public function getAfterCreateFields()
+    {
+        $fields = $this->create_fields;
+        $relationFields = [];
+
+        foreach ($fields as $field) {
+            if (isset($field['after_create'])) {
+                array_push($relationFields, $field);
+            }
+        }
+        
+        return $relationFields;
+    }
     /**
      * Get all fields with relation set (model key set on field).
      *
