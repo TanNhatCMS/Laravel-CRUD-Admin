@@ -14,13 +14,15 @@
  if(isset($column['limit_text']))
   $limit_text = $column['limit_text'];
 
+ $column_name = $entry->{$column['name']};
+
  if(isset($column['translate']))
-  $text = trans("{$column['translate']}.{$entry->{$column['name']}}");
+  $text = trans("{$column['translate']}.{$column_name}");
  else if(isset($column['translate_config']))
-  $text = config("{$column['translate_config']}.{$entry->{$column['name']}}");
+  $text = config("{$column['translate_config']}.{$column_name}");
  else
-  $text = (array_key_exists('prefix', $column) ? $column['prefix'] : '').str_limit(strip_tags($entry->{$column['name']}), array_key_exists('limit', $column) ? $column['limit'] : 80, "[...]").(array_key_exists('suffix', $column) ? $column['suffix'] : '');
-  
+  $text = (array_key_exists('prefix', $column) ? $column['prefix'] : '').str_limit(strip_tags($value), array_key_exists('limit', $column) ? $column['limit'] : 50, "[...]").(array_key_exists('suffix', $column) ? $column['suffix'] : '');
+
 @endphp
 @if (isset($column['display_as_link']) && $column['display_as_link'])
  <td>

@@ -8,7 +8,7 @@
  if($action=='show')
  {
   $action = '';
- } 
+ }
 
  if(isset($column['display_as_link']))
  {
@@ -25,17 +25,18 @@
    $url = url()->route($column['link_route'], $params);
   }
  }
+
+ $attributes = $crud->getModelAttributeFromRelation($entry, $column['entity'], $column['attribute']);
+ $column_attribute = '-';
+ if (count($attributes)) {
+     $column_attribute = implode(', ', $attributes);
+ }
 @endphp
 <td>
 @if (isset($column['display_as_link']))
-	<a href="{{ $url }}">
-	@if ($entry->{$column['entity']})
-		{{ $entry->{$column['entity']}->{$column['attribute']} }}
-	@endif
+	<a href="{{ $url }}">{{$column_attribute}}
 	</a>
 @else
-	@if ($entry->{$column['entity']})
-		{{ $entry->{$column['entity']}->{$column['attribute']} }}
-	@endif
+	{{$column_attribute}}
 @endif
 </td>
