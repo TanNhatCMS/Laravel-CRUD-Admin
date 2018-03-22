@@ -14,7 +14,8 @@
  if(isset($column['limit_text']))
   $limit_text = $column['limit_text'];
 
- $column_name = $entry->{$column['name']};
+ $column_name = $column['name'];
+ $value = $entry->{$column_name};
 
  if(isset($column['translate']))
   $text = trans("{$column['translate']}.{$column_name}");
