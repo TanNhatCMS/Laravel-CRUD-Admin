@@ -128,13 +128,17 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
             'user_id' => 1,
             'metas' => null,
             'extras' => null,
+            'cast_metas' => null,
+            'cast_tags' => null,
+            'cast_extras' => null,
         ];
 
         $entry = $this->crudPanel->create($inputData);
         $userEntry = User::find(1);
+        $article = Article::where('user_id', 1)->with('user')->get()->last();
 
         $this->assertEntryEquals($inputData, $entry);
-        $this->assertEquals($userEntry->articles->last()->toArray(), $entry->toArray());
+        $this->assertEquals($article->toArray(), $entry->toArray());
     }
 
     public function testCreateWithManyToManyRelationship()
@@ -194,7 +198,7 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
     {
         $this->markTestIncomplete('Not correctly implemented');
 
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
 
         $this->crudPanel->setModel(User::class);
         $this->crudPanel->addFields($this->userInputFieldsManyToMany);
@@ -290,7 +294,7 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
 
     public function testSyncPivotUnknownModel()
     {
-        $this->setExpectedException(\BadMethodCallException::class);
+        $this->expectException(\BadMethodCallException::class);
 
         $this->crudPanel->setModel(User::class);
         $this->crudPanel->addFields($this->userInputFieldsManyToMany);

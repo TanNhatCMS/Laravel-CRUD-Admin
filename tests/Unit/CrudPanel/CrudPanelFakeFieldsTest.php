@@ -42,6 +42,36 @@ class CrudPanelFakeFieldsTest extends BaseDBCrudPanelTest
             'label' => 'Extra Details',
             'fake' => true,
         ],
+        [
+            'name' => 'cast_meta_title',
+            'label' => 'Meta Title',
+            'fake' => true,
+            'store_in' => 'cast_metas',
+        ],
+        [
+            'name' => 'cast_meta_description',
+            'label' => 'Meta Description',
+            'fake' => true,
+            'store_in' => 'cast_metas',
+        ],
+        [
+            'name' => 'cast_meta_keywords',
+            'label' => 'Meta Keywords',
+            'fake' => true,
+            'store_in' => 'cast_metas',
+        ],
+        [
+            'name' => 'cast_tags',
+            'label' => 'Tags',
+            'fake' => true,
+            'store_in' => 'cast_tags',
+        ],
+        [
+            'name' => 'cast_extra_details',
+            'label' => 'Extra Details',
+            'fake' => true,
+            'store_in' => 'cast_extras',
+        ],
     ];
 
     private $noFakeFieldsInputData = [
@@ -58,6 +88,10 @@ class CrudPanelFakeFieldsTest extends BaseDBCrudPanelTest
         'meta_description' => 'Meta Description Value',
         'tags' => ['tag1', 'tag2', 'tag3'],
         'extra_details' => ['detail1', 'detail2', 'detail3'],
+        'cast_meta_title' => 'Meta Title Value',
+        'cast_meta_description' => 'Meta Description Value',
+        'cast_tags' => ['tag1', 'tag2', 'tag3'],
+        'cast_extra_details' => ['detail1', 'detail2', 'detail3'],
     ];
 
     private $expectedInputDataWithCompactedFakeFields = [
@@ -67,11 +101,22 @@ class CrudPanelFakeFieldsTest extends BaseDBCrudPanelTest
         'metas' => '{"meta_title":"Meta Title Value","meta_description":"Meta Description Value"}',
         'tags' => '{"tags":["tag1","tag2","tag3"]}',
         'extras' => '{"extra_details":["detail1","detail2","detail3"]}',
+        'cast_metas'  => [
+            'cast_meta_title'       => 'Meta Title Value',
+            'cast_meta_description' => 'Meta Description Value',
+        ],
+        'cast_tags'   => [
+            'cast_tags' => ['tag1', 'tag2', 'tag3'],
+        ],
+        'cast_extras' => [
+            'cast_extra_details' => ['detail1', 'detail2', 'detail3'],
+        ],
     ];
 
     public function testCompactFakeFieldsFromCreateForm()
     {
         $this->crudPanel->addFields($this->fakeFieldsArray);
+        $this->crudPanel->setModel(Article::class);
 
         $compactedFakeFields = $this->crudPanel->compactFakeFields($this->fakeFieldsInputData, 'create');
 
@@ -91,7 +136,7 @@ class CrudPanelFakeFieldsTest extends BaseDBCrudPanelTest
 
     public function testCompactFakeFieldsFromUpdateFormWithoutId()
     {
-        $this->setExpectedException(ModelNotFoundException::class);
+        $this->expectException(ModelNotFoundException::class);
 
         $this->crudPanel->setModel(Article::class);
         $this->crudPanel->addFields($this->fakeFieldsArray, 'update');
@@ -103,7 +148,7 @@ class CrudPanelFakeFieldsTest extends BaseDBCrudPanelTest
 
     public function testCompactFakeFieldsFromUpdateFormWithUnknownId()
     {
-        $this->setExpectedException(ModelNotFoundException::class);
+        $this->expectException(ModelNotFoundException::class);
 
         $unknownId = DB::getPdo()->lastInsertId() + 1;
         $this->crudPanel->setModel(Article::class);
@@ -132,7 +177,7 @@ class CrudPanelFakeFieldsTest extends BaseDBCrudPanelTest
     {
         $this->markTestIncomplete('Not correctly implemented');
 
-        $this->setExpectedException(\InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
 
         // TODO: this should throw an invalid argument exception but doesn't because of the getFields method in the
         //       read trait, which returns the create fields in case of an unknown form type.

@@ -3,7 +3,8 @@
 @section('header')
 	<section class="content-header">
 	  <h1>
-	    {{ trans('backpack::crud.edit') }} <span>{{ $crud->entity_name }}</span>
+        <span class="text-capitalize">{{ $crud->entity_name_plural }}</span>
+        <small>{{ trans('backpack::crud.edit').' '.$crud->entity_name }}.</small>
 	  </h1>
 	  <ol class="breadcrumb">
 	    <li><a href="{{ url(config('backpack.base.route_prefix'),'dashboard') }}">{{ trans('backpack::crud.admin') }}</a></li>
@@ -23,7 +24,14 @@
 
 		@include('crud::inc.grouped_errors')
 
-		  {!! Form::open(array('url' => $crud->route.'/'.$entry->getKey(), 'method' => 'put', 'files'=>$crud->hasUploadFields('update', $entry->getKey()))) !!}
+		  <form method="post"
+		  		action="{{ url($crud->route.'/'.$entry->getKey()) }}"
+				@if ($crud->hasUploadFields('update', $entry->getKey()))
+				enctype="multipart/form-data"
+				@endif
+		  		>
+		  {!! csrf_field() !!}
+		  {!! method_field('PUT') !!}
 		  <div class="box">
 		    <div class="box-header with-border">
 		    	@if ($crud->model->translationEnabled())
@@ -43,7 +51,7 @@
 					<h3 class="box-title">{{ trans('backpack::crud.edit') }}</h3>
 				@endif
 		    </div>
-		    <div class="box-body row">
+		    <div class="box-body row display-flex-wrap" style="display: flex;flex-wrap: wrap;">
 		      <!-- load the view from the application if it exists, otherwise load the one in the package -->
 		      @if(view()->exists('vendor.backpack.crud.form_content'))
 		      	@include('vendor.backpack.crud.form_content', ['fields' => $fields, 'action' => 'edit'])
@@ -58,7 +66,7 @@
 
 		    </div><!-- /.box-footer-->
 		  </div><!-- /.box -->
-		  {!! Form::close() !!}
+		  </form>
 	</div>
 </div>
 @endsection

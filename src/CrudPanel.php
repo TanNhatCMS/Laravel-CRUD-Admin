@@ -11,6 +11,7 @@ use Backpack\CRUD\PanelTraits\Create;
 use Backpack\CRUD\PanelTraits\Delete;
 use Backpack\CRUD\PanelTraits\Errors;
 use Backpack\CRUD\PanelTraits\Fields;
+use Backpack\CRUD\PanelTraits\Search;
 use Backpack\CRUD\PanelTraits\Update;
 use Backpack\CRUD\PanelTraits\AutoSet;
 use Backpack\CRUD\PanelTraits\Buttons;
@@ -20,11 +21,12 @@ use Backpack\CRUD\PanelTraits\Reorder;
 use Backpack\CRUD\PanelTraits\AutoFocus;
 use Backpack\CRUD\PanelTraits\FakeFields;
 use Backpack\CRUD\PanelTraits\FakeColumns;
+use Illuminate\Database\Eloquent\Collection;
 use Backpack\CRUD\PanelTraits\ViewsAndRestoresRevisions;
 
 class CrudPanel
 {
-    use Create, Read, Update, Delete, Errors, Reorder, Access, Columns, Fields, Query, Buttons, AutoSet, FakeFields, FakeColumns, ViewsAndRestoresRevisions, AutoFocus, Filters, Tabs, Views;
+    use Create, Read, Search, Update, Delete, Errors, Reorder, Access, Columns, Fields, Query, Buttons, AutoSet, FakeFields, FakeColumns, ViewsAndRestoresRevisions, AutoFocus, Filters, Tabs, Views;
 
     // --------------
     // CRUD variables
@@ -48,7 +50,6 @@ class CrudPanel
     public $reorder_max_level = 3;
 
     public $details_row = false;
-    public $ajax_table = false;
     public $export_buttons = false;
 
     public $columns = []; // Define the columns for the table view as an array;
@@ -60,6 +61,7 @@ class CrudPanel
     public $buttons;
     public $db_column_types = [];
     public $default_page_length = false;
+    public $page_length_menu = false;
 
     // TONE FIELDS - TODO: find out what he did with them, replicate or delete
     public $sort = [];
@@ -103,6 +105,14 @@ class CrudPanel
     public function getModel()
     {
         return $this->model;
+    }
+
+    /**
+     * Get the database connection, as specified in the .env file or overwritten by the property on the model.
+     */
+    private function getSchema()
+    {
+        return \Schema::setConnection($this->getModel()->getConnection());
     }
 
     /**
@@ -246,16 +256,91 @@ class CrudPanel
      *          App/Models/Address defined by a company() method on the user model and an address() method on the
      *          company model, the 'App/Models/Address' string will be returned.
      *
-     * @param $relationString String Relation string. A dot notation can be used to chain multiple relations.
+     * @param string $relationString Relation string. A dot notation can be used to chain multiple relations.
+     * @param int $length Optionally specify the number of relations to omit from the start of the relation string. If
+     *        the provided length is negative, then that many relations will be omitted from the end of the relation
+     *        string.
+     * @param \Illuminate\Database\Eloquent\Model $model Optionally specify a different model than the one in the crud object.
      *
-     * @return string relation model name
+     * @return string Relation model name.
      */
-    private function getRelationModel($relationString)
+    public function getRelationModel($relationString, $length = null, $model = null)
     {
-        $result = array_reduce(explode('.', $relationString), function ($obj, $method) {
+        $relationArray = explode('.', $relationString);
+
+        if (! isset($length)) {
+            $length = count($relationArray);
+        }
+
+        if (! isset($model)) {
+            $model = $this->model;
+        }
+
+        $result = array_reduce(array_splice($relationArray, 0, $length), function ($obj, $method) {
             return $obj->$method()->getRelated();
-        }, $this->model);
+        }, $model);
 
         return get_class($result);
+    }
+
+    /**
+     * Get the given attribute from a model or models resulting from the specified relation string (eg: the list of streets from
+     * the many addresses of the company of a given user).
+     *
+     * @param \Illuminate\Database\Eloquent\Model $model Model (eg: user).
+     * @param string $relationString Model relation. Can be a string representing the name of a relation method in the given
+     *        Model or one from a different Model through multiple relations. A dot notation can be used to specify
+     *        multiple relations (eg: user.company.address).
+     * @param string $attribute The attribute from the relation model (eg: the street attribute from the address model).
+     *
+     * @return array An array containing a list of attributes from the resulting model.
+     */
+    public function getModelAttributeFromRelation($model, $relationString, $attribute)
+    {
+        $endModels = $this->getRelationModelInstances($model, $relationString);
+        $attributes = [];
+        foreach ($endModels as $model) {
+            if ($model->{$attribute}) {
+                $attributes[] = $model->{$attribute};
+            }
+        }
+
+        return $attributes;
+    }
+
+    /**
+     * Traverse the tree of relations for the given model, defined by the given relation string, and return the ending
+     * associated model instance or instances.
+     *
+     * @param \Illuminate\Database\Eloquent\Model $model The CRUD model.
+     * @param string $relationString Relation string. A dot notation can be used to chain multiple relations.
+     * @return array An array of the associated model instances defined by the relation string.
+     */
+    private function getRelationModelInstances($model, $relationString)
+    {
+        $relationArray = explode('.', $relationString);
+        $firstRelationName = array_first($relationArray);
+        $relation = $model->{$firstRelationName};
+
+        $results = [];
+        if (! empty($relation)) {
+            if ($relation instanceof Collection) {
+                $currentResults = $relation->toArray();
+            } else {
+                $currentResults[] = $relation;
+            }
+
+            array_shift($relationArray);
+
+            if (! empty($relationArray)) {
+                foreach ($currentResults as $currentResult) {
+                    $results = array_merge($results, $this->getRelationModelInstances($currentResult, implode('.', $relationArray)));
+                }
+            } else {
+                $results = $currentResults;
+            }
+        }
+
+        return $results;
     }
 }

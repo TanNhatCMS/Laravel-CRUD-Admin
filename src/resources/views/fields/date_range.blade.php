@@ -3,22 +3,23 @@
 <?php
     // if the column has been cast to Carbon or Date (using attribute casting)
     // get the value as a date string
-    function formatDate($entry, $dateFieldName)
-    {
-        $formattedDate = null;
-        if (isset($entry) && !empty($entry->{$dateFieldName})) {
-            $dateField = $entry->{$dateFieldName};
-            if ($dateField instanceof \Carbon\Carbon || $dateField instanceof \Jenssegers\Date\Date) {
-                $formattedDate = $dateField->format('Y-m-d H:i:s');
-            } else {
-                $formattedDate = date('Y-m-d H:i:s', strtotime($entry->{$dateFieldName}));
+    if (!function_exists('formatDate')) {
+        function formatDate($entry, $dateFieldName)
+        {
+            $formattedDate = null;
+            if (isset($entry) && !empty($entry->{$dateFieldName})) {
+                $dateField = $entry->{$dateFieldName};
+                if ($dateField instanceof \Carbon\Carbon || $dateField instanceof \Jenssegers\Date\Date) {
+                    $formattedDate = $dateField->format('Y-m-d H:i:s');
+                } else {
+                    $formattedDate = date('Y-m-d H:i:s', strtotime($entry->{$dateFieldName}));
+                }
             }
+            return $formattedDate;
         }
-        return $formattedDate;
     }
 
-    if (isset($entry))
-    {
+    if (isset($entry)) {
         $start_name = formatDate($entry, $field['start_name']);
         $end_name = formatDate($entry, $field['end_name']);
     }
@@ -52,13 +53,13 @@
 
     {{-- FIELD CSS - will be loaded in the after_styles section --}}
     @push('crud_fields_styles')
-    <link rel="stylesheet" href="{{ asset('/vendor/adminlte/plugins/daterangepicker/daterangepicker.css') }}">
+    <link rel="stylesheet" href="{{ asset('/vendor/adminlte/bower_components/bootstrap-daterangepicker/daterangepicker.css') }}">
     @endpush
 
     {{-- FIELD JS - will be loaded in the after_scripts section --}}
     @push('crud_fields_scripts')
-    <script src="{{ asset('/vendor/adminlte/plugins/daterangepicker/moment.min.js') }}"></script>
-    <script src="{{ asset('/vendor/adminlte/plugins/daterangepicker/daterangepicker.js') }}"></script>
+    <script src="{{ asset('/vendor/adminlte/bower_components/moment/moment.js') }}"></script>
+    <script src="{{ asset('/vendor/adminlte/bower_components/bootstrap-daterangepicker/daterangepicker.js') }}"></script>
     <script>
         jQuery(document).ready(function($){
             $('[data-bs-daterangepicker]').each(function(){
