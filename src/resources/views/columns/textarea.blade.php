@@ -1,2 +1,7 @@
 {{-- regular object attribute --}}
-<span>{!! $entry->{$column['name']} !!}</span>
+@if(is_array($entry->{$column['name']}))
+    @include('backpack::crud.columns.array')
+@else
+    <span>{!! $entry->{$column['name']} !!}</span>
+@endif
+
