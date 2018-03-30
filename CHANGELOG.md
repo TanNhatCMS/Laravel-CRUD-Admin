@@ -20,6 +20,24 @@ All Notable changes to `Backpack CRUD` will be documented in this file
 - Nothing
 -----------
 
+## [3.4.4] - 2018-03-29
+
+## Fixed
+- ckeditor button now showing after js update; merges #1310; fixes #1309;
+
+
+## [3.4.3] - 2018-03-28
+
+## Fixed
+- model_function column HTML was escaped;
+
+
+## [3.4.2] - 2018-03-23
+
+## Fixed
+- CrudPanelCreateTest failing 1 test;
+
+
 ## [3.4.1] - 2018-03-22
 
 ## Fixed
