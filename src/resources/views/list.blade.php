@@ -46,7 +46,7 @@
                 @endforeach
 
                 @if ( $crud->buttons->where('stack', 'line')->count() )
-                  <th data-orderable="false">{{ trans('backpack::crud.actions') }}</th>
+                  <th data-orderable="false" class="not-export-col">{{ trans('backpack::crud.actions') }}</th>
                 @endif
               </tr>
             </thead>
