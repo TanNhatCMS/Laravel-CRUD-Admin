@@ -42,6 +42,8 @@ class CrudController extends BaseController
                 $this->crud->request = $request;
                 $this->setup();
 
+                $this->crud->initTitles();
+
                 return $next($request);
             });
         }
@@ -64,7 +66,7 @@ class CrudController extends BaseController
         $this->crud->hasAccessOrFail('list');
 
         $this->data['crud'] = $this->crud;
-        $this->data['title'] = ucfirst($this->crud->entity_name_plural);
+        $this->data['title'] = $this->crud->getListTitle();
 
         // load the view from /resources/views/vendor/backpack/crud/ if it exists, otherwise load the one in the package
         return view($this->crud->getListView(), $this->data);
@@ -83,7 +85,7 @@ class CrudController extends BaseController
         $this->data['crud'] = $this->crud;
         $this->data['saveAction'] = $this->getSaveAction();
         $this->data['fields'] = $this->crud->getCreateFields();
-        $this->data['title'] = trans('backpack::crud.add').' '.$this->crud->entity_name;
+        $this->data['title'] = $this->crud->getCreateTitle();
 
         // load the view from /resources/views/vendor/backpack/crud/ if it exists, otherwise load the one in the package
         return view($this->crud->getCreateView(), $this->data);
@@ -144,7 +146,7 @@ class CrudController extends BaseController
         $this->data['crud'] = $this->crud;
         $this->data['saveAction'] = $this->getSaveAction();
         $this->data['fields'] = $this->crud->getUpdateFields($id);
-        $this->data['title'] = trans('backpack::crud.edit').' '.$this->crud->entity_name;
+        $this->data['title'] = $this->crud->getEditTitle();
 
         $this->data['id'] = $id;
 
@@ -217,7 +219,7 @@ class CrudController extends BaseController
         // get the info for that entry
         $this->data['entry'] = $this->crud->getEntry($id);
         $this->data['crud'] = $this->crud;
-        $this->data['title'] = trans('backpack::crud.preview').' '.$this->crud->entity_name;
+        $this->data['title'] = $this->crud->getShowTitle();
 
         // remove preview button from stack:line
         $this->crud->removeButton('preview');
