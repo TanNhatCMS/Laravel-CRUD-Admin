@@ -15,7 +15,7 @@
 @endsection
 
 @section('content')
-	@if ($crud->hasAccess('list'))
+	@if ($crud->isEnabled('list'))
 		<a href="{{ url($crud->route) }}"><i class="fa fa-angle-double-left"></i> {{ trans('backpack::crud.back_to_all') }} <span>{{ $crud->entity_name_plural }}</span></a><br><br>
 	@endif
 
@@ -35,6 +35,7 @@
 		                <td>
 		                    <strong>{{ $column['label'] }}</strong>
 		                </td>
+                        <td>
 							@if (!isset($column['type']))
 		                      @include('crud::columns.text')
 		                    @else
@@ -48,6 +49,7 @@
 		                        @endif
 		                      @endif
 		                    @endif
+                        </td>
 		            </tr>
 		        @endforeach
 				@if ($crud->buttons->where('stack', 'line')->count())

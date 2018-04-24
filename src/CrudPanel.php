@@ -6,7 +6,7 @@ use Backpack\CRUD\PanelTraits\Read;
 use Backpack\CRUD\PanelTraits\Tabs;
 use Backpack\CRUD\PanelTraits\Query;
 use Backpack\CRUD\PanelTraits\Views;
-use Backpack\CRUD\PanelTraits\Access;
+use Backpack\CRUD\PanelTraits\FeatureAccess;
 use Backpack\CRUD\PanelTraits\Create;
 use Backpack\CRUD\PanelTraits\Delete;
 use Backpack\CRUD\PanelTraits\Errors;
@@ -26,7 +26,7 @@ use Backpack\CRUD\PanelTraits\ViewsAndRestoresRevisions;
 
 class CrudPanel
 {
-    use Create, Read, Search, Update, Delete, Errors, Reorder, Access, Columns, Fields, Query, Buttons, AutoSet, FakeFields, FakeColumns, ViewsAndRestoresRevisions, AutoFocus, Filters, Tabs, Views;
+    use Create, Read, Search, Update, Delete, Errors, Reorder, Columns, Fields, Query, Buttons, AutoSet, FakeFields, FakeColumns, ViewsAndRestoresRevisions, AutoFocus, Filters, Tabs, Views, FeatureAccess;
 
     // --------------
     // CRUD variables
@@ -43,7 +43,7 @@ class CrudPanel
     public $entity_name_plural = 'entries'; // what name will show up on the buttons, in plural (ex: Delete 5 entities)
     public $request;
 
-    public $access = ['list', 'create', 'update', 'delete'/* 'revisions', reorder', 'show', 'details_row' */];
+    public $enabled = ['list', 'create', 'update', 'delete'/* 'revisions', reorder', 'show', 'details_row' */];
 
     public $reorder = false;
     public $reorder_label = false;

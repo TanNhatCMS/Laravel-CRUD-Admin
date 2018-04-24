@@ -11,7 +11,7 @@ trait AjaxTable
      */
     public function search()
     {
-        $this->crud->hasAccessOrFail('list');
+        $this->crud->isEnabledOrFail('list');
 
         $totalRows = $filteredRows = $this->crud->count();
 

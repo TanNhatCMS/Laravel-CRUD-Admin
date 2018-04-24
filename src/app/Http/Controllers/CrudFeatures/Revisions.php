@@ -13,7 +13,7 @@ trait Revisions
      */
     public function listRevisions($id)
     {
-        $this->crud->hasAccessOrFail('revisions');
+        $this->crud->isEnabledOrFail('revisions');
 
         // get entry ID from Request (makes sure its the last ID for nested resources)
         $id = $this->crud->getCurrentEntryId() ?? $id;
@@ -41,7 +41,7 @@ trait Revisions
      */
     public function restoreRevision($id)
     {
-        $this->crud->hasAccessOrFail('revisions');
+        $this->crud->isEnabledOrFail('revisions');
 
         // get entry ID from Request (makes sure its the last ID for nested resources)
         $id = $this->crud->getCurrentEntryId() ?? $id;

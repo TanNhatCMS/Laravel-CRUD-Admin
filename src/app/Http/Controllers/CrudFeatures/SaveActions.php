@@ -23,7 +23,7 @@ trait SaveActions
         $saveOptions = collect($permissions)
             // Restrict list to allowed actions.
             ->filter(function ($action, $permission) {
-                return $this->crud->hasAccess($permission);
+                return $this->crud->isEnabled($permission);
             })
             // Generate list of possible actions.
             ->mapWithKeys(function ($action, $permission) {

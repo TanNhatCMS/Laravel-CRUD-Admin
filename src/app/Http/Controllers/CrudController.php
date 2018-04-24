@@ -61,7 +61,7 @@ class CrudController extends BaseController
      */
     public function index()
     {
-        $this->crud->hasAccessOrFail('list');
+        $this->crud->isEnabledOrFail('list');
 
         $this->data['crud'] = $this->crud;
         $this->data['title'] = ucfirst($this->crud->entity_name_plural);
@@ -77,7 +77,7 @@ class CrudController extends BaseController
      */
     public function create()
     {
-        $this->crud->hasAccessOrFail('create');
+        $this->crud->isEnabledOrFail('create');
 
         // prepare the fields you need to show
         $this->data['crud'] = $this->crud;
@@ -98,7 +98,7 @@ class CrudController extends BaseController
      */
     public function storeCrud(StoreRequest $request = null)
     {
-        $this->crud->hasAccessOrFail('create');
+        $this->crud->isEnabledOrFail('create');
 
         // fallback to global request instance
         if (is_null($request)) {
@@ -134,7 +134,7 @@ class CrudController extends BaseController
      */
     public function edit($id)
     {
-        $this->crud->hasAccessOrFail('update');
+        $this->crud->isEnabledOrFail('update');
 
         // get entry ID from Request (makes sure its the last ID for nested resources)
         $id = $this->crud->getCurrentEntryId() ?? $id;
@@ -161,7 +161,7 @@ class CrudController extends BaseController
      */
     public function updateCrud(UpdateRequest $request = null)
     {
-        $this->crud->hasAccessOrFail('update');
+        $this->crud->isEnabledOrFail('update');
 
         // fallback to global request instance
         if (is_null($request)) {
@@ -198,7 +198,7 @@ class CrudController extends BaseController
      */
     public function show($id)
     {
-        $this->crud->hasAccessOrFail('show');
+        $this->crud->isEnabledOrFail('show');
 
         // get entry ID from Request (makes sure its the last ID for nested resources)
         $id = $this->crud->getCurrentEntryId() ?? $id;
@@ -236,7 +236,7 @@ class CrudController extends BaseController
      */
     public function destroy($id)
     {
-        $this->crud->hasAccessOrFail('delete');
+        $this->crud->isEnabledOrFail('delete');
 
         // get entry ID from Request (makes sure its the last ID for nested resources)
         $id = $this->crud->getCurrentEntryId() ?? $id;
