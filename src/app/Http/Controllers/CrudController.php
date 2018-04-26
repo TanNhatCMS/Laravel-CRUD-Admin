@@ -4,16 +4,17 @@ namespace Backpack\CRUD\app\Http\Controllers;
 
 use Backpack\CRUD\CrudPanel;
 use Illuminate\Http\Request;
-use Illuminate\Http\Request as StoreRequest;
 use Illuminate\Support\Facades\Form as Form;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Http\Request as UpdateRequest;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Backpack\CRUD\app\Http\Controllers\CrudFeatures\Reorder;
 use Backpack\CRUD\app\Http\Controllers\CrudFeatures\AjaxTable;
+// CRUD Traits for non-core features
 use Backpack\CRUD\app\Http\Controllers\CrudFeatures\Revisions;
 use Backpack\CRUD\app\Http\Controllers\CrudFeatures\SaveActions;
+use Backpack\CRUD\app\Http\Requests\CrudRequest as StoreRequest;
+use Backpack\CRUD\app\Http\Requests\CrudRequest as UpdateRequest;
 use Backpack\CRUD\app\Http\Controllers\CrudFeatures\ShowDetailsRow;
 
 class CrudController extends BaseController
@@ -34,6 +35,7 @@ class CrudController extends BaseController
     {
         if (! $this->crud) {
             $this->crud = app()->make(CrudPanel::class);
+            $this->crud->ajax_table=false;
 
             // call the setup function inside this closure to also have the request there
             // this way, developers can use things stored in session (auth variables, etc)
@@ -65,6 +67,11 @@ class CrudController extends BaseController
 
         $this->data['crud'] = $this->crud;
         $this->data['title'] = ucfirst($this->crud->entity_name_plural);
+
+        // get all entries if AJAX is not enabled
+        if (! $this->data['crud']->ajaxTable()) {
+            $this->data['entries'] = $this->data['crud']->getEntries();
+        }
 
         // load the view from /resources/views/vendor/backpack/crud/ if it exists, otherwise load the one in the package
         return view($this->crud->getListView(), $this->data);
@@ -117,7 +124,8 @@ class CrudController extends BaseController
         $this->data['entry'] = $this->crud->entry = $item;
 
         // show a success message
-        \Alert::success(trans('backpack::crud.insert_success'))->flash();
+        if($this->crud->model::find($item->id))
+         \Alert::success(trans('backpack::crud.insert_success'))->flash();
 
         // save the redirect choice for next time
         $this->setSaveAction();
@@ -143,10 +151,27 @@ class CrudController extends BaseController
         $this->data['entry'] = $this->crud->getEntry($id);
         $this->data['crud'] = $this->crud;
         $this->data['saveAction'] = $this->getSaveAction();
-        $this->data['fields'] = $this->crud->getUpdateFields($id);
+        $this->data['fields'] = $fields = $this->crud->getUpdateFields($id);
         $this->data['title'] = trans('backpack::crud.edit').' '.$this->crud->entity_name;
 
         $this->data['id'] = $id;
+
+        if($this->crud->eagerLoad && !empty($this->crud->eagerLoad))
+        foreach($this->crud->eagerLoad as $relation_name)
+        {
+         if($this->data['entry'] && $rel = $this->data['entry']->{$relation_name})
+         {
+          foreach($this->data['fields'] as $field_name => $field)
+          {
+           if(starts_with($field_name, $relation_name))
+           {
+            $column_name = str_replace("{$relation_name}.", '', $field_name);
+
+            $this->data['fields'][$field_name]['value'] = $rel->{$column_name};
+           }
+          }
+         }
+        }
 
         // load the view from /resources/views/vendor/backpack/crud/ if it exists, otherwise load the one in the package
         return view($this->crud->getEditView(), $this->data);
@@ -242,5 +267,27 @@ class CrudController extends BaseController
         $id = $this->crud->getCurrentEntryId() ?? $id;
 
         return $this->crud->delete($id);
+    }
+
+    public function handleEagerLoad($item)
+    {
+     collect($this->crud->eagerLoad)->each(function($relation_name, $key) use ($item)
+     {
+      $data = collect(request()->all())
+      ->filter(function($value, $key) use ($relation_name)
+      {
+       return starts_with($key, $relation_name);
+      })
+      ->mapWithKeys(function($value, $key) use ($relation_name)
+      {
+       return [str_replace("{$relation_name}_", '', $key) => $value ?? ''];
+      })
+      ->toArray();
+
+      if(!$rel = $item->{$relation_name})
+       $item->{$relation_name}()->create($data);
+      else
+       $item->{$relation_name}->update($data);
+     });
     }
 }
