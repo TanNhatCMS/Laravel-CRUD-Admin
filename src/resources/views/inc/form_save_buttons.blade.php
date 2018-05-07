@@ -8,19 +8,27 @@
             <span class="fa fa-save" role="presentation" aria-hidden="true"></span> &nbsp;
             <span data-value="{{ $saveAction['active']['value'] }}">{{ $saveAction['active']['label'] }}</span>
         </button>
+        @if(isset($saveAction['options']) && !empty($saveAction['options']))
+            <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aira-expanded="false">
+                <span class="caret"></span>
+                <span class="sr-only">&#x25BC;</span>
+            </button>
 
-        <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aira-expanded="false">
-            <span class="caret"></span>
-            <span class="sr-only">&#x25BC;</span>
-        </button>
-
-        <ul class="dropdown-menu">
-            @foreach( $saveAction['options'] as $value => $label)
-            <li><a href="javascript:void(0);" data-value="{{ $value }}">{{ $label }}</a></li>
-            @endforeach
-        </ul>
-
+            <ul class="dropdown-menu">
+                @foreach( $saveAction['options'] as $value => $label)
+                    <li><a href="javascript:void(0);" data-value="{{ $value }}">{{ $label }}</a></li>
+                @endforeach
+            </ul>
+        @endif
     </div>
-
+    
+    @if($crud->hasAccess('list'))
     <a href="{{ url($crud->route) }}" class="btn btn-default"><span class="fa fa-ban"></span> &nbsp;{{ trans('backpack::crud.cancel') }}</a>
+    @endif
+    
+    @if($crud->hasAccess('delete'))
+      @if(str_contains(url()->current(), '/edit'))
+        @include('crud::buttons.delete', ['size'=>''])
+      @endif
+    @endif
 </div>

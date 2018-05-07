@@ -36,7 +36,7 @@
 
                     @foreach( $field['columns'] as $prop )
                     <th style="font-weight: 600!important;">
-                        {{ $prop }}
+                        {{ $prop['header']??$prop['label']??$prop['name'] }}
                     </th>
                     @endforeach
                     <th class="text-center" ng-if="max == -1 || max > 1"> {{-- <i class="fa fa-sort"></i> --}} </th>
@@ -48,9 +48,16 @@
 
                 <tr ng-repeat="item in items" class="array-row">
 
-                    @foreach( $field['columns'] as $prop => $label)
+                    @foreach( $field['columns'] as $prop)
+                        @php
+                            $prop['attributes'] = array_merge($prop['attributes']??[], [
+                                'ng-model' => "item.{$prop['name']}"
+                            ]);
+                        @endphp
                     <td>
-                        <input class="form-control input-sm" type="text" ng-model="item.{{ $prop }}">
+                        @include('crud::fields.'.$prop['type']??'text', array('field' => $prop))
+                        {{--<input class="form-control input-sm" type="{{ $prop['type']??'text' }}" ng-model="item.{{ $prop['name'] }}"
+                        {{ $prop['attributes']??'' }}>--}}
                     </td>
                     @endforeach
                     <td ng-if="max == -1 || max > 1">

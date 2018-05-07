@@ -4,7 +4,7 @@ namespace Backpack\CRUD;
 
 use Backpack\CRUD\PanelTraits\Read;
 use Backpack\CRUD\PanelTraits\Tabs;
-use Backpack\CRUD\PanelTraits\Query;
+use Backedin\BackpackTraits\Backpack\Query;
 use Backpack\CRUD\PanelTraits\Views;
 use Backpack\CRUD\PanelTraits\Access;
 use Backpack\CRUD\PanelTraits\Create;
@@ -14,7 +14,7 @@ use Backpack\CRUD\PanelTraits\Fields;
 use Backpack\CRUD\PanelTraits\Search;
 use Backpack\CRUD\PanelTraits\Update;
 use Backpack\CRUD\PanelTraits\AutoSet;
-use Backpack\CRUD\PanelTraits\Buttons;
+use Backedin\BackpackTraits\Backpack\Buttons;
 use Backpack\CRUD\PanelTraits\Columns;
 use Backpack\CRUD\PanelTraits\Filters;
 use Backpack\CRUD\PanelTraits\Reorder;
@@ -65,6 +65,8 @@ class CrudPanel
 
     // TONE FIELDS - TODO: find out what he did with them, replicate or delete
     public $sort = [];
+
+    public $eagerLoad = [];
 
     // The following methods are used in CrudController or your EntityCrudController to manipulate the variables above.
 
@@ -266,21 +268,26 @@ class CrudPanel
      */
     public function getRelationModel($relationString, $length = null, $model = null)
     {
-        $relationArray = explode('.', $relationString);
+     if(!$model = $this->model->find($this->getLastParameter()))
+     {
+      $model = $this->model;
+     }
+     
+     $relationArray = explode('.', $relationString);
 
-        if (! isset($length)) {
-            $length = count($relationArray);
-        }
+     if (! isset($length)) {
+         $length = count($relationArray);
+     }
 
-        if (! isset($model)) {
-            $model = $this->model;
-        }
+     if (! isset($model)) {
+         $model = $this->model;
+     }
 
-        $result = array_reduce(array_splice($relationArray, 0, $length), function ($obj, $method) {
-            return $obj->$method()->getRelated();
-        }, $model);
+     $result = array_reduce(array_splice($relationArray, 0, $length), function ($obj, $method) {
+         return $obj->$method()->getRelated();
+     }, $model);
 
-        return get_class($result);
+     return get_class($result);
     }
 
     /**
