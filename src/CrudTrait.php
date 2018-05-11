@@ -22,11 +22,14 @@ trait CrudTrait
 
         $instance = new static(); // create an instance of the model to be able to get the table name
         $connectionName = $instance->getConnectionName();
-        $type = DB::connection($connectionName)->select(DB::raw('SHOW COLUMNS FROM `'.$table_prefix.$instance->getTable().'` WHERE Field = "'.$field_name.'"'))[0]->Type;
+        $type = \DB::connection($connectionName)->getSchemaBuilder()->getColumnType( $table_prefix.$instance->getTable(), $field_name );
+
         preg_match('/^enum\((.*)\)$/', $type, $matches);
         $enum = [];
-        foreach (explode(',', $matches[1]) as $value) {
-            $enum[] = trim($value, "'");
+        if( !empty( $matches[1] ) ) {
+            foreach (explode(',', $matches[1]) as $value) {
+                $enum[] = trim($value, "'");
+            }
         }
 
         return $enum;
