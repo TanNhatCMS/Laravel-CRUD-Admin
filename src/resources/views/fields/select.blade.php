@@ -16,7 +16,13 @@
         @endif
 
         @if (isset($field['model']))
-            @foreach ($field['model']::orderBy($field['attribute'])->get() as $connected_entity_entry)
+            @php        
+                if(isset($field['sorted']) && $field['sorted'] == false)
+                    $models=$field['model']::all();
+                else
+                    $models=$field['model']::orderBy($field['attribute'])->get();
+            @endphp
+            @foreach ($models as $connected_entity_entry)
                 @if(old($field['name']) == $connected_entity_entry->getKey() || (is_null(old($field['name'])) && isset($field['value']) && $field['value'] == $connected_entity_entry->getKey()))
                     <option value="{{ $connected_entity_entry->getKey() }}" selected>{{ $connected_entity_entry->{$field['attribute']} }}</option>
                 @else
