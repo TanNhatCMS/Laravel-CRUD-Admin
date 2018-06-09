@@ -17,10 +17,10 @@
 
         @if (isset($field['model']))
             @php        
-                if(isset($field['sorted']) && $field['sorted'] == false)
-                    $models=$field['model']::all();
-                else
+                if(isset($field['sorted']) && $field['sorted'] == true)
                     $models=$field['model']::orderBy($field['attribute'])->get();
+                else
+                    $models=$field['model']::all();
             @endphp
             @foreach ($models as $connected_entity_entry)
                 @if(old($field['name']) == $connected_entity_entry->getKey() || (is_null(old($field['name'])) && isset($field['value']) && $field['value'] == $connected_entity_entry->getKey()))
