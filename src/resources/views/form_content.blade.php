@@ -2,8 +2,13 @@
 <input type="hidden" name="locale" value={{ $crud->request->input('locale')?$crud->request->input('locale'):App::getLocale() }}>
 @endif
 
-{{-- See if we're using tabs --}}
-@if ($crud->tabsEnabled())
+@if($crud->custom_form_view)
+{{-- if we are using a custom form view extract template name and field for the programmer --}}
+    @include($crud->custom_form_view,[
+      't'=>$crud->extractTemplates($fields),
+      'f'=>$crud->extractFields($fields)
+      ])
+@elseif ($crud->tabsEnabled()){{-- See if we're using tabs --}}
     @include('crud::inc.show_tabbed_fields')
 @else
     @include('crud::inc.show_fields', ['fields' => $fields])

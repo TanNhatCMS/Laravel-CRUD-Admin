@@ -23,10 +23,11 @@ use Backpack\CRUD\PanelTraits\FakeFields;
 use Backpack\CRUD\PanelTraits\FakeColumns;
 use Illuminate\Database\Eloquent\Collection;
 use Backpack\CRUD\PanelTraits\ViewsAndRestoresRevisions;
+use Backpack\CRUD\PanelTraits\CustomFormView;
 
 class CrudPanel
 {
-    use Create, Read, Search, Update, Delete, Errors, Reorder, Access, Columns, Fields, Query, Buttons, AutoSet, FakeFields, FakeColumns, ViewsAndRestoresRevisions, AutoFocus, Filters, Tabs, Views;
+    use Create, Read, Search, Update, Delete, Errors, Reorder, Access, Columns, Fields, Query, Buttons, AutoSet, FakeFields, FakeColumns, ViewsAndRestoresRevisions, AutoFocus, Filters, Tabs, Views, CustomFormView;
 
     // --------------
     // CRUD variables
@@ -65,6 +66,10 @@ class CrudPanel
 
     // TONE FIELDS - TODO: find out what he did with them, replicate or delete
     public $sort = [];
+
+    public $custom_form_view='';
+    public $wide_form=false;
+
 
     // The following methods are used in CrudController or your EntityCrudController to manipulate the variables above.
 

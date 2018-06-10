@@ -15,8 +15,12 @@
 @endsection
 
 @section('content')
+
+{{-- this is the form wrapper, we can set it off to let the programmer use the hole screen --}}
+@if(!$crud->wide_form)
 <div class="row">
 	<div class="col-md-8 col-md-offset-2">
+@endif
 		<!-- Default box -->
 		@if ($crud->hasAccess('list'))
 			<a href="{{ url($crud->route) }}"><i class="fa fa-angle-double-left"></i> {{ trans('backpack::crud.back_to_all') }} <span>{{ $crud->entity_name_plural }}</span></a><br><br>
@@ -52,7 +56,10 @@
 
 		  </div><!-- /.box -->
 		  </form>
+		  
+@if(!$crud->wide_form)
 	</div>
 </div>
+@endif
 
 @endsection
