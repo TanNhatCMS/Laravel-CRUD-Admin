@@ -40,13 +40,14 @@
               <tr>
                 {{-- Table columns --}}
                 @foreach ($crud->columns as $column)
-                  <th {{ isset($column['orderable']) ? 'data-orderable=' .var_export($column['orderable'], true) : '' }}>
+                  <th @if($loop->first) data-priority @endif
+                    {{ isset($column['orderable']) ? 'data-orderable=' .var_export($column['orderable'], true) : '' }}>
                     {{ $column['label'] }}
                   </th>
                 @endforeach
 
                 @if ( $crud->buttons->where('stack', 'line')->count() )
-                  <th data-orderable="false">{{ trans('backpack::crud.actions') }}</th>
+                  <th data-priority data-orderable="false">{{ trans('backpack::crud.actions') }}</th>
                 @endif
               </tr>
             </thead>
