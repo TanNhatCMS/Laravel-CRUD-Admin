@@ -109,7 +109,7 @@ trait Views
      */
     public function getListContentClass()
     {
-        return $this->listContentClass ?? config('backpack.crud.list_content_class', 'col-md-12');;
+        return $this->listContentClass ?? config('backpack.crud.list_content_class', 'col-md-12');
     }
 
     /**
