@@ -95,7 +95,7 @@
           },
           dom:
             "<'row'<'col-sm-6 hidden-xs'l><'col-sm-6 hidden-print'f>>" +
-            "<'row'<'col-sm-12'tr>>" +
+            "<'row table-wrapper'<'table-inner'tr>>" +
             "<'row'<'col-sm-5'i><'col-sm-2'B><'col-sm-5 hidden-print'p>>",
       }
   }
