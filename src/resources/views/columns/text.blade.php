@@ -1,6 +1,10 @@
 {{-- regular object attribute --}}
 @php
-	$value = data_get($entry, $column['name']);
+	if(isset($column['value'])) {
+		$value = $column['value'];
+	} else {
+		$value = data_get($entry, $column['name']);
+	}
 @endphp
 
 <span>
