@@ -50,7 +50,9 @@ trait Search
 
         // sensible fallback search logic, if none was explicitly given
         if ($column['tableColumn']) {
-            switch ($column['type']) {
+            $columnType = isset($column['search_as']) ? $column['search_as'] : $column['type'];
+
+            switch ($columnType) {
                 case 'email':
                 case 'date':
                 case 'datetime':
