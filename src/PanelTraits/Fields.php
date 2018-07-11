@@ -67,7 +67,7 @@ trait Fields
     {
         if (count($fields)) {
             foreach ($fields as $field) {
-                if (is_string($tab) && !isset($field['tab'])) {
+                if (is_string($tab) && ! isset($field['tab'])) {
                     $field['tab'] = $tab;
                 }
 
