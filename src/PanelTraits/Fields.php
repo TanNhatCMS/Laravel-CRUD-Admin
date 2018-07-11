@@ -61,11 +61,16 @@ trait Fields
      *
      * @param array $fields The new fields.
      * @param string $form The CRUD form. Can be 'create', 'update' or 'both'. Default is 'both'.
+     * @param string $tab The CRUD tab. Can be any string you use for managing your tabs.
      */
-    public function addFields($fields, $form = 'both')
+    public function addFields($fields, $form = 'both', $tab = null)
     {
         if (count($fields)) {
             foreach ($fields as $field) {
+                if (is_string($tab) && !isset($field['tab'])) {
+                    $field['tab'] = $tab;
+                }
+
                 $this->addField($field, $form);
             }
         }
