@@ -80,7 +80,11 @@ trait CrudTrait
                 continue;
             }
 
-            $column_contents = $this->attributes[$column];
+            if ($this->translationEnabled() && $this->isTranslatableAttribute($column)) {
+                $column_contents = $this->{$column};
+            } else {
+                $column_contents = $this->attributes[$column];
+            }
 
             if (! is_object($column_contents)) {
                 $column_contents = json_decode($column_contents);
