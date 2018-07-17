@@ -61,8 +61,8 @@ trait Buttons
 
     public function addButtonFromView($stack, $name, $view, $position = false)
     {
-        if (!view()->exists($view)) {
-            $view = 'crud::buttons.' . $view;
+        if (! view()->exists($view)) {
+            $view = 'crud::buttons.'.$view;
         }
 
         $this->addButton($stack, $name, 'view', $view, $position);
