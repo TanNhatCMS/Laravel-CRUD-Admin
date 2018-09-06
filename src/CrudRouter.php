@@ -58,6 +58,11 @@ class CrudRouter
             'as' => 'crud.'.$this->name.'.restoreRevision',
             'uses' => $this->controller.'@restoreRevision',
         ]);
+
+        Route::post($this->name.'/editable', [
+            'as' => 'crud.'.$this->name.'.updateEditableField',
+            'uses' => $this->controller.'@updateEditableField',
+        ]);
     }
 
     /**

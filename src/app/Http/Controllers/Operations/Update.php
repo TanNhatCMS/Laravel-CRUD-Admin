@@ -3,6 +3,8 @@
 namespace Backpack\CRUD\app\Http\Controllers\Operations;
 
 use Illuminate\Http\Request as UpdateRequest;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request;
 
 trait Update
 {
@@ -68,5 +70,36 @@ trait Update
         $this->setSaveAction();
 
         return $this->performSaveAction($item->getKey());
+    }
+
+    /**
+     * Update the specified model's field in the database.
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function updateEditableField(Request $request)
+    {
+        $this->crud->hasAccessOrFail('update');
+
+        if (is_null($request)) {
+            $request = Request::instance();
+        }
+
+        /**
+         * @var Model|string $itemOrErrorString Eloquent Model or error string.
+         */
+        $itemOrErrorString = $this->crud->updateProperty(
+            $request->input('pk'),
+            $request->input('name'),
+            $request->input('value')
+        );
+
+        if (!is_string($itemOrErrorString)) {
+            $this->data['entry'] = $this->crud->entry = $itemOrErrorString;
+            return response()->json();
+        } else {
+            return response()->json($itemOrErrorString, 400);
+        }
     }
 }

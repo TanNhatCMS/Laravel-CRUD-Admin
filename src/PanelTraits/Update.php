@@ -2,6 +2,7 @@
 
 namespace Backpack\CRUD\PanelTraits;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasOneOrMany;
 
 trait Update
@@ -33,6 +34,36 @@ trait Update
         $nn_relationships = array_pluck($this->getRelationFieldsWithPivot('update'), 'name');
         $data = array_except($data, $nn_relationships);
         $updated = $item->update($data);
+
+        return $item;
+    }
+
+    /**
+     * Update model property in database.
+     *
+     * @param int       $id             The entity's key (ID).
+     * @param string    $propertyName   Property name to be updated.
+     * @param mixed     $value          Property value.
+     * @return Model|string             Eloquent model if success,
+     *                                  error string with error message if error occurs.
+     */
+    public function updateProperty($id, $propertyName, $value)
+    {
+        $item = $this->model->find($id);
+
+        if (!$item) {
+            return "Can't find model by ID"; //todo localize
+        }
+
+        if (!isset($item->$propertyName)) {
+            return "Can't find model property [$propertyName]";
+        }
+
+        $item->$propertyName = $value;
+
+        if (!$item->save()) {
+            return "Can't save model with property [$propertyName] and value [$value]";
+        }
 
         return $item;
     }
