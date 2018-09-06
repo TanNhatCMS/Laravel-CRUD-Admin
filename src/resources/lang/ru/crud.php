@@ -51,6 +51,11 @@ return [
     'details_row'                             => 'Это строка сведений. Измените, пожалуйста',
     'details_row_loading_error'               => 'Произошла ошибка при загрузке сведений. Повторите операцию.',
 
+    // Editable
+    'editable_cant_find_model'                  => 'Модель по заданному ID не найдена',
+    'editable_cant_find_model_property'         => 'Свойство [:property] у модели не найдено',
+    'editable_cant_save_model_with_property'    => 'Невозможно сохранить модель со свойством [:property] и значением [:value]',
+
     // Confirmation messages and bubbles
     'delete_confirm'                          => 'Вы уверены. что хотите удалить эту запись?',
     'delete_confirmation_title'               => 'Запись удалена',

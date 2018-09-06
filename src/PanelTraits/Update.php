@@ -52,17 +52,22 @@ trait Update
         $item = $this->model->find($id);
 
         if (!$item) {
-            return "Can't find model by ID"; //todo localize
+            return trans('backpack::crud.editable_cant_find_model');
         }
 
         if (!isset($item->$propertyName)) {
-            return "Can't find model property [$propertyName]";
+            return trans('backpack::crud.editable_cant_find_model_property', [
+                'property' => $propertyName
+            ]);
         }
 
         $item->$propertyName = $value;
 
         if (!$item->save()) {
-            return "Can't save model with property [$propertyName] and value [$value]";
+            return trans('backpack::crud.editable_cant_save_model_with_property', [
+                'property' => $propertyName,
+                'value' => $value
+            ]);
         }
 
         return $item;

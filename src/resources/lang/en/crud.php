@@ -56,6 +56,11 @@ return [
     'details_row'               => 'This is the details row. Modify as you please.',
     'details_row_loading_error' => 'There was an error loading the details. Please retry.',
 
+    // Editable
+    'editable_cant_find_model'                  => "Can't find model by ID",
+    'editable_cant_find_model_property'         => "Can't find model property [:property]",
+    'editable_cant_save_model_with_property'    => "Can't save model with property [:property] and value [:value]",
+
         // Confirmation messages and bubbles
         'delete_confirm'                              => 'Are you sure you want to delete this item?',
         'delete_confirmation_title'                   => 'Item Deleted',
