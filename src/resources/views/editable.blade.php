@@ -35,7 +35,7 @@
         $(document).ready(function() {
             $('#{{ $column['name'] . '-' . $entry->getKey() }}').editable({
                 {!! !empty($column['editable']['mode']) ? "mode: '{$column['editable']['mode']}'," : '' !!}
-                title:  '{{ $column['editable']['title'] ?? "Enter {$column['editable']['title']}" }}',
+                title:  '{{ $column['editable']['title'] ?? __('Enter') . " {$column['name']}" }}',
                 name:   '{{ $column['name'] }}',
                 type:   '{{ $column['editable']['type'] }}',
                 pk:     '{{ $entry->getKey() }}',
