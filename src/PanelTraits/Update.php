@@ -51,22 +51,22 @@ trait Update
     {
         $item = $this->model->find($id);
 
-        if (!$item) {
+        if (! $item) {
             return trans('backpack::crud.editable_cant_find_model');
         }
 
-        if (!isset($item->$propertyName)) {
+        if (! isset($item->$propertyName)) {
             return trans('backpack::crud.editable_cant_find_model_property', [
-                'property' => $propertyName
+                'property' => $propertyName,
             ]);
         }
 
         $item->$propertyName = $value;
 
-        if (!$item->save()) {
+        if (! $item->save()) {
             return trans('backpack::crud.editable_cant_save_model_with_property', [
                 'property' => $propertyName,
-                'value' => $value
+                'value' => $value,
             ]);
         }
 

@@ -2,9 +2,9 @@
 
 namespace Backpack\CRUD\app\Http\Controllers\Operations;
 
-use Illuminate\Http\Request as UpdateRequest;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Http\Request;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\Request as UpdateRequest;
 
 trait Update
 {
@@ -87,7 +87,7 @@ trait Update
         }
 
         /**
-         * @var Model|string $itemOrErrorString Eloquent Model or error string.
+         * @var Model|string Eloquent Model or error string.
          */
         $itemOrErrorString = $this->crud->updateProperty(
             $request->input('pk'),
@@ -95,7 +95,7 @@ trait Update
             $request->input('value')
         );
 
-        if (!is_string($itemOrErrorString)) {
+        if (! is_string($itemOrErrorString)) {
             $this->data['entry'] = $this->crud->entry = $itemOrErrorString;
             return response()->json();
         } else {
