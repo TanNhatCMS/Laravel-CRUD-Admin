@@ -137,7 +137,7 @@ function tree_element($entry, $key, $all_entries, $crud)
 
         // send it with POST
         $.ajax({
-            url: '{{ Request::url() }}',
+            url: '{{ URL::current() }}',
             type: 'POST',
             data: { tree: arraied },
         })
