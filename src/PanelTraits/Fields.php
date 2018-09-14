@@ -259,7 +259,11 @@ trait Fields
 
                 if (in_array($fieldCasting, $jsonCastables) && isset($data[$field['name']]) && ! empty($data[$field['name']]) && ! is_array($data[$field['name']])) {
                     try {
-                        $data[$field['name']] = json_decode($data[$field['name']]);
+                        // Decode only if data is json
+                        $json_decoded = json_decode($data[$field['name']]);
+                        if (json_last_error() === JSON_ERROR_NONE){
+                            $data[$field['name']] = $json_decoded;
+                        }
                     } catch (\Exception $e) {
                         $data[$field['name']] = [];
                     }
