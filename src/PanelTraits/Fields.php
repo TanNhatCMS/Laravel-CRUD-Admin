@@ -261,7 +261,7 @@ trait Fields
                     try {
                         // Decode only if data is json
                         $json_decoded = json_decode($data[$field['name']]);
-                        if (json_last_error() === JSON_ERROR_NONE){
+                        if (json_last_error() === JSON_ERROR_NONE) {
                             $data[$field['name']] = $json_decoded;
                         }
                     } catch (\Exception $e) {
