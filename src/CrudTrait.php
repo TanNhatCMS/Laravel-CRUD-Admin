@@ -122,7 +122,7 @@ trait CrudTrait
      */
     public function shouldDecodeFake($column)
     {
-        return (! in_array($column, array_keys($this->casts)) || in_array($column, $this->translatable));
+        return ! in_array($column, array_keys($this->casts)) || in_array($column, $this->translatable);
     }
 
     /**
