@@ -2,10 +2,9 @@
 
 <li filter-name="{{ $filter->name }}"
 	filter-type="{{ $filter->type }}"
-	class="dropdown {{ Request::get($filter->name)?'active':'' }}">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ $filter->label }} <span class="caret"></span></a>
-    <div class="dropdown-menu">
-      <div class="form-group backpack-filter m-b-0">
+	class="nav-item dropdown">
+    <a href="#" class="dropdown-toggle tool-action btn green {{ Request::get($filter->name)?'':'btn-outline' }} btn-sm" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ $filter->label }}</a>
+    <div class="dropdown-menu" style="width: 20rem">
 			<select id="filter_{{ $filter->name }}" name="filter_{{ $filter->name }}" class="form-control input-sm select2" placeholder="{{ $filter->placeholder }}">
 				<option></option>
 
@@ -21,7 +20,6 @@
 					@endforeach
 				@endif
 			</select>
-		</div>
     </div>
   </li>
 
@@ -67,7 +65,7 @@
                 {
                     $(obj).select2({
                     	allowClear: true,
-    					closeOnSelect: false
+						closeOnSelect: false
                     });
                 }
             });
@@ -91,11 +89,11 @@
 
 				// mark this filter as active in the navbar-filters
 				if (URI(new_url).hasQuery('{{ $filter->name }}', true)) {
-					$("li[filter-name={{ $filter->name }}]").removeClass('active').addClass('active');
+					$("li[filter-name={{ $filter->name }}] > a").addClass('btn-outline').removeClass('btn-outline');
 				}
 				else
 				{
-					$("li[filter-name={{ $filter->name }}]").trigger("filter:clear");
+					$("li[filter-name={{ $filter->name }}] > a").trigger("filter:clear");
 				}
 			});
 
@@ -107,8 +105,8 @@
 			// clear filter event (used here and by the Remove all filters button)
 			$("li[filter-name={{ $filter->name }}]").on('filter:clear', function(e) {
 				// console.log('select2 filter cleared');
-				$("li[filter-name={{ $filter->name }}]").removeClass('active');
-				$("li[filter-name={{ $filter->name }}] .select2").select2("val", "");
+				$("li[filter-name={{ $filter->name }}] > a").addClass('btn-outline');
+				$("li[filter-name={{ $filter->name }}] > a.select2").select2("val", "");
 			});
 		});
 	</script>

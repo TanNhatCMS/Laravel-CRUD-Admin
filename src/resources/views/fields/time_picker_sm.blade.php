@@ -1,24 +1,12 @@
 <!-- bootstrap timepicker input -->
 <div @include('crud::inc.field_wrapper_attributes') >
     <input type="hidden" name="{{ $field['name'] }}" value="{{ old($field['name']) ? old($field['name']) : (isset($field['value']) ? $field['value'] : (isset($field['default']) ? $field['default'] : '' )) }}">
-    <label class="col-md-3 control-label">{!! $field['label'] !!}</label>
-    @include('crud::inc.field_translatable_icon')
-    <div class="col-md-9">
-        <div class="input-group bootstrap-timepicker timepicker">
-            <input
-                data-bs-timepicker="{{ isset($field['time_picker_options']) ? json_encode($field['time_picker_options']) : '{}'}}"
-                type="text"
-                @include('crud::inc.field_attributes')
-                >
-            <div class="input-group-addon">
-                <span class="far fa-clock"></span>
-            </div>
-        </div>
-
-        {{-- HINT --}}
-        @if (isset($field['hint']))
-            <p class="form-text">{!! $field['hint'] !!}</p>
-        @endif
+    <div class="input-group bootstrap-timepicker timepicker">
+        <input
+            data-bs-timepicker="{{ isset($field['time_picker_options']) ? json_encode($field['time_picker_options']) : '{}'}}"
+            type="text"
+            @include('crud::inc.field_attributes')
+            >
     </div>
 </div>
 
@@ -49,8 +37,7 @@
                 var $fake = $(this),
                 $field = $fake.parents('.form-group').find('input[type="hidden"]'),
                 $customConfig = $.extend({}, $fake.data('bs-timepicker'));
-                //$picker = $fake.timepicker($customConfig);
-                //$picker = $fake.timepicker();
+                $picker = $fake.timepicker($customConfig);
 
                 var $existingVal = $field.val();
                 if( $existingVal == ""){

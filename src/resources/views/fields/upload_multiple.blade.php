@@ -1,8 +1,8 @@
 <!-- upload multiple input -->
 <div @include('crud::inc.field_wrapper_attributes') >
-    <label>{!! $field['label'] !!}</label>
+    <label class="col-md-3 control-label">{!! $field['label'] !!}</label>
     @include('crud::inc.field_translatable_icon')
-
+	<div class="col-md-9">
 	{{-- Show the file name and a "Clear" button on EDIT form. --}}
 	@if (isset($field['value']) && count($field['value']))
     <div class="well well-sm file-preview-container">
@@ -29,7 +29,8 @@
     {{-- HINT --}}
     @if (isset($field['hint']))
         <p class="help-block">{!! $field['hint'] !!}</p>
-    @endif
+	@endif
+	</div>
 </div>
 
 {{-- FIELD EXTRA JS --}}

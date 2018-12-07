@@ -2,8 +2,8 @@
 
 <li filter-name="{{ $filter->name }}"
 	filter-type="{{ $filter->type }}"
-	class="{{ Request::get($filter->name)?'active':'' }}">
-    <a 	href=""
+	class="nav-item">
+    <a 	href="" class="tool-action btn green {{ Request::get($filter->name)?'':'btn-outline' }} btn-sm"
 		parameter="{{ $filter->name }}"
     	>{{ $filter->label }}</a>
   </li>
@@ -26,7 +26,7 @@
 @push('crud_list_scripts')
     <script>
 		jQuery(document).ready(function($) {
-			$("li[filter-name={{ $filter->name }}] a").click(function(e) {
+			$("li[filter-name={{ $filter->name }}] > a").click(function(e) {
 				e.preventDefault();
 
 				var parameter = $(this).attr('parameter');
@@ -48,20 +48,21 @@
 
 				// mark this filter as active in the navbar-filters
 				if (URI(new_url).hasQuery('{{ $filter->name }}', true)) {
-					$("li[filter-name={{ $filter->name }}]").removeClass('active').addClass('active');
-                    $('#remove_filters_button').removeClass('hidden');
+					$("li[filter-name={{ $filter->name }}] > a").addClass('btn-outline').removeClass('btn-outline');
+					$('#remove_filters_button').removeClass('hidden');
 				}
 				else
 				{
-					$("li[filter-name={{ $filter->name }}]").trigger("filter:clear");
+					$("li[filter-name={{ $filter->name }}] > a").trigger("filter:clear");
 				}
 			});
 
 			// clear filter event (used here and by the Remove all filters button)
-			$("li[filter-name={{ $filter->name }}]").on('filter:clear', function(e) {
+			$("li[filter-name={{ $filter->name }}] > a ").on('filter:clear', function(e) {
 				// console.log('dropdown filter cleared');
-				$("li[filter-name={{ $filter->name }}]").removeClass('active');
+				$("li[filter-name={{ $filter->name }}] > a").addClass('btn-outline');
 			});
+			
 		});
 	</script>
 @endpush

@@ -6,7 +6,8 @@
 @endphp
 
 <div @include('crud::inc.field_wrapper_attributes') >
-    <label>{!! $field['label'] !!}</label>
+    <label class="col-md-3 control-label">{!! $field['label'] !!}</label>
+    <div class="col-md-9">
     <?php $entity_model = $crud->model; ?>
 
     <select
@@ -40,6 +41,7 @@
     @if (isset($field['hint']))
         <p class="help-block">{!! $field['hint'] !!}</p>
     @endif
+    </div>
 </div>
 
 {{-- ########################################## --}}

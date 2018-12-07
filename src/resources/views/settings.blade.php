@@ -19,8 +19,23 @@
 @section('content')
 <!-- Default portlet -->
 <div class="row">
+	<div class="col-lg-2 col-md-3 col-sm-4">
+		<div class="portlet light portlet-fit portlet-datatable bordered">
+			<div class="portlet-title py-1 my-0 hidden-print {{ $crud->hasAccess('create')?'with-border':'' }}">
+				<div class="caption mr-auto">
+					<i class="icon-notebook"></i>
+					<span class="caption-subject font-green sbold uppercase">Settings</span>
+				</div>
+			</div>
+			<div class="portlet-body">
+				<ul class="nav flex-column">
+				@include('partials.navigation-settings')
+				</ul>
+			</div>
+		</div>
+	</div>
 	<!-- THE ACTUAL CONTENT -->
-	<div class="col-md-12">
+	<div class="col-lg-10 col-md-9 col-sm-8">
 		<div class="portlet light portlet-fit portlet-datatable bordered">
 			<div class="portlet-title py-1 my-0 hidden-print {{ $crud->hasAccess('create')?'with-border':'' }}">
 				<div class="caption mr-auto">

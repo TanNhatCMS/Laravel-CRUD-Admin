@@ -11,11 +11,9 @@
 
 <div @include('crud::inc.field_wrapper_attributes') >
 
-    <div>
-        <label>{!! $field['label'] !!}</label>
-        @include('crud::inc.field_translatable_icon')
-    </div>
-
+    <label class="col-md-3 control-label">{!! $field['label'] !!}</label>
+    @include('crud::inc.field_translatable_icon')
+    <div class="col-md-9">
     @if( isset($field['options']) && $field['options'] = (array)$field['options'] )
 
         @foreach ($field['options'] as $value => $label )
@@ -51,5 +49,5 @@
     @if (isset($field['hint']))
         <p class="help-block">{!! $field['hint'] !!}</p>
     @endif
-
+    </div>
 </div>

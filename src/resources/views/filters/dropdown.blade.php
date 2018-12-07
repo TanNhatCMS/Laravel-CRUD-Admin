@@ -2,26 +2,26 @@
 
 <li filter-name="{{ $filter->name }}"
 	filter-type="{{ $filter->type }}"
-	class="dropdown {{ Request::get($filter->name)?'active':'' }}">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ $filter->label }} <span class="caret"></span></a>
-    <ul class="dropdown-menu">
-		<li><a parameter="{{ $filter->name }}" dropdownkey="" href="">-</a></li>
-		<li role="separator" class="divider"></li>
+	class="nav-item dropdown {{ Request::get($filter->name)?'active':'' }}">
+    <a href="#" class="dropdown-toggle tool-action btn green {{ Request::get($filter->name)?'':'btn-outline' }} btn-sm" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ $filter->label }} <i class="fa fa-angle-down"></i></a>
+    <div class="dropdown-menu">
+		<a class="dropdown-item" parameter="{{ $filter->name }}" dropdownkey="" href="">Empty</a>
+		<div class="dropdown-divider"></div>
 		@if (is_array($filter->values) && count($filter->values))
 			@foreach($filter->values as $key => $value)
 				@if ($key === 'dropdown-separator')
-					<li role="separator" class="divider"></li>
+					<div class="dropdown-divider"></div>
 				@else
-					<li class="{{ ($filter->isActive() && $filter->currentValue == $key)?'active':'' }}">
-						<a  parameter="{{ $filter->name }}"
-							href=""
+					<a class="dropdown-item {{ ($filter->isActive() && $filter->currentValue == $key)?'active':'' }}"
+							parameter="{{ $filter->name }}"
+							href="#"
 							dropdownkey="{{ $key }}"
-							>{{ $value }}</a>
-					</li>
+							>{{ $value }}
+					</a>
 				@endif
 			@endforeach
 		@endif
-    </ul>
+    </div>
   </li>
 
 
@@ -42,7 +42,7 @@
 @push('crud_list_scripts')
     <script>
 		jQuery(document).ready(function($) {
-			$("li.dropdown[filter-name={{ $filter->name }}] .dropdown-menu li a").click(function(e) {
+			$("li.dropdown[filter-name={{ $filter->name }}] .dropdown-menu > a").click(function(e) {
 				e.preventDefault();
 
 				var value = $(this).attr('dropdownkey');
@@ -60,21 +60,20 @@
 				// mark this filter as active in the navbar-filters
 				// mark dropdown items active accordingly
 				if (URI(new_url).hasQuery('{{ $filter->name }}', true)) {
-					$("li[filter-name={{ $filter->name }}]").removeClass('active').addClass('active');
-					$("li[filter-name={{ $filter->name }}] .dropdown-menu li").removeClass('active');
-					$(this).parent().addClass('active');
+					$("li[filter-name={{ $filter->name }}] > a").addClass('btn-outline').removeClass('btn-outline');
+					$(this).addClass('active');
 				}
 				else
 				{
-					$("li[filter-name={{ $filter->name }}]").trigger("filter:clear");
+					$("li[filter-name={{ $filter->name }}] > a").trigger("filter:clear");
 				}
 			});
 
 			// clear filter event (used here and by the Remove all filters button)
 			$("li[filter-name={{ $filter->name }}]").on('filter:clear', function(e) {
 				// console.log('dropdown filter cleared');
-				$("li[filter-name={{ $filter->name }}]").removeClass('active');
-				$("li[filter-name={{ $filter->name }}] .dropdown-menu li").removeClass('active');
+				$("li[filter-name={{ $filter->name }}] > a").addClass('btn-outline');
+				$("li[filter-name={{ $filter->name }}] .dropdown-menu a").removeClass('active');
 			});
 		});
 	</script>

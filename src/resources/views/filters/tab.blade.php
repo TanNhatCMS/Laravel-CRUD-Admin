@@ -1,15 +1,21 @@
-{{-- Example Backpack CRUD filter --}}
+{{-- Dropdown Backpack CRUD filter --}}
 
 <li filter-name="{{ $filter->name }}"
 	filter-type="{{ $filter->type }}"
-	class="nav-item dropdown {{ Request::get($filter->name)?'active':'' }}">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ $filter->label }} <span class="caret"></span></a>
-    <div class="dropdown-menu padding-10">
-
-		{{-- dropdown content: everything you need is inside $filter --}}
-		Lorem ipsum dolor sit amet, consectetur adipisicing elit. Unde, inventore assumenda voluptate accusantium recusandae ipsam magni atque vel omnis est debitis, neque nam aspernatur ex quo fuga, nulla soluta. Rerum.
-
-    </div>
+	class="nav-item {{ Request::get($filter->name)?'active':'' }}">
+    <ul class="nav nav-tabs">
+		<li class="nav-item"><a parameter="{{ $filter->name }}" dropdownkey="" href="">All {{ $filter->label }}</a></li>
+		@if (is_array($filter->values) && count($filter->values))
+			@foreach($filter->values as $key => $value)
+				<li class="nav-item {{ ($filter->isActive() && $filter->currentValue == $key)?'active':'' }}">
+					<a  parameter="{{ $filter->name }}"
+						href=""
+						dropdownkey="{{ $key }}"
+						>{{ $value }}</a>
+				</li>
+			@endforeach
+		@endif
+    </ul>
   </li>
 
 
@@ -27,41 +33,30 @@
 {{-- FILTERS EXTRA JS --}}
 {{-- push things in the after_scripts section --}}
 
-
-{{-- FILTER JAVASCRIPT CHECKLIST
-
-- redirects to a new URL for standard DataTables
-- replaces the search URL for ajax DataTables
-- users have a way to clear this filter (and only this filter)
-- filter:clear event on li[filter-name], which is called by the "Remove all filters" button, clears this filter;
-
-END OF FILTER JAVSCRIPT CHECKLIST --}}
-
 @push('crud_list_scripts')
     <script>
 		jQuery(document).ready(function($) {
-			$("li[filter-name={{ $filter->name }}] a").click(function(e) {
+			$("li.dropdown[filter-name={{ $filter->name }}] .dropdown-menu li a").click(function(e) {
 				e.preventDefault();
 
+				var value = $(this).attr('dropdownkey');
 				var parameter = $(this).attr('parameter');
 
 		    	// behaviour for ajax table
 				var ajax_table = $("#crudTable").DataTable();
 				var current_url = ajax_table.ajax.url();
-
-				if (URI(current_url).hasQuery(parameter)) {
-					var new_url = URI(current_url).removeQuery(parameter, true);
-				} else {
-					var new_url = URI(current_url).addQuery(parameter, true);
-				}
+				var new_url = addOrUpdateUriParameter(current_url, parameter, value);
 
 				// replace the datatables ajax url with new_url and reload it
 				new_url = normalizeAmpersand(new_url.toString());
 				ajax_table.ajax.url(new_url).load();
 
 				// mark this filter as active in the navbar-filters
+				// mark dropdown items active accordingly
 				if (URI(new_url).hasQuery('{{ $filter->name }}', true)) {
 					$("li[filter-name={{ $filter->name }}]").removeClass('active').addClass('active');
+					$("li[filter-name={{ $filter->name }}] .dropdown-menu li").removeClass('active');
+					$(this).parent().addClass('active');
 				}
 				else
 				{
@@ -73,10 +68,10 @@ END OF FILTER JAVSCRIPT CHECKLIST --}}
 			$("li[filter-name={{ $filter->name }}]").on('filter:clear', function(e) {
 				// console.log('dropdown filter cleared');
 				$("li[filter-name={{ $filter->name }}]").removeClass('active');
+				$("li[filter-name={{ $filter->name }}] .dropdown-menu li").removeClass('active');
 			});
 		});
 	</script>
 @endpush
-
 {{-- End of Extra CSS and JS --}}
 {{-- ########################################## --}}

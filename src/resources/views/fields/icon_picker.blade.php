@@ -8,9 +8,9 @@ if (!isset($field['iconset'])) {
 ?>
 
 <div @include('crud::inc.field_wrapper_attributes') >
-    <label>{!! $field['label'] !!}</label>
+    <label class="col-md-3 control-label">{!! $field['label'] !!}</label>
     @include('crud::inc.field_translatable_icon')
-
+    <div class="col-md-9">
     <div>
         <button class="btn btn-default " role="iconpicker" data-icon="{{ old($field['name']) ? old($field['name']) : (isset($field['value']) ? $field['value'] : (isset($field['default']) ? $field['default'] : '' )) }}" data-iconset="{{ $field['iconset'] }}"></button>
         <input
@@ -25,6 +25,7 @@ if (!isset($field['iconset'])) {
     @if (isset($field['hint']))
         <p class="help-block">{!! $field['hint'] !!}</p>
     @endif
+    </div>
 </div>
 
 

@@ -1,4 +1,5 @@
-<div id="saveActions" class="form-group">
+
+<div id="saveActions">
 
     <input type="hidden" name="save_action" value="{{ $saveAction['active']['value'] }}">
 

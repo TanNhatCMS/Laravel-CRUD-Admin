@@ -4,7 +4,7 @@ $required = (isset($field['attributes']['required']) || $crud->isRequired($field
 
 @if (isset($field['wrapperAttributes']))
     @if (!isset($field['wrapperAttributes']['class']))
-        class="form-group col-xs-12 {{ $required }}"
+        class="form-group row {{ $required }}"
     @else
         class="{{ $field['wrapperAttributes']['class'] }} {{ $required }}"
     @endif
@@ -19,5 +19,5 @@ $required = (isset($field['attributes']['required']) || $crud->isRequired($field
         @endif
     @endforeach
 @else
-    class="form-group col-xs-12{{ $required }}"
+    class="form-group row {{ $required }}"
 @endif

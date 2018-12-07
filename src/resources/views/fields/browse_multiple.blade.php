@@ -9,8 +9,9 @@ if (!$multiple && is_array($value)) {
 
 <div @include('crud::inc.field_wrapper_attributes') >
 
-    <div><label>{!! $field['label'] !!}</label></div>
+    <label class="col-md-3 control-label">{!! $field['label'] !!}</label>
     @include('crud::inc.field_translatable_icon')
+    <div class="col-md-9">
     @if ($multiple)
         @foreach((array)$value as $v)
             @if ($v)
@@ -42,7 +43,7 @@ if (!$multiple && is_array($value)) {
     @if (isset($field['hint']))
         <p class="help-block">{!! $field['hint'] !!}</p>
     @endif
-
+    </div>
 </div>
 
 <script type="text/html" id="browse_multiple_template_{{ $field['name'] }}">

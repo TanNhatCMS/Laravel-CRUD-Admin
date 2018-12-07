@@ -2,8 +2,8 @@
 
 <li filter-name="{{ $filter->name }}"
 	filter-type="{{ $filter->type }}"
-	class="dropdown {{ Request::get($filter->name)?'active':'' }}">
-    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ $filter->label }} <span class="caret"></span></a>
+	class="nav-item dropdown {{ Request::get($filter->name)?'active':'' }}">
+    <a href="#" class="dropdown-toggle btn green btn-outline btn-circle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ $filter->label }} <i class="fa fa-angle-down"></i></a>
     <div class="dropdown-menu ajax-select">
 	    <div class="form-group m-b-0">
 	    	<input type="text" value="{{ Request::get($filter->name)?Request::get($filter->name).'|'.Request::get($filter->name.'_text'):'' }}" id="filter_{{ $filter->name }}">

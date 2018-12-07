@@ -1,8 +1,8 @@
 <!-- text input -->
 <div @include('crud::inc.field_wrapper_attributes') >
-    <label>{!! $field['label'] !!}</label>
+    <label class="col-md-3 control-label">{!! $field['label'] !!}</label>
     @include('crud::inc.field_translatable_icon')
-
+    <div class="col-md-9">
 	{{-- Show the file name and a "Clear" button on EDIT form. --}}
     @if (!empty($field['value']))
     <div class="well well-sm">
@@ -31,6 +31,7 @@
     @if (isset($field['hint']))
         <p class="help-block">{!! $field['hint'] !!}</p>
     @endif
+    </div>
 </div>
 
 {{-- FIELD EXTRA JS --}}

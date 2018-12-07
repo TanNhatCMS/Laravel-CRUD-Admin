@@ -1,7 +1,9 @@
 <!-- select2 multiple -->
 <div @include('crud::inc.field_wrapper_attributes') >
-    <label>{!! $field['label'] !!}</label>
+    <label class="col-md-3 control-label">{!! $field['label'] !!}</label>
     @include('crud::inc.field_translatable_icon')
+    <?php $entity_model = $crud->getRelationModel($field['entity'],  - 1); ?>
+    <div class="col-md-9">
     <select
         name="{{ $field['name'] }}[]"
         style="width: 100%"
@@ -27,10 +29,10 @@
         <a class="btn btn-xs btn-default select_all" style="margin-top: 5px;"><i class="fa fa-check-square-o"></i> {{ trans('backpack::crud.select_all') }}</a>
         <a class="btn btn-xs btn-default clear" style="margin-top: 5px;"><i class="fa fa-times"></i> {{ trans('backpack::crud.clear') }}</a>
     @endif
-
+    </div>
     {{-- HINT --}}
     @if (isset($field['hint']))
-        <p class="help-block">{!! $field['hint'] !!}</p>
+        <p class="form-text">{!! $field['hint'] !!}</p>
     @endif
 </div>
 

@@ -6,8 +6,9 @@
 @endphp
 
 <div @include('crud::inc.field_wrapper_attributes') >
-    <label>{!! $field['label'] !!}</label>
+    <label class="col-md-3 control-label">{!! $field['label'] !!}</label>
     @include('crud::inc.field_translatable_icon')
+    <div class="col-md-9">
     <select
         name="{{ $field['name'] }}[]"
         style="width: 100%"
@@ -33,6 +34,7 @@
     @if (isset($field['hint']))
         <p class="help-block">{!! $field['hint'] !!}</p>
     @endif
+    </div>
 </div>
 
 

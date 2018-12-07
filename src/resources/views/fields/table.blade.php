@@ -22,9 +22,9 @@
 ?>
 <div ng-app="backPackTableApp" ng-controller="tableController" @include('crud::inc.field_wrapper_attributes') >
 
-    <label>{!! $field['label'] !!}</label>
+    <label class="col-md-3 control-label">{!! $field['label'] !!}</label>
     @include('crud::inc.field_translatable_icon')
-
+    <div class="col-md-9">
     <input class="array-json" type="hidden" id="{{ $field['name'] }}" name="{{ $field['name'] }}">
 
     <div class="array-container form-group">
@@ -75,6 +75,7 @@
     @if (isset($field['hint']))
         <p class="help-block">{!! $field['hint'] !!}</p>
     @endif
+    </div>
 </div>
 
 {{-- ########################################## --}}

@@ -28,7 +28,8 @@
 <div @include('crud::inc.field_wrapper_attributes') >
     <input class="datepicker-range-start" type="hidden" name="{{ $field['start_name'] }}" value="{{ old($field['start_name']) ? old($field['start_name']) : (isset($start_name) ? $start_name : (isset($field['start_default']) ? $field['start_default'] : '' )) }}">
     <input class="datepicker-range-end" type="hidden" name="{{ $field['end_name'] }}" value="{{ old($field['end_name']) ? old($field['end_name']) : (!empty($end_name) ? $end_name : (isset($field['end_default']) ? $field['end_default'] : '' )) }}">
-    <label>{!! $field['label'] !!}</label>
+    <label class="col-md-3 control-label">{!! $field['label'] !!}</label>
+    <div class="col-md-9">
     <div class="input-group date">
         <input
             data-bs-daterangepicker="{{ isset($field['date_range_options']) ? json_encode($field['date_range_options']) : '{}'}}"
@@ -38,6 +39,7 @@
         <div class="input-group-addon">
             <span class="glyphicon glyphicon-calendar"></span>
         </div>
+    </div>
     </div>
 
     {{-- HINT --}}

@@ -36,7 +36,7 @@ if (isset($field['value']) && (is_array($field['value']) || is_object($field['va
 
     {{-- HINT --}}
     @if (isset($field['hint']))
-        <p class="help-block">{!! $field['hint'] !!}</p>
+        <p class="form-text">{!! $field['hint'] !!}</p>
     @endif
 </div>
 
@@ -59,7 +59,7 @@ if (isset($field['value']) && (is_array($field['value']) || is_object($field['va
 
     {{-- FIELD JS - will be loaded in the after_scripts section --}}
     @push('crud_fields_scripts')
-    <script src="https://cdn.jsdelivr.net/npm/places.js@1.11.0"></script>
+    <script src="https://cdn.jsdelivr.net/places.js/1/places.min.js"></script>
     <script>
         jQuery(document).ready(function($){
             window.AlgoliaPlaces = window.AlgoliaPlaces || {};
@@ -70,7 +70,9 @@ if (isset($field['value']) && (is_array($field['value']) || is_object($field['va
                 $addressConfig = $this.data('address'),
                 $field = $('[name="'+$addressConfig.field+'"]'),
                 $place = places({
-                    container: $this[0]
+                    container: $this[0],
+                    countries: ['us'],
+                    type: 'address'
                 });
 
                 function clearInput() {

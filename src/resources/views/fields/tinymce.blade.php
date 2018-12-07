@@ -1,19 +1,20 @@
 <!-- Tiny MCE -->
 <div @include('crud::inc.field_wrapper_attributes') >
-    <label>{!! $field['label'] !!}</label>
+    <label class="col-md-3 control-label">{!! $field['label'] !!}</label>
     @include('crud::inc.field_translatable_icon')
-    <textarea
-    	id="tinymce-{{ $field['name'] }}"
-        name="{{ $field['name'] }}"
-        @include('crud::inc.field_attributes', ['default_class' =>  'form-control tinymce'])
-        >{{ old($field['name']) ? old($field['name']) : (isset($field['value']) ? $field['value'] : (isset($field['default']) ? $field['default'] : '' )) }}</textarea>
+    <div class="col-md-9">
+        <textarea
+            id="tinymce-{{ $field['name'] }}"
+            name="{{ $field['name'] }}"
+            @include('crud::inc.field_attributes', ['default_class' =>  'form-control tinymce'])
+            >{{ old($field['name']) ? old($field['name']) : (isset($field['value']) ? $field['value'] : (isset($field['default']) ? $field['default'] : '' )) }}</textarea>
 
-    {{-- HINT --}}
-    @if (isset($field['hint']))
-        <p class="help-block">{!! $field['hint'] !!}</p>
-    @endif
+        {{-- HINT --}}
+        @if (isset($field['hint']))
+            <p class="form-text">{!! $field['hint'] !!}</p>
+        @endif
+    </div>
 </div>
-
 
 {{-- ########################################## --}}
 {{-- Extra CSS and JS for this particular field --}}
