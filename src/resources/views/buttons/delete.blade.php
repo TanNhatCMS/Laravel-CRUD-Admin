@@ -1,4 +1,4 @@
-@if ($crud->hasAccess('delete'))
+@if ($crud->hasAccess('delete') && !$entry->trashed())
 	<a href="javascript:void(0)" onclick="deleteEntry(this)" data-route="{{ url($crud->route.'/'.$entry->getKey()) }}" class="btn btn-xs btn-default" data-button-type="delete"><i class="fa fa-trash"></i> {{ trans('backpack::crud.delete') }}</a>
 @endif
 
