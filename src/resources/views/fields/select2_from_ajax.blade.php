@@ -9,7 +9,7 @@
     <label>{!! $field['label'] !!}</label>
     <?php $entity_model = $crud->model; ?>
 
-    <select
+    <select2
         name="{{ $field['name'] }}"
         style="width: 100%"
         id="select2_ajax_{{ $field['name'] }}"
@@ -34,7 +34,7 @@
             </option>
             @endif
         @endif
-    </select>
+    </select2>
 
     {{-- HINT --}}
     @if (isset($field['hint']))
