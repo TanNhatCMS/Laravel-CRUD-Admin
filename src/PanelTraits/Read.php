@@ -2,6 +2,8 @@
 
 namespace Backpack\CRUD\PanelTraits;
 
+use Illuminate\Support\Collection;
+
 trait Read
 {
     /*
@@ -59,6 +61,9 @@ trait Read
     {
         if (! $this->entry) {
             $this->entry = $this->model->findOrFail($id);
+            if ($this->entry instanceof Collection) {
+                $this->entry = $this->entry->first();
+            }
             $this->entry = $this->entry->withFakes();
         }
 
