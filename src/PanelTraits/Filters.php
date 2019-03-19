@@ -256,6 +256,7 @@ class CrudFilter
     public $type = 'select'; // the name of the filter view that will be loaded
     public $label;
     public $placeholder;
+    public $minimumInputLength;
     public $values;
     public $options;
     public $currentValue;
@@ -272,6 +273,7 @@ class CrudFilter
         $this->viewNamespace = $options['view_namespace'] ?? $this->viewNamespace;
         $this->view = $this->viewNamespace.'.'.$this->type;
         $this->placeholder = $options['placeholder'] ?? '';
+        $this->minimumInputLength = $options['minimumInputLength'] ?? '2';
 
         $this->values = $values;
         $this->options = $options;
