@@ -18,6 +18,9 @@ trait Fields
      */
     public function addField($field, $form = 'both')
     {
+        if (!empty($field['form'])) {
+            $form = $field['form'];
+        }
         // if the field_definition_array array is a string, it means the programmer was lazy and has only passed the name
         // set some default values, so the field will still work
         if (is_string($field)) {
