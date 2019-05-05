@@ -20,6 +20,25 @@ All Notable changes to `Backpack CRUD` will be documented in this file
 - Nothing
 -----------
 
+## [3.6.16] - 2019-04-25
+
+### Fixed
+- merged #1871 fixes #1808 - unicode characters got escaped in translated models; no mas;
+
+
+## [3.6.15] - 2019-04-25
+
+### Fixed
+- merged #1868 - error when opening revisions timeline because it was still using jessengers/date;
+
+
+## [3.6.14] - 2019-04-25
+
+### Fixed
+- merged #1858 - ```password``` field type now has ```autocomplete = off``` by default; since that's better in most use cases;
+- fixes #1343 - hides the Remove Filters button when all filters are cleared;
+- merged #1863 fixes #1862 - makes ```image```, ```base64_image``` and ```checklist_dependency``` fields look fine on XS displays;
+
 ## [3.6.13] - 2019-04-10
 
 ### Fixed
