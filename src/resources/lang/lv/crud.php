@@ -20,8 +20,8 @@ return [
     'save_action_changed_notification' => 'Uzvedība pēc noklusējuma pēc izmaiņu saglabāšanas.',
 
     // Create form
-    'add' => 'Jauns',
-    'back_to_all' => 'Atpakaļ pie Visiem ',
+    'add' => 'Jauns:',
+    'back_to_all' => 'Atpakaļ pie Visiem: ',
     'cancel' => 'Atcelt',
     'add_a_new' => 'Jauns ',
 
