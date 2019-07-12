@@ -48,7 +48,8 @@ class CrudController extends BaseController
         }
     }
 
-    public function callPublicFunction(...$params) {
+    public function callPublicFunction(...$params)
+    {
         $parameters = func_get_args()[0];
         $httpVerb = \Request::method();
         $input = \Request::input();
