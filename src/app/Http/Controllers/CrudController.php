@@ -2,6 +2,7 @@
 
 namespace Backpack\CRUD\app\Http\Controllers;
 
+use ReflectionMethod;
 use Backpack\CRUD\CrudPanel;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -44,6 +45,24 @@ class CrudController extends BaseController
 
                 return $next($request);
             });
+        }
+    }
+
+    public function callPublicFunction(...$params) {
+        $parameters = func_get_args()[0];
+        $httpVerb = \Request::method();
+        $input = \Request::input();
+        $functionName = explode('/', $parameters)[0];
+        $functionExists = method_exists($this, $functionName);
+        $functionIsPublic = false;
+
+        if ($functionExists) {
+            $reflection = new ReflectionMethod($this, $functionName);
+            $functionIsPublic = $reflection->isPublic();
+        }
+
+        if ($functionIsPublic) {
+            return $this->{$functionName}(...$params);
         }
     }
 

@@ -18,6 +18,7 @@ class CrudRouter
         $this->controller = $controller;
         $this->options = $options;
 
+
         // CRUD routes for core features
         Route::post($this->name.'/search', [
             'as' => 'crud.'.$this->name.'.search',
@@ -68,6 +69,11 @@ class CrudRouter
             'as' => 'crud.'.$this->name.'.bulkClone',
             'uses' => $this->controller.'@bulkClone',
         ]);
+
+        // catch-all route for custom operations
+        Route::any($this->name.'/do/{function}', $this->controller.'@callPublicFunction')
+            ->where('function', '(.*)')
+            ->name('crud.'.$this->name);
     }
 
     /**
