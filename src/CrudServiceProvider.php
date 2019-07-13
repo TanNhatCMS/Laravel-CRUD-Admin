@@ -2,6 +2,7 @@
 
 namespace Backpack\CRUD;
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class CrudServiceProvider extends ServiceProvider
@@ -77,6 +78,7 @@ class CrudServiceProvider extends ServiceProvider
             'backpack.crud'
         );
 
+
         $this->sendUsageStats();
     }
 
@@ -91,6 +93,13 @@ class CrudServiceProvider extends ServiceProvider
             return new CRUD($app);
         });
 
+        // add the Route::crudResource() macro for developers to set all CRUD routes in one line
+        if (! Route::hasMacro('crudResource')) {
+            Route::macro('crudResource', function ($name, $controller, array $options = []) {
+                return new CrudRouter($name, $controller, $options);
+            });
+        }
+
         // register the helper functions
         $this->loadHelpers();
 
@@ -101,11 +110,6 @@ class CrudServiceProvider extends ServiceProvider
         if (! \Config::get('elfinder.route.prefix')) {
             \Config::set('elfinder.route.prefix', \Config::get('backpack.base.route_prefix').'/elfinder');
         }
-    }
-
-    public static function resource($name, $controller, array $options = [])
-    {
-        return new CrudRouter($name, $controller, $options);
     }
 
     /**
