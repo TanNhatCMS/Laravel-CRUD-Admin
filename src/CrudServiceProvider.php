@@ -78,7 +78,6 @@ class CrudServiceProvider extends ServiceProvider
             'backpack.crud'
         );
 
-
         $this->sendUsageStats();
     }
 
