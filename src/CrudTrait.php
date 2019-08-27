@@ -99,7 +99,7 @@ trait CrudTrait
             if ((is_array($column_contents) || is_object($column_contents) || $column_contents instanceof Traversable)) {
                 foreach ($column_contents as $fake_field_name => $fake_field_value) {
                     //TODO: handle mutlidimensional arrays.
-                    if (!is_array($fake_field_value) && !is_object($fake_field_value)) {
+                    if (! is_array($fake_field_value) && ! is_object($fake_field_value)) {
                         $this->setAttribute($fake_field_name, $fake_field_value);
                     }
                 }
