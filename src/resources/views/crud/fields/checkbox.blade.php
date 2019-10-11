@@ -3,21 +3,22 @@
 <div @include('crud::inc.field_wrapper_attributes') >
     @include('crud::inc.field_translatable_icon')
     <div class="checkbox">
-        <input type="hidden" name="{{ $field['name'] }}" value="{{ old(square_brackets_to_dots($field['name'])) ?? $field['value'] ?? $field['default'] ?? 0 }}">
-    	  <input type="checkbox"
-          data-init-function="bpFieldInitCheckbox"
+    	<label class="form-check-label font-weight-normal">
+			<input type="hidden" name="{{ $field['name'] }}" value="{{ old(square_brackets_to_dots($field['name'])) ?? $field['value'] ?? $field['default'] ?? 0 }}">
+			<input type="checkbox"
+				data-init-function="bpFieldInitCheckbox"
 
-          @if (old(square_brackets_to_dots($field['name'])) ?? $field['value'] ?? $field['default'] ?? false)
-                 checked="checked"
-          @endif
+				@if (old(square_brackets_to_dots($field['name'])) ?? $field['value'] ?? $field['default'] ?? false)
+					 checked="checked"
+				@endif
 
-          @if (isset($field['attributes']))
-              @foreach ($field['attributes'] as $attribute => $value)
-    			{{ $attribute }}="{{ $value }}"
-        	  @endforeach
-          @endif
-          >
-    	<label class="form-check-label font-weight-normal" for="{{ $field['name'] }}_checkbox">{!! $field['label'] !!}</label>
+				@if (isset($field['attributes']))
+				  @foreach ($field['attributes'] as $attribute => $value)
+					{{ $attribute }}="{{ $value }}"
+				  @endforeach
+				@endif
+			> {!! $field['label'] !!}
+		</label>
 
         {{-- HINT --}}
         @if (isset($field['hint']))
