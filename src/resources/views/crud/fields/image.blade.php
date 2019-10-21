@@ -220,14 +220,14 @@
                         if(maxImageSize > 0 && file.size > maxImageSize) {
 
                             alert(`Please pick an image smaller than ${maxImageSize} bytes.`);
-                        } else if (/^image\/\w+$/.test(file.type)) {
+                        } else if (/^image\/[\w\+]+$/.test(file.type)) {
                             
                             fileReader.readAsDataURL(file);
                             fileReader.onload = function () {
 
                                 $uploadImage.val("");
                                 $previews.show();
-                                if(crop){
+                                if(crop && /^image\/\w+$/.test(file.type)){
                                     $mainImage.cropper(options).cropper("reset", true).cropper("replace", this.result);
                                     // Override form submit to copy canvas to hidden input before submitting
                                     $('form').submit(function() {
