@@ -198,7 +198,7 @@
                         });
                     } else {
 
-                        $(this).find("#remove").click(function() {
+                        $remove.click(function() {
                             $mainImage.attr('src','');
                             $hiddenImage.val('');
                             $remove.hide();
