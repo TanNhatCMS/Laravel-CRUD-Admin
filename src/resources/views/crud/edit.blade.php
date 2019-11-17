@@ -30,7 +30,6 @@
 		<!-- Default box -->
 
 		@include('crud::inc.grouped_errors')
-
 		  <form method="post"
 		  		action="{{ url($crud->route.'/'.$entry->getRouteKey()) }}"
 				@if ($crud->hasUploadFields('update', $entry->getRouteKey()))

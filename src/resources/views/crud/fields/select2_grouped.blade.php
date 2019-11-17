@@ -43,7 +43,7 @@
                     <optgroup label="-">
                         @foreach ($categorylessEntries as $subEntry)
 
-                            @if($current_value == $subEntry->getRouteKeyName())
+                            @if($current_value == $subEntry->getRouteKey())
                                 <option value="{{ $subEntry->getRouteKey() }}" selected>{{ $subEntry->{$field['attribute']} }}</option>
                             @else
                                 <option value="{{ $subEntry->getRouteKey() }}">{{ $subEntry->{$field['attribute']} }}</option>
