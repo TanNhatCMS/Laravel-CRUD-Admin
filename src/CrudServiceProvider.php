@@ -2,8 +2,8 @@
 
 namespace Backpack\CRUD;
 
-use Route;
 use Illuminate\Support\ServiceProvider;
+use Route;
 
 class CrudServiceProvider extends ServiceProvider
 {
@@ -75,7 +75,7 @@ class CrudServiceProvider extends ServiceProvider
 
         // register their aliases
         $loader = \Illuminate\Foundation\AliasLoader::getInstance();
-        $loader->alias('CRUD', \Backpack\CRUD\CrudServiceProvider::class);
+        $loader->alias('CRUD', self::class);
         $loader->alias('Form', \Collective\Html\FormFacade::class);
         $loader->alias('Html', \Collective\Html\HtmlFacade::class);
         $loader->alias('Image', \Intervention\Image\Facades\Image::class);

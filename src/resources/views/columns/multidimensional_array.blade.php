@@ -10,7 +10,7 @@
     if (is_array($array) && count($array)) {
         $list = [];
         foreach ($array as $item) {
-            if( isset( $item->{$column['visible_key']} ) ) {
+            if (isset($item->{$column['visible_key']})) {
                 $list[] = $item->{$column['visible_key']};
             } elseif (is_array($item) && isset($item[$column['visible_key']])) {
                 $list[] = $item[$column['visible_key']];

@@ -1,11 +1,11 @@
 <!-- text input -->
 <?php
 
-$value = old($field['name']) ? (old($field['name'])) : (isset($field['value']) ? ($field['value']) : (isset($field['default']) ? ($field['default']) : '' ));
+$value = old($field['name']) ? (old($field['name'])) : (isset($field['value']) ? ($field['value']) : (isset($field['default']) ? ($field['default']) : ''));
 
 // if attribute casting is used, convert to JSON
 if (is_array($value)) {
-    $value = json_encode((object)$value);
+    $value = json_encode((object) $value);
 } elseif (is_object($value)) {
     $value = json_encode($value);
 } else {

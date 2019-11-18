@@ -2,19 +2,19 @@
 
 namespace Backpack\CRUD\app\Http\Controllers;
 
-use Backpack\CRUD\CrudPanel;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Form as Form;
-use Illuminate\Foundation\Bus\DispatchesJobs;
-use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Foundation\Validation\ValidatesRequests;
-use Backpack\CRUD\app\Http\Controllers\CrudFeatures\Reorder;
 use Backpack\CRUD\app\Http\Controllers\CrudFeatures\AjaxTable;
-// CRUD Traits for non-core features
+use Backpack\CRUD\app\Http\Controllers\CrudFeatures\Reorder;
 use Backpack\CRUD\app\Http\Controllers\CrudFeatures\Revisions;
+use Backpack\CRUD\app\Http\Controllers\CrudFeatures\ShowDetailsRow;
 use Backpack\CRUD\app\Http\Requests\CrudRequest as StoreRequest;
 use Backpack\CRUD\app\Http\Requests\CrudRequest as UpdateRequest;
-use Backpack\CRUD\app\Http\Controllers\CrudFeatures\ShowDetailsRow;
+use Backpack\CRUD\CrudPanel;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+// CRUD Traits for non-core features
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Form as Form;
 
 class CrudController extends BaseController
 {

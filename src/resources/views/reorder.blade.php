@@ -22,37 +22,37 @@
 <?php
   function tree_element($entry, $key, $all_entries, $crud)
   {
-    if (!isset($entry->tree_element_shown)) {
-      // mark the element as shown
-      $all_entries[$key]->tree_element_shown = true;
-      $entry->tree_element_shown = true;
+      if (! isset($entry->tree_element_shown)) {
+          // mark the element as shown
+          $all_entries[$key]->tree_element_shown = true;
+          $entry->tree_element_shown = true;
 
-      // show the tree element
-      echo '<li id="list_'.$entry->getKey().'">';
-      echo '<div><span class="disclose"><span></span></span>'.$entry->{$crud->reorder_label}.'</div>';
+          // show the tree element
+          echo '<li id="list_'.$entry->getKey().'">';
+          echo '<div><span class="disclose"><span></span></span>'.$entry->{$crud->reorder_label}.'</div>';
 
-      // see if this element has any children
-      $children = [];
-      foreach ($all_entries as $key => $subentry) {
-        if ($subentry->parent_id == $entry->getKey()) {
-          $children[] = $subentry;
-        }
+          // see if this element has any children
+          $children = [];
+          foreach ($all_entries as $key => $subentry) {
+              if ($subentry->parent_id == $entry->getKey()) {
+                  $children[] = $subentry;
+              }
+          }
+
+          $children = collect($children)->sortBy('lft');
+
+          // if it does have children, show them
+          if (count($children)) {
+              echo '<ol>';
+              foreach ($children as $key => $child) {
+                  $children[$key] = tree_element($child, $child->getKey(), $all_entries, $crud);
+              }
+              echo '</ol>';
+          }
+          echo '</li>';
       }
 
-      $children = collect($children)->sortBy('lft');
-
-      // if it does have children, show them
-      if (count($children)) {
-        echo '<ol>';
-        foreach ($children as $key => $child) {
-          $children[$key] = tree_element($child, $child->getKey(), $all_entries, $crud);
-        }
-        echo '</ol>';
-      }
-      echo '</li>';
-    }
-
-    return $entry;
+      return $entry;
   }
 
  ?>
@@ -74,8 +74,8 @@
           <ol class="sortable">
             <?php
               $all_entries = collect($entries->all())->sortBy('lft')->keyBy($crud->getModel()->getKeyName());
-              $root_entries = $all_entries->filter(function($item) {
-                return $item->parent_id == 0;
+              $root_entries = $all_entries->filter(function ($item) {
+                  return $item->parent_id == 0;
               });
              ?>
             @foreach ($root_entries as $key => $entry)

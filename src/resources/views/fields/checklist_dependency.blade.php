@@ -8,49 +8,48 @@
       $primary_dependency = $field['subfields']['primary'];
       $secondary_dependency = $field['subfields']['secondary'];
 
-
       //all items with relation
       $dependencies = $primary_dependency['model']::with($primary_dependency['entity_secondary'])->get();
 
       $dependencyArray = [];
 
       //convert dependency array to simple matrix ( prymary id as key and array with secondaries id )
-      foreach($dependencies as $primary){
+      foreach ($dependencies as $primary) {
           $dependencyArray[$primary->id] = [];
-        foreach($primary->{$primary_dependency['entity_secondary']} as $secondary){
-            $dependencyArray[$primary->id][] = $secondary->id;
-        }
+          foreach ($primary->{$primary_dependency['entity_secondary']} as $secondary) {
+              $dependencyArray[$primary->id][] = $secondary->id;
+          }
       }
 
       //for update form, get initial state of the entity
-      if( isset($id) && $id ){
+      if (isset($id) && $id) {
 
         //get entity with relations for primary dependency
-        $entity_dependencies = $entity_model->with($primary_dependency['entity'])
+          $entity_dependencies = $entity_model->with($primary_dependency['entity'])
           ->with($primary_dependency['entity'].'.'.$primary_dependency['entity_secondary'])
           ->find($id);
 
-        $secondaries_from_primary = [];
+          $secondaries_from_primary = [];
 
-        //convert relation in array
-        $primary_array = $entity_dependencies->{$primary_dependency['entity']}->toArray();
+          //convert relation in array
+          $primary_array = $entity_dependencies->{$primary_dependency['entity']}->toArray();
 
-        $secondary_ids = [];
+          $secondary_ids = [];
 
-        //create secondary dependency from primary relation, used to check what chekbox must be check from second checklist
-        if( old($primary_dependency['name']) ) {
-          foreach( old($primary_dependency['name']) as $primary_item ){
-            foreach($dependencyArray[$primary_item] as $second_item ){
-                $secondary_ids[$second_item] = $second_item;
-            }
+          //create secondary dependency from primary relation, used to check what chekbox must be check from second checklist
+          if (old($primary_dependency['name'])) {
+              foreach (old($primary_dependency['name']) as $primary_item) {
+                  foreach ($dependencyArray[$primary_item] as $second_item) {
+                      $secondary_ids[$second_item] = $second_item;
+                  }
+              }
+          } else { //create dependecies from relation if not from validate error
+              foreach ($primary_array as $primary_item) {
+                  foreach ($primary_item[$secondary_dependency['entity']] as $second_item) {
+                      $secondary_ids[$second_item['id']] = $second_item['id'];
+                  }
+              }
           }
-        }else{ //create dependecies from relation if not from validate error
-          foreach( $primary_array as $primary_item ){
-            foreach($primary_item[$secondary_dependency['entity']] as $second_item ){
-                $secondary_ids[$second_item['id']] = $second_item['id'];
-            }
-          }
-        }
       }
 
       //json encode of dependency matrix
