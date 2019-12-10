@@ -14,7 +14,33 @@
 @section('header')
   <div class="container-fluid">
     <h2>
-      <span class="text-capitalize">{!! $crud->getHeading() ?? $crud->entity_name_plural !!}</span>
+      <script>
+          document.addEventListener('DOMContentLoaded', function(){
+              let obj = document.getElementsByClassName('capitalize-first-word');
+
+              obj.forEach(function(item, i) {
+                  let a = obj[i],
+                      array = a.innerHTML.split(' ');
+
+                  // one word = do nothing
+                  if (array.length > 1) {
+                      // insert only first word to this tag
+                      a.innerHTML = array['0'];
+
+                      // create new span and insert it near
+                      array.splice(0, 1);
+                      let span = " <span style='text-transform: initial !important;'>" + array.join(' ') + "</span>";
+
+                      if (a.tagName === 'SPAN'){
+                          a.outerHTML += span;
+                      } else {
+                          a.innerHTML += span;
+                      }
+                  }
+              });
+          });
+      </script>
+      <span class="text-capitalize capitalize-first-word">{!! $crud->getHeading() ?? $crud->entity_name_plural !!}</span>
       <small id="datatable_info_stack">{!! $crud->getSubheading() ?? '' !!}</small>
     </h2>
   </div>
