@@ -11,7 +11,6 @@ use Traversable;
 
 trait CrudTrait
 {
-    public $identifiableName;
 
     public static function hasCrudTrait()
     {
@@ -61,7 +60,7 @@ trait CrudTrait
      * @param Model $instance
      * @return DB
      */
-    public static function getPreparedSchemaManager($instance)
+    public static function getPreparedConnection($instance)
     {
         $conn = DB::connection($instance->getConnectionName());
         // register the enum, json and jsonb column type, because Doctrine doesn't support it
@@ -83,7 +82,7 @@ trait CrudTrait
         // create an instance of the model to be able to get the table name
         $instance = new static();
 
-        $conn = self::getPreparedSchemaManager($instance);
+        $conn = self::getPreparedConnection($instance);
 
         $table = Config::get('database.connections.'.Config::get('database.default').'.prefix').$instance->getTable();
 
@@ -334,7 +333,7 @@ trait CrudTrait
     {
         $instance = new static();
 
-        $conn = self::getPreparedSchemaManager($instance);
+        $conn = self::getPreparedConnection($instance);
 
         $table = Config::get('database.connections.'.Config::get('database.default').'.prefix').$instance->getTable();
 
