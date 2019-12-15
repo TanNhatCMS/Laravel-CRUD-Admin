@@ -318,11 +318,11 @@ trait CrudTrait
         return false;
     }
 
-    public static function getIndentifiableName()
+    public static function getIdentifiableName()
     {
         $model = (new self);
-        if (method_exists($model, 'indentifiableName')) {
-            return $model->indentifiableName();
+        if (method_exists($model, 'identifiableName')) {
+            return $model->identifiableName();
         }
 
         return static::getIdentifiableNameFromDatabase();

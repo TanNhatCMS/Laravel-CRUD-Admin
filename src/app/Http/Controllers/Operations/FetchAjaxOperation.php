@@ -48,7 +48,7 @@ trait FetchAjaxOperation
 
         //get searchable attributes if defined otherwise get identifiable attributes from model
         $whereToSearch = isset($this->fetch[$routeSegment]['searchableAttributes']) ?
-        $this->fetch[$routeSegment]['searchableAttributes'] : $model::getIndentifiableName();
+        $this->fetch[$routeSegment]['searchableAttributes'] : $model::getIdentifiableName();
 
         $search_term = $request->input('q');
         $instance = new $model;
