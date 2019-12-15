@@ -91,7 +91,6 @@ trait CrudTrait
         if ($conn->getConfig()['driver'] === 'mongodb') {
             return true;
         }
-
         try {
             //check if column exists in database
             $conn->getDoctrineColumn($table, $column_name);
