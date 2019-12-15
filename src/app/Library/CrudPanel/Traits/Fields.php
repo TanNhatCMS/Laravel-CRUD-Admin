@@ -28,18 +28,56 @@ trait Fields
      */
     public function addField($field)
     {
-        // if the field_definition_array array is a string, it means the programmer was lazy and has only passed the name
+        // if the field_definition_array is a string, it means the programmer was lazy and has only passed the name
         // set some default values, so the field will still work
         if (is_string($field)) {
-            $newField['name'] = $field;
+            if(count(explode('.',$field))>1) {
+               $newField['name'] = array_slice(explode('.',$field), -1)[0];
+               //if dot notation is used we assume user wants some related field
+               $newField['entity'] = $field;
+               $newField['type'] = 'relationship';
+            }else{
+                $newField['name'] = $field;
+            }
+
         } else {
             $newField = $field;
         }
+            if(!isset($field['entity']) && !isset($newField['type'])) {
+                // if field name is set with dot notation we assume it's a relationship field
+                if (count(explode('.',$newField['name']))>1) {
+                    $field['entity'] = $newField['name'];
+                    $newField['type'] = 'relationship';
+                }
 
-        // if this is a relation type field and no corresponding model was specified, get it from the relation method
-        // defined in the main model
-        if (isset($newField['entity']) && ! isset($newField['model'])) {
-            $newField['model'] = $this->getRelationModel($newField['entity']);
+                // if exists a method in the model with same field name we assume it's a relationship field
+                if(method_exists($this->model,$newField['name'])) {
+                    $newField['entity'] = $newField['name'];
+                    $newField['type'] = 'relationship';
+                }
+
+            }
+
+
+
+        // if entity is set ensure we get the rest of the info from relation
+        if (isset($newField['entity'])) {
+            $relation = $this->getRelationInfo($newField['entity']);
+            $newField['model'] = get_class($relation['model']);
+            $newField['relation_type'] = $relation['relation_info']['type'];
+
+            //if no attribute is specified we try to get it from relation
+            $newField['attribute'] = $newField['attribute'] ?? $this->selectFieldAttributeFromRelation($relation);
+
+            //if there is a connect key, the relation is a BelongsTo or BelongsToMany so we match the field name with relation key
+            isset($relation['relation_info']['connect_key']) ?? $newField['name'] = $relation['relation_info']['connect_key'];
+
+            //based on relation we determine if it's using pivot table
+            $newField['pivot'] = $relation['relation_info']['pivot'] ?? false;
+
+            if(!isset($newField['type'])) {
+                $newField['type'] = 'relationship';
+            }
         }
 
         // if the label is missing, we should set it
@@ -67,6 +105,14 @@ trait Fields
         return $this;
     }
 
+    public function selectFieldAttributeFromRelation($relation) {
+        $identifiableNames = $relation['model']::getIdentifiableName();
+        if(is_array($identifiableNames)) {
+            return array_first($identifiableNames);
+        }
+        return $identifiableNames;
+    }
+
     /**
      * Add multiple fields to the create/update form or both.
      *
@@ -80,6 +126,18 @@ trait Fields
                 $this->addField($field);
             }
         }
+    }
+
+    //checks if any of the field types are loaded.
+
+    public function isAnyTypeLoaded($fieldTypes)
+    {
+        foreach ($fieldTypes as $fieldType) {
+            if ($this->fieldTypeLoaded($fieldType)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -374,17 +432,19 @@ trait Fields
      * Get a namespaced version of the field type name.
      * Appends the 'view_namespace' attribute of the field to the `type', using dot notation.
      *
-     * @param  array $field Field array
+     * @param $field Field array or string
      * @return string Namespaced version of the field type name. Ex: 'text', 'custom.view.path.text'
      */
     public function getFieldTypeWithNamespace($field)
     {
-        $fieldType = $field['type'];
-
-        if (isset($field['view_namespace'])) {
-            $fieldType = implode('.', [$field['view_namespace'], $field['type']]);
+        if (is_array($field)) {
+            $fieldType = $field['type'];
+            if (isset($field['view_namespace'])) {
+                $fieldType = implode('.', [$field['view_namespace'], $field['type']]);
+            }
+        } else {
+            $fieldType = $field;
         }
-
         return $fieldType;
     }
 
