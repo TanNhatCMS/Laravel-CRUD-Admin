@@ -3,8 +3,8 @@
 namespace Backpack\CRUD\app\Http\Controllers\Operations;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Config;
+use Illuminate\Support\Facades\Route;
 
 trait FetchAjaxOperation
 {
@@ -21,13 +21,13 @@ trait FetchAjaxOperation
             foreach ($this->fetch as $relatedSegment => $entiyToFetch) {
                 $routeSegment = isset($entiyToFetch['routeSegment']) ? $entiyToFetch['routeSegment'] : $relatedSegment;
 
-                Route::get($segment . '/fetch/' . $routeSegment, [
-                    'uses'      => $controller . '@fetchMultipleItems',
+                Route::get($segment.'/fetch/'.$routeSegment, [
+                    'uses'      => $controller.'@fetchMultipleItems',
                     'operation' => 'FetchAjaxOperation',
                 ]);
 
-                Route::get($segment . '/fetch/' . $routeSegment . '/{id}', [
-                    'uses'      => $controller . '@fetchSingleItem',
+                Route::get($segment.'/fetch/'.$routeSegment.'/{id}', [
+                    'uses'      => $controller.'@fetchSingleItem',
                     'operation' => 'FetchAjaxOperation',
                 ]);
             }
@@ -56,31 +56,27 @@ trait FetchAjaxOperation
 
         $table = Config::get('database.connections.'.Config::get('database.default').'.prefix').$instance->getTable();
 
-
-        if ($search_term)
-        {
-            foreach($whereToSearch as $searchColumn) {
+        if ($search_term) {
+            foreach ($whereToSearch as $searchColumn) {
                 $columnType = $instance->getConnection()->getSchemaBuilder()->getColumnType($table, $searchColumn);
 
-                if (!isset($isFirst)) {
+                if (! isset($isFirst)) {
                     if ($columnType == 'string') {
                         $instance->where($searchColumn, 'LIKE', '%'.$search_term.'%');
-                    }else{
-                        $instance->where($searchColumn,$search_term);
+                    } else {
+                        $instance->where($searchColumn, $search_term);
                     }
-                }else{
+                } else {
                     if ($columnType == 'string') {
                         $instance->orWhere($searchColumn, 'LIKE', '%'.$search_term.'%');
-                    }else{
-                        $instance->orWhere($searchColumn,$search_term);
+                    } else {
+                        $instance->orWhere($searchColumn, $search_term);
                     }
                 }
                 $isFirst = true;
-             }
+            }
             $results = $instance->paginate($itemsPerPage);
-        }
-        else
-        {
+        } else {
             $results = $instance->paginate($itemsPerPage);
         }
 
@@ -92,11 +88,14 @@ trait FetchAjaxOperation
         $request = request()->instance();
         $routeSegment = $this->getRouteSegment($request->route()->uri);
         $model = $this->fetch[$routeSegment]['model'];
+
         return $model::findOrFail($id);
     }
 
-    public function getRouteSegment($uri) {
-        $routeSegments = explode('/',$uri);
+    public function getRouteSegment($uri)
+    {
+        $routeSegments = explode('/', $uri);
+
         return end($routeSegments);
     }
 }
