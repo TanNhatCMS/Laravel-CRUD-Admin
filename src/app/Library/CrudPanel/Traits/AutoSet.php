@@ -236,6 +236,6 @@ trait AutoSet
         }
 
         // but not updated_at, deleted_at
-        return array_values(array_diff($columns, [$this->model->getKeyName(), $this->model->getCreatedAtColumn(), $this->model->getUpdatedAtColumn(), 'deleted_at']));
+        return array_values(array_diff($columns, [$this->model->getRouteKeyName(), $this->model->getCreatedAtColumn(), $this->model->getUpdatedAtColumn(), 'deleted_at']));
     }
 }

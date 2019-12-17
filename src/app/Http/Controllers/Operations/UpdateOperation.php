@@ -98,7 +98,7 @@ trait UpdateOperation
         $request = $this->crud->validateRequest();
 
         // update the row in the db
-        $item = $this->crud->update($request->get($this->crud->model->getKeyName()),
+        $item = $this->crud->update($request->get($this->crud->model->getRouteKeyName()),
                             $this->crud->getStrippedSaveRequest());
         $this->data['entry'] = $this->crud->entry = $item;
 
@@ -108,6 +108,6 @@ trait UpdateOperation
         // save the redirect choice for next time
         $this->crud->setSaveAction();
 
-        return $this->crud->performSaveAction($item->getKey());
+        return $this->crud->performSaveAction($item->getRouteKey());
     }
 }

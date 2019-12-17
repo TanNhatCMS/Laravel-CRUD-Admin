@@ -75,8 +75,8 @@ class SlugService extends \Cviebrock\EloquentSluggable\Services\SlugService
         // 	a) it's for our model, or
         //  b) it looks like a suffixed version of our slug
         // ... we are also okay (use the current slug)
-        if ($list->has($this->model->getKey())) {
-            $currentSlug = $list->get($this->model->getKey());
+        if ($list->has($this->model->getRouteKey())) {
+            $currentSlug = $list->get($this->model->getRouteKey());
 
             if (
                 $currentSlug === $slug ||

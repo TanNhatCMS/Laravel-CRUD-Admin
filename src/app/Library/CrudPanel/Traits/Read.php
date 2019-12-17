@@ -15,7 +15,7 @@ trait Read
     public function getCurrentEntryId()
     {
         if ($this->entry) {
-            return $this->entry->getKey();
+            return $this->entry->getRouteKey();
         }
 
         $params = \Route::current()->parameters();

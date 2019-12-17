@@ -117,14 +117,14 @@ trait ListOperation
                 return false;
             }
 
-            if ($item['column'] == $this->crud->model->getKeyName()) {
+            if ($item['column'] == $this->crud->model->getRouteKeyName()) {
                 $hasOrderByPrimaryKey = true;
 
                 return false;
             }
         });
         if (! $hasOrderByPrimaryKey) {
-            $this->crud->query->orderByDesc($this->crud->model->getKeyName());
+            $this->crud->query->orderByDesc($this->crud->model->getRouteKeyName());
         }
 
         $entries = $this->crud->getEntries();

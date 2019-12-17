@@ -90,6 +90,6 @@ trait CreateOperation
         // save the redirect choice for next time
         $this->crud->setSaveAction();
 
-        return $this->crud->performSaveAction($item->getKey());
+        return $this->crud->performSaveAction($item->getRouteKey());
     }
 }

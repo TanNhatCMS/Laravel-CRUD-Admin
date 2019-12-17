@@ -17,7 +17,7 @@ trait Reorder
     public function updateTreeOrder($request)
     {
         $count = 0;
-        $primaryKey = $this->model->getKeyName();
+        $primaryKey = $this->model->getRouteKeyName();
 
         \DB::beginTransaction();
         foreach ($request as $key => $entry) {

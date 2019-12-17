@@ -63,10 +63,10 @@ trait Update
         }
 
         // always have a hidden input for the entry id
-        if (! array_key_exists('id', $fields)) {
-            $fields['id'] = [
-                'name'  => $entry->getKeyName(),
-                'value' => $entry->getKey(),
+        if (! array_key_exists($entry->getRouteKeyName(), $fields)) {
+            $fields[$entry->getRouteKeyName()] = [
+                'name'  => $entry->getRouteKeyName(),
+                'value' => $entry->getRouteKey(),
                 'type'  => 'hidden',
             ];
         }
