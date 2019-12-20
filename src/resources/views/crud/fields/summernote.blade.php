@@ -4,7 +4,7 @@
     @include('crud::inc.field_translatable_icon')
     <textarea
         name="{{ $field['name'] }}"
-        data-init-function="bpFieldInitSummernoteElement"
+        data-init-function="bpFieldInitSummernoteElement_{{ Str::snake($field['name']) }}"
         @include('crud::inc.field_attributes', ['default_class' =>  'form-control summernote'])
         >{{ old(square_brackets_to_dots($field['name'])) ?? $field['value'] ?? $field['default'] ?? '' }}</textarea>
 
@@ -34,13 +34,17 @@
         <!-- include summernote js-->
         {{-- <script src="{{ asset('packages/summernote/dist/summernote.min.js') }}"></script> --}}
         <script src="{{ asset('packages/summernote/dist/summernote-bs4.min.js') }}"></script>
-        <script>
-            function bpFieldInitSummernoteElement(element) {
-                element.summernote(@json($field['options'] ?? []));
-            }
-        </script>
     @endpush
 
 @endif
+
+{{-- FIELD JS - will be loaded in the after_scripts section --}}
+@push('crud_fields_scripts')
+    <script>
+        function bpFieldInitSummernoteElement_{{ Str::snake($field['name']) }}(element) {
+            element.summernote(@json($field['options'] ?? []));
+        }
+    </script>
+@endpush
 {{-- End of Extra CSS and JS --}}
 {{-- ########################################## --}}
