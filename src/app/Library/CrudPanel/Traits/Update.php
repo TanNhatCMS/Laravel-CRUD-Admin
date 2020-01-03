@@ -58,11 +58,11 @@ trait Update
                     }
 
                     // handle fake fields
-                } else if (!empty($field['fake'])) {
+                } elseif (! empty($field['fake'])) {
                     // determine the stored-in attribute
                     $fakeStoredInAttribute = $field['store_in'] ?? 'extras';
                     // check if the fake stored-in attribute exists
-                    if (!empty($entry->{$fakeStoredInAttribute})) {
+                    if (! empty($entry->{$fakeStoredInAttribute})) {
                         $fakeStoredInArray = $entry->{$fakeStoredInAttribute};
                         // check if it's a string, decode it
                         // otherwise, it should be an array
@@ -71,7 +71,7 @@ trait Update
                             $fakeStoredInArray = json_decode($fakeStoredInArray, true);
                         }
 
-                        if (!empty($fakeStoredInArray) && is_array($fakeStoredInArray) && isset($fakeStoredInArray[$field['name']])) {
++                        if (! empty($fakeStoredInArray) && is_array($fakeStoredInArray) && isset($fakeStoredInArray[$field['name']])) {
                             $field['value'] = $fakeStoredInArray[$field['name']];
                         }
                     }
