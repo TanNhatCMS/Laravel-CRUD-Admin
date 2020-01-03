@@ -71,7 +71,7 @@ trait Update
                             $fakeStoredInArray = json_decode($fakeStoredInArray, true);
                         }
 
-+                        if (! empty($fakeStoredInArray) && is_array($fakeStoredInArray) && isset($fakeStoredInArray[$field['name']])) {
+                        if (! empty($fakeStoredInArray) && is_array($fakeStoredInArray) && isset($fakeStoredInArray[$field['name']])) {
                             $field['value'] = $fakeStoredInArray[$field['name']];
                         }
                     }
