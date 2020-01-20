@@ -1,7 +1,9 @@
 @php
-    if (!isset($field['wrapperAttributes']) || !isset($field['wrapperAttributes']['class']))
-    {
+   if (!isset($field['wrapperAttributes']) || !isset($field['wrapperAttributes']['data-init-function'])){
         $field['wrapperAttributes']['data-init-function'] = 'bpFieldInitUploadElement';
+    }
+
+    if (!isset($field['wrapperAttributes']) || !isset($field['wrapperAttributes']['data-field-name'])) {
         $field['wrapperAttributes']['data-field-name'] = $field['name'];
     }
 @endphp
@@ -156,6 +158,10 @@
 
                     fileInput.parent().removeClass('d-none');
                     fileInput.attr("value", "").replaceWith(fileInput.clone(true));
+
+                    // redo the selector, so we can use the same fileInput variable going forward 
+                    fileInput = element.find(".file_input");
+
                     // add a hidden input with the same name, so that the setXAttribute method is triggered
                     $("<input type='hidden' name='"+fieldName+"' value=''>").insertAfter(fileInput);
                 });

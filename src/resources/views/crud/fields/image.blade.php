@@ -1,8 +1,17 @@
 @php
-    if (!isset($field['wrapperAttributes']) || !isset($field['wrapperAttributes']['class']))
-    {
-        $field['wrapperAttributes']['class'] = "form-group col-sm-12 cropperImage";
+    if (!isset($field['wrapperAttributes']) || !isset($field['wrapperAttributes']['data-init-function'])){
         $field['wrapperAttributes']['data-init-function'] = 'bpFieldInitCropperImageElement';
+    }
+
+    if (!isset($field['wrapperAttributes']) || !isset($field['wrapperAttributes']['data-field-name'])) {
+        $field['wrapperAttributes']['data-field-name'] = $field['name'];
+    }
+
+
+    if (!isset($field['wrapperAttributes']) || !isset($field['wrapperAttributes']['class'])) {
+        $field['wrapperAttributes']['class'] = "form-group col-sm-12 cropperImage";
+    } elseif (isset($field['wrapperAttributes']) && isset($field['wrapperAttributes']['class'])) {
+        $field['wrapperAttributes']['class'] .= " cropperImage";
     }
 
     $prefix = isset($field['prefix']) ? $field['prefix'] : '';
@@ -198,7 +207,7 @@
                         });
                     } else {
 
-                        $(this).find("#remove").click(function() {
+                        $remove.click(function() {
                             $mainImage.attr('src','');
                             $hiddenImage.val('');
                             $remove.hide();
@@ -221,7 +230,7 @@
 
                             alert(`Please pick an image smaller than ${maxImageSize} bytes.`);
                         } else if (/^image\/\w+$/.test(file.type)) {
-                            
+
                             fileReader.readAsDataURL(file);
                             fileReader.onload = function () {
 

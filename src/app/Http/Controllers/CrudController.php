@@ -2,10 +2,10 @@
 
 namespace Backpack\CRUD\app\Http\Controllers;
 
-use Illuminate\Http\Request;
-use Illuminate\Routing\Controller;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Http\Request;
+use Illuminate\Routing\Controller;
 
 class CrudController extends Controller
 {
@@ -30,6 +30,8 @@ class CrudController extends Controller
         $this->middleware(function ($request, $next) {
             // make a new CrudPanel object, from the one stored in Laravel's service container
             $this->crud = app()->make('crud');
+            // ensure crud has the latest request
+            $this->crud->setRequest($request);
             $this->request = $request;
             $this->setupDefaults();
             $this->setup();

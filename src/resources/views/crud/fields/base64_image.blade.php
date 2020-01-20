@@ -1,14 +1,25 @@
 @php
-    if (!isset($field['wrapperAttributes']) || !isset($field['wrapperAttributes']['class']))
-    {
-        $field['wrapperAttributes']['class'] = "form-group col-sm-12 cropperImage";
+
+    if (!isset($field['wrapperAttributes']) || !isset($field['wrapperAttributes']['data-init-function'])){
         $field['wrapperAttributes']['data-init-function'] = 'bpFieldInitBase64CropperImageElement';
     }
+
+    if (!isset($field['wrapperAttributes']) || !isset($field['wrapperAttributes']['data-field-name'])) {
+        $field['wrapperAttributes']['data-field-name'] = $field['name'];
+    }
+
+
+    if (!isset($field['wrapperAttributes']) || !isset($field['wrapperAttributes']['class'])) {
+        $field['wrapperAttributes']['class'] = "form-group col-sm-12 cropperImage";
+    } elseif (isset($field['wrapperAttributes']) && isset($field['wrapperAttributes']['class'])) {
+        $field['wrapperAttributes']['class'] .= " cropperImage";
+    }
+
 @endphp
 
-  <div  data-preview="#{{ $field['name'] }}" 
-        data-aspectRatio="{{ isset($field['aspect_ratio']) ? $field['aspect_ratio'] : 0 }}" 
-        data-crop="{{ isset($field['crop']) ? $field['crop'] : false }}" 
+  <div  data-preview="#{{ $field['name'] }}"
+        data-aspectRatio="{{ isset($field['aspect_ratio']) ? $field['aspect_ratio'] : 0 }}"
+        data-crop="{{ isset($field['crop']) ? $field['crop'] : false }}"
         @include('crud::inc.field_wrapper_attributes')>
     <div>
         <label>{!! $field['label'] !!}</label>
@@ -178,7 +189,7 @@
                         });
                     } else {
 
-                        element.find("#remove").click(function() {
+                        $remove.click(function() {
                             $mainImage.attr('src','');
                             $hiddenImage.val('');
                             $hiddenFilename.val('removed');

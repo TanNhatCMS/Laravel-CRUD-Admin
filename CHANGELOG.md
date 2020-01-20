@@ -8,6 +8,198 @@ All Notable changes to `Backpack CRUD` will be documented in this file.
 
 -----------
 
+## 4.0.34 - 2020-01-20
+
+### Fixed
+- merged #2377 - updated Chinese translation;
+- merged #2359 - fix field label generation when name is an array;
+
+
+## 4.0.33 - 2020-01-15
+
+### Fixed
+- merged #2353 - markdown column does not show error when null on Laravel 6.10+;
+
+
+## 4.0.32 - 2020-01-14
+
+### Added
+- merged #2351 & #2352 - Indonesian language file;
+- merged #2369 - fixes #2365 and #2366 - browse_multiple field type had an extra php tag;
+
+
+## 4.0.31 - 2020-01-03
+
+### Fixed
+- merged #2330 - translation strings for clone button;
+- merged #2343 fixes #2338 - installation on windows failed if the public/uploads directory existed; 
+
+
+## 4.0.30 - 2019-12-20
+
+### Fixed
+- merged #2324 fixes #2323 - multiple summernote fields on page with different options;
+- merged #2294 fixes #2293 - request inconsistency between Controller and CrudPanel object;
+
+
+## 4.0.29 - 2019-12-19
+
+### Added
+- support for PHP 7.4;
+
+### Fixed
+- merged #2183 fixes #1797 - columns weren't orderable in MSSQL;
+
+
+## 4.0.28 - 2019-12-19
+
+### Added
+- Persian language added;
+
+### Fixed
+- merged #2136 - fixed Create operation with foreign keys that are not inside the form;
+- reversed Laravel composer requirement - first 6, then 5.8;
+
+
+## 4.0.27 - 2019-12-17
+
+### Fixed
+- #2306 - pt-BR translation fixes;
+- changed default "install elFinder" answer to "false" when installing Backpack;
+- fixed installation progress bar;
+- fixed ScrutinizerCI warnings on installation process;
+
+
+## 4.0.26 - 2019-12-16
+
+### Fixed
+- #2149 - select2_multiple field support for UUIDs;
+
+
+## 4.0.25 - 2019-12-16
+
+### Fixed
+- #2292 - admin panel home link broke the installation because it used url() inside config files;
+
+
+## 4.0.24 - 2019-12-14
+
+### Fixed
+- merged #2287 - CrudTrait's ```isColumnNullable``` should not throw error if the column does not exist; that way you can use it on non-existing columns;
+- merged #2292 fixes #2289 - config for changing the URL for the top-left logo to something else;
+- merged #2101 - Don't force the default controller namespace;
+- merged #2268 - video field's input should be type url not text;
+
+
+## 4.0.23 - 2019-12-02
+
+### Fixed
+- merged #2270 - missing ES language translations;
+- merged #2261 - browse_multiple field can now be sortable;
+
+
+## 4.0.22 - 2019-11-25
+
+### Fixed
+- merged #2260 - image field type JS function name was wrong;
+
+
+## 4.0.21 - 2019-11-23
+
+### Fixed
+- merged #2257 fixed #2256 - upload field type could not clear the input;
+- merged #2243 fixes #1828 - select_all not working in a second select2_multiple on the same page;
+- merged #2113 - datetime_picker field did not have its locale working;
+
+
+## 4.0.20 - 2019-11-23
+
+### Fixed
+- merged #2245 fixes #2178 - ShowOperation should use column keys, not column names, when doing stuff to columns;
+- merged #2249 - upgrades minimum required version for angular to 1.7.9 to fix a security vulnerability;
+- merged #2211 fixes #2188 - allow custom wrapperAttributes on upload, upload_multiple, image and base64_image fields without breaking stuff;
+
+
+## 4.0.19 - 2019-11-19
+
+### Fixed
+- merged #2247 - datatables persistentTable bug introduced by #2220;
+
+
+## 4.0.18 - 2019-11-18
+
+### Fixed
+- merged #2229 fixes #2219 - select_from_array field did not work properly with one or no options;
+- merged #2215 - use translated yes/no strings for check column;
+- merged #2220 fixes #2193 #2165 #2231 - various datatable issues with persistentTable and Export Buttons;
+
+
+## 4.0.17 - 2019-11-18
+
+### Fixed
+- merged #2119 - no license check if no remote address is set;
+- no license check if both debug is true and env is local;
+- update all CSS and JS assets but line-awesome;
+
+
+## 4.0.16 - 2019-11-17
+
+### Fixed
+- merged #2232 fixes #2233 - setPersistentTable() did not work because it was a getter instead of setter;
+- merged #2073 - select_from_array always used the default value;
+- merged #2207 - when the sidebar was open on mobile there was a slight chin to the navbar;
+
+
+## 4.0.15 - 2019-11-15
+
+### Fixed
+- merged 2218 fixes #2142 - check column type always had its label shown; 
+- merged #2216 - user menu dropdown did not have a closing div;
+- merged #2225 fixes #2224 - sidebar menu item was not active when inside Create, Update or Preview operations;
+- merged #2182 - language switch floated wrong;
+- merged #2196 fixes #2195 and #2192 - order logic did not work with orderByRaw and inRandomOrder;
+
+
+## 4.0.14 - 2019-11-12
+
+### Fixed
+- merged #2206 fixes #2161 - fixes setSubheading typo;
+- merged #2209 - default saveAllInputsExcept to ONLY when saveAllInputsExcept is NULL;
+- merged #2181 fixes #2145 - missing row class to tabbed fields view;
+
+
+## 4.0.13 - 2019-11-11
+
+### Fixed
+- merged #2156 - checkbox field did not pass boolean validation sometimes;
+- merged #2197, fixes #2198 - image and base64_image fields: remove button did not do anything if crop wasn't set;
+- merged #2174, fixes #2104 - ability to tell the Create and Update operations to save the request using Except instead of Only, using the new operation-level config item ```saveAllInputsExcept```;
+
+
+## 4.0.12 - 2019-10-24
+
+### Fixed
+- merged #2130 - dropdown filter did not show the active item;
+- fixed #2102 - multiple select2_ajax filters on one CRUD did not work;
+- fixed #2075 - select2_multiple filter couldn't be used twice on one crud;
+
+
+## 4.0.11 - 2019-10-23
+
+### Fixed
+- fixed column model_function_attribute - if no function leave empty;
+- fixed column upload_multiple - added prefix attribute so you can prepend something to the URL;
+
+
+## 4.0.10 - 2019-10-23
+
+### Fixed
+- fixed #2152 merged #2154 - ckeditor options were not working;
+- fixed #2170 - default columns for autoset table field and table column;
+- fixes #2162 - autoSet allows columns to end in AT or ID;
+- merged #2155 - better docblock for Validation trait;
+
+
 ## 4.0.9 - 2019-10-12
 
 ### Fixed

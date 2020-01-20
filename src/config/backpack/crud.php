@@ -29,6 +29,13 @@ return [
             // whenever the user tries to see that page, backpack loads the previous pagination and filtration
             'persistentTable' => true,
 
+            // the time the table will be persisted in minutes
+            // after this the table info is cleared from localStorage.
+            // use false to never force localStorage clear. (default)
+            // keep in mind: User can clear his localStorage whenever he wants.
+
+            'persistentTableDuration' => false,
+
             // How many items should be shown by default by the Datatable?
             // This value can be overwritten on a specific CRUD by calling
             // $this->crud->setDefaultPageLength(50);
@@ -72,6 +79,12 @@ return [
             // When the user chooses "save and back" or "save and new", show a bubble
             // for the fact that the default save action has been changed?
             'showSaveActionChange' => true, //options: true, false
+
+            // Before saving the entry, how would you like the request to be stripped?
+            // - false - ONLY save inputs that have fields (safest)
+            // - [x, y, z] - save ALL inputs, EXCEPT the ones given in this array
+            'saveAllInputsExcept' => false,
+            // 'saveAllInputsExcept' => ['_token', '_method', 'http_referrer', 'current_tab', 'save_action'],
         ],
 
         /*
@@ -99,6 +112,12 @@ return [
             // When the user chooses "save and back" or "save and new", show a bubble
             // for the fact that the default save action has been changed?
             'showSaveActionChange' => true, //options: true, false
+
+            // Before saving the entry, how would you like the request to be stripped?
+            // - false - Save ONLY inputs that have a field (safest, default);
+            // - [x, y, z] - Save ALL inputs, EXCEPT the ones given in this array;
+            'saveAllInputsExcept' => false,
+            // 'saveAllInputsExcept' => ['_token', '_method', 'http_referrer', 'current_tab', 'save_action'],
         ],
 
         /*

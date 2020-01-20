@@ -2,8 +2,8 @@
 
 namespace Backpack\CRUD\app\Library\CrudPanel\Traits;
 
-use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 trait Create
 {
@@ -176,13 +176,11 @@ trait Create
                     $item->{$relationMethod}->update($relationData['values']);
                     $modelInstance = $item->{$relationMethod};
                 } else {
-                    $relationModel = new $model();
-                    $modelInstance = $relationModel->create($relationData['values']);
+                    $modelInstance = new $model($relationData['values']);
                     $relation->save($modelInstance);
                 }
             } else {
-                $relationModel = new $model();
-                $modelInstance = $relationModel->create($relationData['values']);
+                $modelInstance = new $model($relationData['values']);
                 $relation->save($modelInstance);
             }
 
