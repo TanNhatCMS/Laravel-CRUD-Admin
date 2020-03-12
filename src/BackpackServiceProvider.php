@@ -309,7 +309,8 @@ class BackpackServiceProvider extends ServiceProvider
     }
 
     //Register extra aliases into laravel container to use in blade views.
-    public function registerExtraAliases() {
+    public function registerExtraAliases()
+    {
         $alias_instance = \Illuminate\Foundation\AliasLoader::getInstance();
         $alias_instance->alias('Str', 'Illuminate\Support\Str');
         $alias_instance->alias('Arr', 'Illuminate\Support\Arr');
