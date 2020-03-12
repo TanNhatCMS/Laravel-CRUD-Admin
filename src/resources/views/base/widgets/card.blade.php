@@ -6,3 +6,7 @@
 	  <div class="card-body">{!! $widget['content']['body'] !!}</div>
 	</div>
 </div>
+
+@if(!CRUD::widgetTypeLoaded($widget))
+ <!-- Prevent multiple times loading of assets. -->
+@endif

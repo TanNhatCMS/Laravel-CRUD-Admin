@@ -1,6 +1,6 @@
 <div class="{{ $widget['class'] ?? 'alert alert-primary' }}" role="alert">
 
-	@if (isset($widget['close_button']) && $widget['close_button'])	
+	@if (isset($widget['close_button']) && $widget['close_button'])
 	<button class="close" type="button" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span></button>
 	@endif
 
@@ -13,3 +13,7 @@
 	@endif
 
 </div>
+
+@if(!CRUD::widgetTypeLoaded($widget))
+    <!-- Prevent multiple times loading of assets. -->
+@endif
