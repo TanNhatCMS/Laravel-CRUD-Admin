@@ -27,8 +27,8 @@ use Backpack\CRUD\app\Library\CrudPanel\Traits\Tabs;
 use Backpack\CRUD\app\Library\CrudPanel\Traits\Update;
 use Backpack\CRUD\app\Library\CrudPanel\Traits\Validation;
 use Backpack\CRUD\app\Library\CrudPanel\Traits\Views;
-use Backpack\CRUD\app\Library\CrudPanel\Traits\Widgets;
 use Backpack\CRUD\app\Library\CrudPanel\Traits\ViewsAndRestoresRevisions;
+use Backpack\CRUD\app\Library\CrudPanel\Traits\Widgets;
 use Illuminate\Database\Eloquent\Collection;
 
 class CrudPanel

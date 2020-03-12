@@ -36,8 +36,8 @@ trait Widgets
         return $widgetType;
     }
 
-     /**
-     * Set an array of widget type names as already loaded
+    /**
+     * Set an array of widget type names as already loaded.
      *
      * @param array $fieldTypes
      */
@@ -66,6 +66,4 @@ trait Widgets
     {
         return in_array($this->getWidgetTypeWithNamespace($widget), $this->getLoadedWidgetTypes());
     }
-
-
 }
