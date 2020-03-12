@@ -64,6 +64,9 @@ class BackpackServiceProvider extends ServiceProvider
             $this->addRouteMacro();
         }
 
+        //register global Arr and Str helpers aliases
+        $this->registerExtraAliases();
+
         // register the helper functions
         $this->loadHelpers();
 
@@ -303,5 +306,12 @@ class BackpackServiceProvider extends ServiceProvider
     public function loadHelpers()
     {
         require_once __DIR__.'/helpers.php';
+    }
+
+    //Register extra aliases into laravel container to use in blade views.
+    public function registerExtraAliases() {
+        $alias_instance = \Illuminate\Foundation\AliasLoader::getInstance();
+        $alias_instance->alias('Str', 'Illuminate\Support\Str');
+        $alias_instance->alias('Arr', 'Illuminate\Support\Arr');
     }
 }
