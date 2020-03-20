@@ -21,7 +21,7 @@ class CrudControllerTest extends BaseTest
         $app['router']->get('users/{id}/edit', "$controller@edit");
         $app['router']->put('users/{id}', "$controller@update");
 
-        $app->singleton('crud', function($app) {
+        $app->singleton('crud', function ($app) {
             return new CrudPanel($app);
         });
     }

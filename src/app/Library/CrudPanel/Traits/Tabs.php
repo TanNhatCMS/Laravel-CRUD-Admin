@@ -32,7 +32,7 @@ trait Tabs
      */
     public function tabsDisabled()
     {
-        return !$this->tabsEnabled();
+        return ! $this->tabsEnabled();
     }
 
     public function setTabsType($type)
@@ -114,8 +114,8 @@ trait Tabs
     {
         $all_fields = $this->getCurrentFields();
 
-        $fields_without_a_tab = collect($all_fields)->filter(function($value, $key) {
-            return !isset($value['tab']);
+        $fields_without_a_tab = collect($all_fields)->filter(function ($value, $key) {
+            return ! isset($value['tab']);
         });
 
         return $fields_without_a_tab;
@@ -131,7 +131,7 @@ trait Tabs
         if ($this->tabExists($label)) {
             $all_fields = $this->getCurrentFields();
 
-            $fields_for_current_tab = collect($all_fields)->filter(function($value, $key) use ($label) {
+            $fields_for_current_tab = collect($all_fields)->filter(function ($value, $key) use ($label) {
                 return isset($value['tab']) && $value['tab'] == $label;
             });
 
@@ -150,11 +150,11 @@ trait Tabs
         $fields = $this->getCurrentFields();
 
         $fields_with_tabs = collect($fields)
-            ->filter(function($value, $key) {
+            ->filter(function ($value, $key) {
                 return isset($value['tab']);
             })
-            ->each(function($value, $key) use (&$tabs) {
-                if (!in_array($value['tab'], $tabs)) {
+            ->each(function ($value, $key) use (&$tabs) {
+                if (! in_array($value['tab'], $tabs)) {
                     $tabs[] = $value['tab'];
                 }
             });

@@ -70,7 +70,7 @@ trait Query
      */
     public function customOrderBy($column, $columnDirection = 'asc')
     {
-        if (!isset($column['orderLogic'])) {
+        if (! isset($column['orderLogic'])) {
             return $this->query;
         }
 

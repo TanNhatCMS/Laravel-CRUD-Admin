@@ -22,9 +22,9 @@ trait Search
      */
     public function applySearchTerm($searchTerm)
     {
-        return $this->query->where(function($query) use ($searchTerm) {
+        return $this->query->where(function ($query) use ($searchTerm) {
             foreach ($this->columns() as $column) {
-                if (!isset($column['type'])) {
+                if (! isset($column['type'])) {
                     abort(400, 'Missing column type when trying to apply search term.');
                 }
 
@@ -82,7 +82,7 @@ trait Search
 
                 case 'select':
                 case 'select_multiple':
-                    $query->orWhereHas($column['entity'], function($q) use ($column, $searchTerm) {
+                    $query->orWhereHas($column['entity'], function ($q) use ($column, $searchTerm) {
                         $q->where($column['attribute'], 'like', '%'.$searchTerm.'%');
                     });
                     break;
@@ -288,7 +288,7 @@ trait Search
      */
     private function renderCellView($view, $column, $entry, $rowNumber = false)
     {
-        if (!view()->exists($view)) {
+        if (! view()->exists($view)) {
             $view = 'crud::columns.text'; // fallback to text column
         }
 

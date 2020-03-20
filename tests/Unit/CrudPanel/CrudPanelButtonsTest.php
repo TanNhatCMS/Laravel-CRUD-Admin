@@ -258,7 +258,7 @@ class CrudPanelButtonsTest extends BaseCrudPanelTest
 
     private function getButtonByName($name)
     {
-        return $this->crudPanel->buttons()->first(function($value) use ($name) {
+        return $this->crudPanel->buttons()->first(function ($value) use ($name) {
             return $value->name == $name;
         });
     }

@@ -45,8 +45,8 @@ trait FetchOperation
         // otherwise assume the arguments are actually the configuration array
         $config = [];
 
-        if (!is_array($arg)) {
-            if (!class_exists($arg)) {
+        if (! is_array($arg)) {
+            if (! class_exists($arg)) {
                 return response()->json(['error' => 'Class: '.$arg.' does not exists'], 500);
             }
             $config['model'] = $arg;

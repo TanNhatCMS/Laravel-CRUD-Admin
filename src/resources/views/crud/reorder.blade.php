@@ -28,7 +28,7 @@
 <?php
 function tree_element($entry, $key, $all_entries, $crud)
 {
-    if (!isset($entry->tree_element_shown)) {
+    if (! isset($entry->tree_element_shown)) {
         // mark the element as shown
         $all_entries[$key]->tree_element_shown = true;
         $entry->tree_element_shown = true;
@@ -71,7 +71,7 @@ function tree_element($entry, $key, $all_entries, $crud)
             <ol class="sortable mt-0">
             <?php
                 $all_entries = collect($entries->all())->sortBy('lft')->keyBy($crud->getModel()->getKeyName());
-                $root_entries = $all_entries->filter(function($item) {
+                $root_entries = $all_entries->filter(function ($item) {
                     return $item->parent_id == 0;
                 });
                 foreach ($root_entries as $key => $entry) {

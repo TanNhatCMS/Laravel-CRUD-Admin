@@ -13,7 +13,7 @@ class CreateAccountDetailsTable extends Migration
      */
     public function up()
     {
-        Schema::create('account_details', function(Blueprint $table) {
+        Schema::create('account_details', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->length(10)->unsigned();
             $table->string('nickname');

@@ -15,7 +15,7 @@ class CreateColumnTypesTable extends Migration
         // uncomment the next statement to map strings to enum types in doctrine and get over the 'Unknown database type enum' DBAL error
         // Schema::getConnection()->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
 
-        Schema::create('column_types', function($table) {
+        Schema::create('column_types', function ($table) {
             $table->bigInteger('bigIntegerCol');
             $table->binary('binaryCol');
             $table->boolean('booleanCol');

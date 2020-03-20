@@ -12,7 +12,7 @@ class CreateArticlesTable extends Migration
      */
     public function up()
     {
-        Schema::create('articles', function($table) {
+        Schema::create('articles', function ($table) {
             $table->increments('id');
             $table->integer('user_id')->length(10)->unsigned();
             $table->string('content');

@@ -24,7 +24,7 @@ trait Relationships
         }
 
         if (in_array($fieldName, array_column($relations, 'name'))) {
-            return array_filter($relations, function($arr) use ($fieldName) {
+            return array_filter($relations, function ($arr) use ($fieldName) {
                 if (isset($arr['name'])) {
                     return $arr['name'] == $fieldName;
                 }

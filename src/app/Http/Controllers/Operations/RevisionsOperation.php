@@ -36,11 +36,11 @@ trait RevisionsOperation
         // allow access to the operation
         $this->crud->allowAccess('revisions');
 
-        $this->crud->operation('revisions', function() {
+        $this->crud->operation('revisions', function () {
             $this->crud->loadDefaultOperationSettingsFromConfig();
         });
 
-        $this->crud->operation(['list', 'show'], function() {
+        $this->crud->operation(['list', 'show'], function () {
             // add a button in the line stack
             $this->crud->addButton('line', 'revisions', 'view', 'crud::buttons.revisions', 'end');
         });
@@ -86,7 +86,7 @@ trait RevisionsOperation
         $this->crud->hasAccessOrFail('revisions');
 
         $revisionId = \Request::input('revision_id', false);
-        if (!$revisionId) {
+        if (! $revisionId) {
             abort(500, 'Can\'t restore revision without revision_id');
         } else {
             $this->crud->restoreRevision($id, $revisionId); // do the update

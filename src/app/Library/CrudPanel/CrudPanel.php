@@ -100,11 +100,11 @@ class CrudPanel
      */
     public function setModel($model_namespace)
     {
-        if (!class_exists($model_namespace)) {
+        if (! class_exists($model_namespace)) {
             throw new \Exception('The model does not exist.', 500);
         }
 
-        if (!method_exists($model_namespace, 'hasCrudTrait')) {
+        if (! method_exists($model_namespace, 'hasCrudTrait')) {
             throw new \Exception('Please use CrudTrait on the model.', 500);
         }
 
@@ -167,7 +167,7 @@ class CrudPanel
     {
         $complete_route = $route.'.index';
 
-        if (!\Route::has($complete_route)) {
+        if (! \Route::has($complete_route)) {
             throw new \Exception('There are no routes for this route name.', 404);
         }
 
@@ -268,7 +268,7 @@ class CrudPanel
      */
     public function getFirstOfItsTypeInArray($type, $array)
     {
-        return Arr::first($array, function($item) use ($type) {
+        return Arr::first($array, function ($item) use ($type) {
             return $item['type'] == $type;
         });
     }
@@ -285,8 +285,8 @@ class CrudPanel
 
     public function sync($type, $fields, $attributes)
     {
-        if (!empty($this->{$type})) {
-            $this->{$type} = array_map(function($field) use ($fields, $attributes) {
+        if (! empty($this->{$type})) {
+            $this->{$type} = array_map(function ($field) use ($fields, $attributes) {
                 if (in_array($field['name'], (array) $fields)) {
                     $field = array_merge($field, $attributes);
                 }
@@ -317,15 +317,15 @@ class CrudPanel
     {
         $relationArray = explode('.', $relationString);
 
-        if (!isset($length)) {
+        if (! isset($length)) {
             $length = count($relationArray);
         }
 
-        if (!isset($model)) {
+        if (! isset($model)) {
             $model = $this->model;
         }
 
-        $result = array_reduce(array_splice($relationArray, 0, $length), function($obj, $method) {
+        $result = array_reduce(array_splice($relationArray, 0, $length), function ($obj, $method) {
             return $obj->$method()->getRelated();
         }, $model);
 
@@ -350,7 +350,7 @@ class CrudPanel
         $attributes = [];
         foreach ($endModels as $model => $entries) {
             $modelKey = (new $model())->getKeyName();
-            if (is_array($entries) && !isset($entries[$attribute])) {
+            if (is_array($entries) && ! isset($entries[$attribute])) {
                 foreach ($entries as $entry) {
                     $attributes[$entry[$modelKey]] = $entry[$attribute];
                 }
@@ -381,21 +381,21 @@ class CrudPanel
         $currentResults = [];
 
         $results = [];
-        if (!is_null($relation)) {
-            if ($relation instanceof Collection && !$relation->isEmpty()) {
+        if (! is_null($relation)) {
+            if ($relation instanceof Collection && ! $relation->isEmpty()) {
                 $currentResults[get_class($relation->first())] = $relation->toArray();
-            } elseif (is_array($relation) && !empty($relation)) {
+            } elseif (is_array($relation) && ! empty($relation)) {
                 $currentResults[get_class($relation->first())] = $relation;
             } else {
                 //relation must be App\Models\Article or App\Models\Category
-                if (!$relation instanceof Collection && !empty($relation)) {
+                if (! $relation instanceof Collection && ! empty($relation)) {
                     $currentResults[get_class($relation)] = $relation->toArray();
                 }
             }
 
             array_shift($relationArray);
 
-            if (!empty($relationArray)) {
+            if (! empty($relationArray)) {
                 foreach ($currentResults as $model => $currentResult) {
                     $results[$model] = array_merge($results[$model], $this->getRelatedEntries($currentResult, implode('.', $relationArray)));
                 }

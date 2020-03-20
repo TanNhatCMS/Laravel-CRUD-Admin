@@ -41,7 +41,7 @@ trait ListOperation
     {
         $this->crud->allowAccess('list');
 
-        $this->crud->operation('list', function() {
+        $this->crud->operation('list', function () {
             $this->crud->loadDefaultOperationSettingsFromConfig();
         });
     }
@@ -112,8 +112,8 @@ trait ListOperation
         // if there was an order set, this will be the last one (after all others were applied)
         $orderBy = $this->crud->query->getQuery()->orders;
         $hasOrderByPrimaryKey = false;
-        collect($orderBy)->each(function($item, $key) use ($hasOrderByPrimaryKey) {
-            if (!isset($item['column'])) {
+        collect($orderBy)->each(function ($item, $key) use ($hasOrderByPrimaryKey) {
+            if (! isset($item['column'])) {
                 return false;
             }
 
@@ -123,7 +123,7 @@ trait ListOperation
                 return false;
             }
         });
-        if (!$hasOrderByPrimaryKey) {
+        if (! $hasOrderByPrimaryKey) {
             $this->crud->query->orderByDesc($this->crud->model->getKeyName());
         }
 

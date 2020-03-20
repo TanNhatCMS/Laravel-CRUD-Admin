@@ -50,7 +50,7 @@ trait ColumnsProtectedMethods
 
         // make sure the column has a priority in terms of visibility
         // if no priority has been defined, use the order in the array plus one
-        if (!array_key_exists('priority', $column)) {
+        if (! array_key_exists('priority', $column)) {
             $position_in_columns_array = (int) array_search($column['key'], array_keys($this->columns()));
             $allColumns[$column['key']]['priority'] = $position_in_columns_array + 1;
         }
@@ -71,7 +71,7 @@ trait ColumnsProtectedMethods
             $column = ['name' => $column];
         }
 
-        if (is_array($column) && !isset($column['name'])) {
+        if (is_array($column) && ! isset($column['name'])) {
             $column['name'] = 'anonymous_column_'.Str::random(5);
         }
 
@@ -87,7 +87,7 @@ trait ColumnsProtectedMethods
      */
     protected function makeSureColumnHasLabel($column)
     {
-        if (!isset($column['label'])) {
+        if (! isset($column['label'])) {
             $column['label'] = mb_ucfirst($this->makeLabel($column['name']));
         }
 
@@ -102,7 +102,7 @@ trait ColumnsProtectedMethods
      */
     protected function makeSureColumnHasType($column)
     {
-        if (!isset($column['type'])) {
+        if (! isset($column['type'])) {
             $column['type'] = 'text';
         }
 
@@ -119,7 +119,7 @@ trait ColumnsProtectedMethods
      */
     protected function makeSureColumnHasKey($column)
     {
-        if (!isset($column['key'])) {
+        if (! isset($column['key'])) {
             $column['key'] = str_replace('.', '__', $column['name']);
         }
 
@@ -137,7 +137,7 @@ trait ColumnsProtectedMethods
      */
     protected function makeSureColumnHasWrapper($column)
     {
-        if (!isset($column['wrapper'])) {
+        if (! isset($column['wrapper'])) {
             $column['wrapper'] = [];
         }
 
@@ -155,7 +155,7 @@ trait ColumnsProtectedMethods
     {
         // if this is a relation type field and no corresponding model was specified,
         // get it from the relation method defined in the main model
-        if (isset($column['entity']) && !isset($column['model'])) {
+        if (isset($column['entity']) && ! isset($column['model'])) {
             $column['model'] = $this->getRelationModel($column['entity']);
         }
 

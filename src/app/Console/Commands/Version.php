@@ -51,7 +51,7 @@ class Version extends Command
     private function runConsoleCommand($command)
     {
         $process = new Process($command, null, null, null, 60, null);
-        $process->run(function($type, $buffer) {
+        $process->run(function ($type, $buffer) {
             if (Process::ERR === $type) {
                 $this->line($buffer);
             } else {
@@ -60,7 +60,7 @@ class Version extends Command
         });
 
         // executes after the command finishes
-        if (!$process->isSuccessful()) {
+        if (! $process->isSuccessful()) {
             throw new ProcessFailedException($process);
         }
     }

@@ -94,7 +94,7 @@ class Install extends Command
                     $createUploadDirectoryCommand = ['mkdir', '-p', 'public/uploads'];
                     break;
                 case '\\': // windows
-                    if (!file_exists('public\uploads')) {
+                    if (! file_exists('public\uploads')) {
                         $createUploadDirectoryCommand = ['mkdir', 'public\uploads'];
                     }
                     break;
@@ -147,7 +147,7 @@ class Install extends Command
         $command = is_string($command) ? explode(' ', $command) : $command;
 
         $process = new Process($command, null, null, null, $this->option('timeout'));
-        $process->run(function($type, $buffer) {
+        $process->run(function ($type, $buffer) {
             if (Process::ERR === $type) {
                 $this->echo('comment', $buffer);
             } else {
@@ -156,7 +156,7 @@ class Install extends Command
         });
 
         // executes after the command finishes
-        if (!$process->isSuccessful()) {
+        if (! $process->isSuccessful()) {
             throw new ProcessFailedException($process);
         }
 
