@@ -12,12 +12,12 @@ trait AutoSet
      */
     public function setFromDb()
     {
-        if (! $this->driverIsMongoDb()) {
+        if (!$this->driverIsMongoDb()) {
             $this->setDoctrineTypesMapping();
             $this->getDbColumnTypes();
         }
 
-        array_map(function ($field) {
+        array_map(function($field) {
             $new_field = [
                 'name'       => $field,
                 'label'      => $this->makeLabel($field),
@@ -29,11 +29,11 @@ trait AutoSet
                 'autoset'    => true,
             ];
 
-            if (! isset($this->fields()[$field])) {
+            if (!isset($this->fields()[$field])) {
                 $this->addField($new_field);
             }
 
-            if (! in_array($field, $this->model->getHidden()) && ! in_array($field, $this->columns())) {
+            if (!in_array($field, $this->model->getHidden()) && !in_array($field, $this->columns())) {
                 $this->addColumn([
                     'name'    => $field,
                     'label'   => $this->makeLabel($field),
@@ -105,7 +105,7 @@ trait AutoSet
 
         $dbColumnTypes = $this->getDbColumnTypes();
 
-        if (! isset($dbColumnTypes[$fieldName])) {
+        if (!isset($dbColumnTypes[$fieldName])) {
             return 'text';
         }
 
@@ -163,7 +163,7 @@ trait AutoSet
         $types = ['enum' => 'string'];
         $platform = $this->getSchema()->getConnection()->getDoctrineConnection()->getDatabasePlatform();
         foreach ($types as $type_key => $type_value) {
-            if (! $platform->hasDoctrineTypeMappingFor($type_key)) {
+            if (!$platform->hasDoctrineTypeMappingFor($type_key)) {
                 $platform->registerDoctrineTypeMapping($type_key, $type_value);
             }
         }
@@ -222,7 +222,7 @@ trait AutoSet
             // Automatically-set columns should be both in the database, and in the $fillable variable on the Eloquent Model
             $columns = $this->model->getConnection()->getSchemaBuilder()->getColumnListing($this->model->getTable());
 
-            if (! empty($fillable)) {
+            if (!empty($fillable)) {
                 $columns = array_intersect($columns, $fillable);
             }
         }

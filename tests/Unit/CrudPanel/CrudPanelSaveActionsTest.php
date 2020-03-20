@@ -21,10 +21,10 @@ class CrudPanelSaveActionsTest extends BaseDBCrudPanelTest
 
         $this->singleSaveAction = [
             'name' => 'save_action_one',
-            'redirect' => function ($crud, $request, $itemId) {
+            'redirect' => function($crud, $request, $itemId) {
                 return $crud->route;
             },
-            'visible' => function ($crud) {
+            'visible' => function($crud) {
                 return true;
             },
         ];
@@ -32,19 +32,19 @@ class CrudPanelSaveActionsTest extends BaseDBCrudPanelTest
         $this->multipleSaveActions = [
             [
                 'name' => 'save_action_one',
-                'redirect' => function ($crud, $request, $itemId) {
+                'redirect' => function($crud, $request, $itemId) {
                     return $crud->route;
                 },
-                'visible' => function ($crud) {
+                'visible' => function($crud) {
                     return true;
                 },
             ],
             [
                 'name' => 'save_action_two',
-                'redirect' => function ($crud, $request, $itemId) {
+                'redirect' => function($crud, $request, $itemId) {
                     return $crud->route;
                 },
-                'visible' => function ($crud) {
+                'visible' => function($crud) {
                     return true;
                 },
             ],

@@ -16,7 +16,7 @@ Route::group(
     'middleware' => config('backpack.base.web_middleware', 'web'),
     'prefix'     => config('backpack.base.route_prefix'),
 ],
-function () {
+function() {
     // if not otherwise configured, setup the auth routes
     if (config('backpack.base.setup_auth_routes')) {
         // Authentication Routes...

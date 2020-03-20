@@ -51,7 +51,7 @@ trait Update
 
         foreach ($fields as &$field) {
             // set the value
-            if (! isset($field['value'])) {
+            if (!isset($field['value'])) {
                 if (isset($field['subfields'])) {
                     $field['value'] = [];
                     foreach ($field['subfields'] as $subfield) {
@@ -64,7 +64,7 @@ trait Update
         }
 
         // always have a hidden input for the entry id
-        if (! array_key_exists('id', $fields)) {
+        if (!array_key_exists('id', $fields)) {
             $fields['id'] = [
                 'name'  => $entry->getKeyName(),
                 'value' => $entry->getKey(),
@@ -87,7 +87,7 @@ trait Update
     {
         if (isset($field['entity'])) {
             $relationArray = explode('.', $field['entity']);
-            $relatedModel = array_reduce(array_splice($relationArray, 0, -1), function ($obj, $method) {
+            $relatedModel = array_reduce(array_splice($relationArray, 0, -1), function($obj, $method) {
                 return $obj->{$method} ? $obj->{$method} : $obj;
             }, $model);
 

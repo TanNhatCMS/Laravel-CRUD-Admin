@@ -61,7 +61,7 @@ trait Fields
      */
     public function afterField($targetFieldName)
     {
-        $this->transformFields(function ($fields) use ($targetFieldName) {
+        $this->transformFields(function($fields) use ($targetFieldName) {
             return $this->moveField($fields, $targetFieldName, false);
         });
     }
@@ -73,7 +73,7 @@ trait Fields
      */
     public function beforeField($targetFieldName)
     {
-        $this->transformFields(function ($fields) use ($targetFieldName) {
+        $this->transformFields(function($fields) use ($targetFieldName) {
             return $this->moveField($fields, $targetFieldName, true);
         });
     }
@@ -85,7 +85,7 @@ trait Fields
      */
     public function removeField($name)
     {
-        $this->transformFields(function ($fields) use ($name) {
+        $this->transformFields(function($fields) use ($name) {
             Arr::forget($fields, $name);
 
             return $fields;
@@ -99,7 +99,7 @@ trait Fields
      */
     public function removeFields($array_of_names)
     {
-        if (! empty($array_of_names)) {
+        if (!empty($array_of_names)) {
             foreach ($array_of_names as $name) {
                 $this->removeField($name);
             }
@@ -112,7 +112,7 @@ trait Fields
     public function removeAllFields()
     {
         $current_fields = $this->getCurrentFields();
-        if (! empty($current_fields)) {
+        if (!empty($current_fields)) {
             foreach ($current_fields as $field) {
                 $this->removeField($field['name']);
             }
@@ -186,7 +186,7 @@ trait Fields
                 $jsonCastables = ['array', 'object', 'json'];
                 $fieldCasting = $casted_attributes[$field['name']];
 
-                if (in_array($fieldCasting, $jsonCastables) && isset($data[$field['name']]) && ! empty($data[$field['name']]) && ! is_array($data[$field['name']])) {
+                if (in_array($fieldCasting, $jsonCastables) && isset($data[$field['name']]) && !empty($data[$field['name']]) && !is_array($data[$field['name']])) {
                     try {
                         $data[$field['name']] = json_decode($data[$field['name']]);
                     } catch (\Exception $e) {
@@ -215,7 +215,7 @@ trait Fields
      */
     public function orderFields($order)
     {
-        $this->transformFields(function ($fields) use ($order) {
+        $this->transformFields(function($fields) use ($order) {
             return $this->applyOrderToFields($fields, $order);
         });
     }
@@ -242,7 +242,7 @@ trait Fields
     public function hasUploadFields()
     {
         $fields = $this->getFields();
-        $upload_fields = Arr::where($fields, function ($value, $key) {
+        $upload_fields = Arr::where($fields, function($value, $key) {
             return isset($value['upload']) && $value['upload'] == true;
         });
 
@@ -305,7 +305,7 @@ trait Fields
         $alreadyLoaded = $this->getLoadedFieldTypes();
         $type = $this->getFieldTypeWithNamespace($field);
 
-        if (! in_array($type, $this->getLoadedFieldTypes(), true)) {
+        if (!in_array($type, $this->getLoadedFieldTypes(), true)) {
             $alreadyLoaded[] = $type;
             $this->setLoadedFieldTypes($alreadyLoaded);
 
@@ -346,7 +346,7 @@ trait Fields
      */
     public function fieldTypeNotLoaded($field)
     {
-        return ! in_array($this->getFieldTypeWithNamespace($field), $this->getLoadedFieldTypes());
+        return !in_array($this->getFieldTypeWithNamespace($field), $this->getLoadedFieldTypes());
     }
 
     /**

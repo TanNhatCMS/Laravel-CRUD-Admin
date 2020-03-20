@@ -26,7 +26,7 @@
     <!-- Include jQuery, jQuery UI, elFinder (REQUIRED) -->
 
     <?php
-    $mimeTypes = implode(',', array_map(function ($t) {
+    $mimeTypes = implode(',', array_map(function($t) {
         return "'".$t."'";
     }, explode(',', $type)));
     ?>

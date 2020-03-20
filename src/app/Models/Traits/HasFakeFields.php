@@ -20,7 +20,7 @@ trait HasFakeFields
     public function addFakes($columns = ['extras'])
     {
         foreach ($columns as $key => $column) {
-            if (! isset($this->attributes[$column])) {
+            if (!isset($this->attributes[$column])) {
                 continue;
             }
 
@@ -69,7 +69,7 @@ trait HasFakeFields
      */
     public function shouldDecodeFake($column)
     {
-        return ! in_array($column, array_keys($this->casts));
+        return !in_array($column, array_keys($this->casts));
     }
 
     /**
@@ -81,6 +81,6 @@ trait HasFakeFields
      */
     public function shouldEncodeFake($column)
     {
-        return ! in_array($column, array_keys($this->casts));
+        return !in_array($column, array_keys($this->casts));
     }
 }

@@ -82,7 +82,7 @@ trait Create
     {
         $all_relation_fields = $this->getRelationFields();
 
-        return Arr::where($all_relation_fields, function ($value, $key) {
+        return Arr::where($all_relation_fields, function($value, $key) {
             return isset($value['pivot']) && $value['pivot'];
         });
     }
@@ -157,7 +157,7 @@ trait Create
      */
     private function createRelationsForItem($item, $formattedData)
     {
-        if (! isset($formattedData['relations'])) {
+        if (!isset($formattedData['relations'])) {
             return false;
         }
 
@@ -212,11 +212,11 @@ trait Create
                 $key = implode('.relations.', explode('.', $relationField['entity']));
                 $fieldData = Arr::get($relationData, 'relations.'.$key, []);
 
-                if (! array_key_exists('model', $fieldData)) {
+                if (!array_key_exists('model', $fieldData)) {
                     $fieldData['model'] = $relationField['model'];
                 }
 
-                if (! array_key_exists('parent', $fieldData)) {
+                if (!array_key_exists('parent', $fieldData)) {
                     $fieldData['parent'] = $this->getRelationModel($relationField['entity'], -1);
                 }
 

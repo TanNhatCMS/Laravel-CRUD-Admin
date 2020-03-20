@@ -55,13 +55,13 @@ class BackpackServiceProvider extends ServiceProvider
     public function register()
     {
         // Bind the CrudPanel object to Laravel's service container
-        $this->app->singleton('crud', function ($app) {
+        $this->app->singleton('crud', function($app) {
             return new \Backpack\CRUD\app\Library\CrudPanel\CrudPanel($app);
         });
 
         // load a macro for Route,
         // helps developers load all routes for a CRUD resource in one line
-        if (! Route::hasMacro('crud')) {
+        if (!Route::hasMacro('crud')) {
             $this->addRouteMacro();
         }
 
@@ -82,7 +82,7 @@ class BackpackServiceProvider extends ServiceProvider
         // }
 
         // map the elfinder prefix
-        if (! \Config::get('elfinder.route.prefix')) {
+        if (!\Config::get('elfinder.route.prefix')) {
             \Config::set('elfinder.route.prefix', \Config::get('backpack.base.route_prefix').'/elfinder');
         }
     }
@@ -92,7 +92,7 @@ class BackpackServiceProvider extends ServiceProvider
         $middleware_key = config('backpack.base.middleware_key');
         $middleware_class = config('backpack.base.middleware_class');
 
-        if (! is_array($middleware_class)) {
+        if (!is_array($middleware_class)) {
             $router->pushMiddlewareToGroup($middleware_key, $middleware_class);
 
             return;
@@ -196,7 +196,7 @@ class BackpackServiceProvider extends ServiceProvider
      */
     private function addRouteMacro()
     {
-        Route::macro('crud', function ($name, $controller) {
+        Route::macro('crud', function($name, $controller) {
             // put together the route name prefix,
             // as passed to the Route::group() statements
             $routeName = '';

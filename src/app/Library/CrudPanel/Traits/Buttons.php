@@ -24,7 +24,7 @@ trait Buttons
         $otherButtons = collect([]);
 
         // we get the buttons that belong to the specified stack
-        $stackButtons = $this->buttons()->reject(function ($item) use ($stack, $otherButtons) {
+        $stackButtons = $this->buttons()->reject(function($item) use ($stack, $otherButtons) {
             if ($item->stack != $stack) {
                 // if the button does not belong to this stack we just add it for merging later
                 $otherButtons->push($item);
@@ -36,8 +36,8 @@ trait Buttons
         });
 
         // we parse the ordered buttons
-        collect($order)->each(function ($btnKey) use ($newButtons, $stackButtons) {
-            if (! $button = $stackButtons->where('name', $btnKey)->first()) {
+        collect($order)->each(function($btnKey) use ($newButtons, $stackButtons) {
+            if (!$button = $stackButtons->where('name', $btnKey)->first()) {
                 abort(500, 'Button name [«'.$btnKey.'»] not found.');
             }
             $newButtons->push($button);
@@ -47,7 +47,7 @@ trait Buttons
         // we add the remaining buttons to the end of the ordered ones
         if (count($newButtons) < count($stackButtons)) {
             foreach ($stackButtons as $button) {
-                if (! $newButtons->where('name', $button->name)->first()) {
+                if (!$newButtons->where('name', $button->name)->first()) {
                     $newButtons->push($button);
                 }
             }
@@ -136,7 +136,7 @@ trait Buttons
          */
         $button = $this->buttons()->firstWhere('name', $name);
 
-        if (! $button) {
+        if (!$button) {
             abort(500, 'CRUD Button "'.$name.'" not found. Please check the button exists before you modify it.');
         }
 
@@ -157,7 +157,7 @@ trait Buttons
      */
     public function removeButton($name, $stack = null)
     {
-        $this->setOperationSetting('buttons', $this->buttons()->reject(function ($button) use ($name, $stack) {
+        $this->setOperationSetting('buttons', $this->buttons()->reject(function($button) use ($name, $stack) {
             return $stack == null ? $button->name == $name : ($button->stack == $stack) && ($button->name == $name);
         }));
     }
@@ -168,7 +168,7 @@ trait Buttons
      */
     public function removeButtons($names, $stack = null)
     {
-        if (! empty($names)) {
+        if (!empty($names)) {
             foreach ($names as $name) {
                 $this->removeButton($name, $stack);
             }
@@ -182,14 +182,14 @@ trait Buttons
 
     public function removeAllButtonsFromStack($stack)
     {
-        $this->setOperationSetting('buttons', $this->buttons()->reject(function ($button) use ($stack) {
+        $this->setOperationSetting('buttons', $this->buttons()->reject(function($button) use ($stack) {
             return $button->stack == $stack;
         }));
     }
 
     public function removeButtonFromStack($name, $stack)
     {
-        $this->setOperationSetting('buttons', $this->buttons()->reject(function ($button) use ($name, $stack) {
+        $this->setOperationSetting('buttons', $this->buttons()->reject(function($button) use ($name, $stack) {
             return $button->name == $name && $button->stack == $stack;
         }));
     }

@@ -41,9 +41,9 @@ class ChangePasswordRequest extends FormRequest
      */
     public function withValidator($validator)
     {
-        $validator->after(function ($validator) {
+        $validator->after(function($validator) {
             // check old password matches
-            if (! Hash::check($this->input('old_password'), backpack_auth()->user()->password)) {
+            if (!Hash::check($this->input('old_password'), backpack_auth()->user()->password)) {
                 $validator->errors()->add('old_password', trans('backpack::base.old_password_incorrect'));
             }
         });

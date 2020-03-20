@@ -41,7 +41,7 @@ trait FieldsProtectedMethods
             return ['name' => $field];
         }
 
-        if (is_array($field) && ! isset($field['name'])) {
+        if (is_array($field) && !isset($field['name'])) {
             abort(500, 'All fields must have their name defined');
         }
 
@@ -99,7 +99,7 @@ trait FieldsProtectedMethods
     protected function makeSureFieldHasRelationshipData($field)
     {
         // only do this if "entity" is defined on the field
-        if (! isset($field['entity'])) {
+        if (!isset($field['entity'])) {
             return $field;
         }
 
@@ -118,7 +118,7 @@ trait FieldsProtectedMethods
     {
         // if this is a relation type field and no corresponding model was specified,
         // get it from the relation method defined in the main model
-        if (isset($field['entity']) && ! isset($field['model'])) {
+        if (isset($field['entity']) && !isset($field['model'])) {
             $field['model'] = $this->getRelationModel($field['entity']);
         }
 
@@ -129,7 +129,7 @@ trait FieldsProtectedMethods
     {
         // if there's a model defined, but no attribute
         // guess an attribute using the indentifiableAttribute functionality in CrudTrait
-        if (isset($field['model']) && ! isset($field['attribute'])) {
+        if (isset($field['model']) && !isset($field['attribute'])) {
             $field['attribute'] = call_user_func([(new $field['model']), 'identifiableAttribute']);
         }
 
@@ -145,7 +145,7 @@ trait FieldsProtectedMethods
      */
     protected function makeSureFieldHasLabel($field)
     {
-        if (! isset($field['label'])) {
+        if (!isset($field['label'])) {
             $name = is_array($field['name']) ? $field['name'][0] : $field['name'];
             $name = str_replace('_id', '', $name);
             $field['label'] = mb_ucfirst(str_replace('_', ' ', $name));
@@ -163,7 +163,7 @@ trait FieldsProtectedMethods
      */
     protected function makeSureFieldHasType($field)
     {
-        if (! isset($field['type'])) {
+        if (!isset($field['type'])) {
             $field['type'] = $this->inferFieldTypeFromDbColumnType($field['name']);
         }
 
@@ -180,7 +180,7 @@ trait FieldsProtectedMethods
     {
         // if a tab was mentioned, we should enable it
         if (isset($field['tab'])) {
-            if (! $this->tabsEnabled()) {
+            if (!$this->tabsEnabled()) {
                 $this->enableTabs();
             }
         }

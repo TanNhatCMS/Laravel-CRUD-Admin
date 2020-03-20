@@ -113,7 +113,7 @@ trait Columns
      */
     public function makeFirstColumn()
     {
-        if (! $this->columns()) {
+        if (!$this->columns()) {
             return false;
         }
 
@@ -158,7 +158,7 @@ trait Columns
      */
     public function removeColumns($columns)
     {
-        if (! empty($columns)) {
+        if (!empty($columns)) {
             foreach ($columns as $columnKey) {
                 $this->removeColumn($columnKey);
             }
@@ -237,7 +237,7 @@ trait Columns
     {
         $columns = $this->columns();
 
-        return collect($columns)->pluck('entity')->reject(function ($value, $key) {
+        return collect($columns)->pluck('entity')->reject(function($value, $key) {
             return $value == null;
         })->toArray();
     }

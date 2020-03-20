@@ -41,7 +41,7 @@ trait UpdateOperation
     {
         $this->crud->allowAccess('update');
 
-        $this->crud->operation('update', function () {
+        $this->crud->operation('update', function() {
             $this->crud->loadDefaultOperationSettingsFromConfig();
 
             if ($this->crud->getModel()->translationEnabled()) {
@@ -55,7 +55,7 @@ trait UpdateOperation
             $this->crud->setupDefaultSaveActions();
         });
 
-        $this->crud->operation(['list', 'show'], function () {
+        $this->crud->operation(['list', 'show'], function() {
             $this->crud->addButton('line', 'update', 'view', 'crud::buttons.update', 'end');
         });
     }

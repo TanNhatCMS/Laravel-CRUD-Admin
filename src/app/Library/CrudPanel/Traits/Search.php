@@ -22,9 +22,9 @@ trait Search
      */
     public function applySearchTerm($searchTerm)
     {
-        return $this->query->where(function ($query) use ($searchTerm) {
+        return $this->query->where(function($query) use ($searchTerm) {
             foreach ($this->columns() as $column) {
-                if (! isset($column['type'])) {
+                if (!isset($column['type'])) {
                     abort(400, 'Missing column type when trying to apply search term.');
                 }
 
@@ -82,7 +82,7 @@ trait Search
 
                 case 'select':
                 case 'select_multiple':
-                    $query->orWhereHas($column['entity'], function ($q) use ($column, $searchTerm) {
+                    $query->orWhereHas($column['entity'], function($q) use ($column, $searchTerm) {
                         $q->where($column['attribute'], 'like', '%'.$searchTerm.'%');
                     });
                     break;
@@ -224,10 +224,10 @@ trait Search
         // add the details_row button to the first column
         if ($this->getOperationSetting('detailsRow')) {
             $details_row_button = \View::make('crud::columns.inc.details_row_button')
-                                           ->with('crud', $this)
-                                           ->with('entry', $entry)
-                                           ->with('row_number', $rowNumber)
-                                           ->render();
+                                            ->with('crud', $this)
+                                            ->with('entry', $entry)
+                                            ->with('row_number', $rowNumber)
+                                            ->render();
             $row_items[0] = $details_row_button.$row_items[0];
         }
 
@@ -288,7 +288,7 @@ trait Search
      */
     private function renderCellView($view, $column, $entry, $rowNumber = false)
     {
-        if (! view()->exists($view)) {
+        if (!view()->exists($view)) {
             $view = 'crud::columns.text'; // fallback to text column
         }
 

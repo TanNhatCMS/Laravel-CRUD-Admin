@@ -13,5 +13,5 @@ Route::group([
         config('backpack.base.middleware_key', 'admin'),
     ],
     'namespace'  => 'App\Http\Controllers\Admin',
-], function () { // custom admin routes
+], function() { // custom admin routes
 }); // this should be the absolute last line of this file

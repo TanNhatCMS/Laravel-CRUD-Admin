@@ -66,7 +66,7 @@ class AddCustomRouteContent extends Command
 
             $process = new Process($command, null, null, null, 300, null);
 
-            $process->run(function ($type, $buffer) {
+            $process->run(function($type, $buffer) {
                 if (Process::ERR === $type) {
                     $this->line($buffer);
                 } else {
@@ -75,7 +75,7 @@ class AddCustomRouteContent extends Command
             });
 
             // executes after the command finishes
-            if (! $process->isSuccessful()) {
+            if (!$process->isSuccessful()) {
                 throw new ProcessFailedException($process);
             }
 
@@ -94,7 +94,7 @@ class AddCustomRouteContent extends Command
 
         // otherwise, in case the last line HAS been modified
         // return the last line that has an ending in it
-        $possible_end_lines = array_filter($file_lines, function ($k) {
+        $possible_end_lines = array_filter($file_lines, function($k) {
             return strpos($k, '});') === 0;
         });
 

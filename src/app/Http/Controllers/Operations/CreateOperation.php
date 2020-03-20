@@ -35,12 +35,12 @@ trait CreateOperation
     {
         $this->crud->allowAccess('create');
 
-        $this->crud->operation('create', function () {
+        $this->crud->operation('create', function() {
             $this->crud->loadDefaultOperationSettingsFromConfig();
             $this->crud->setupDefaultSaveActions();
         });
 
-        $this->crud->operation('list', function () {
+        $this->crud->operation('list', function() {
             $this->crud->addButton('top', 'create', 'view', 'crud::buttons.create');
         });
     }

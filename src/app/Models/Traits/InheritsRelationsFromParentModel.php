@@ -18,14 +18,14 @@ trait InheritsRelationsFromParentModel
 
     public static function bootHasParent()
     {
-        static::creating(function ($model) {
+        static::creating(function($model) {
             if ($model->parentHasHasChildrenTrait()) {
                 $model->forceFill(
                     [$model->getInheritanceColumn() => $model->classToAlias(get_class($model))]
                 );
             }
         });
-        static::addGlobalScope(function ($query) {
+        static::addGlobalScope(function($query) {
             $instance = new static();
             if ($instance->parentHasHasChildrenTrait()) {
                 $query->where($instance->getTable().'.'.$instance->getInheritanceColumn(), $instance->classToAlias(get_class($instance)));
@@ -40,7 +40,7 @@ trait InheritsRelationsFromParentModel
 
     public function getTable()
     {
-        if (! isset($this->table)) {
+        if (!isset($this->table)) {
             return str_replace('\\', '', Str::snake(Str::plural(class_basename($this->getParentClass()))));
         }
 

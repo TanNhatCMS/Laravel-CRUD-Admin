@@ -49,7 +49,7 @@ trait InlineCreateOperation
      */
     public function getInlineCreateModal()
     {
-        if (! request()->has('entity')) {
+        if (!request()->has('entity')) {
             abort(400, 'No "entity" inside the request.');
         }
 

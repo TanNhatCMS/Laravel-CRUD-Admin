@@ -13,7 +13,7 @@ class CreateAddressesTable extends Migration
      */
     public function up()
     {
-        Schema::create('addresses', function (Blueprint $table) {
+        Schema::create('addresses', function(Blueprint $table) {
             $table->increments('id');
             $table->integer('account_details_id')->length(10)->unsigned();
             $table->string('city');

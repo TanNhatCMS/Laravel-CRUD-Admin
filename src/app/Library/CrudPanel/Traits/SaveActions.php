@@ -46,7 +46,7 @@ trait SaveActions
      */
     public function getSaveActionByOrder($order)
     {
-        return array_filter($this->getOperationSetting('save_actions'), function ($arr) use ($order) {
+        return array_filter($this->getOperationSetting('save_actions'), function($arr) use ($order) {
             return $arr['order'] == $order;
         });
     }
@@ -80,7 +80,7 @@ trait SaveActions
         $orderCounter = $this->getOperationSetting('save_actions') !== null ? (count($this->getOperationSetting('save_actions')) + 1) : 1;
         //check for some mandatory fields
         $saveAction['name'] ?? abort(500, 'Please define save action name.');
-        $saveAction['redirect'] = $saveAction['redirect'] ?? function ($crud, $request, $itemId) {
+        $saveAction['redirect'] = $saveAction['redirect'] ?? function($crud, $request, $itemId) {
             return $request->has('http_referrer') ? $request->get('http_referrer') : $crud->route;
         };
         $saveAction['visible'] = $saveAction['visible'] ?? true;
@@ -89,7 +89,7 @@ trait SaveActions
 
         $actions = $this->getOperationSetting('save_actions') ?? [];
 
-        if (! in_array($saveAction['name'], $actions)) {
+        if (!in_array($saveAction['name'], $actions)) {
             $actions[$saveAction['name']] = $saveAction;
         }
 
@@ -106,7 +106,7 @@ trait SaveActions
     public function orderSaveAction(string $saveAction, int $wantedOrder)
     {
         $actions = $this->getOperationSetting('save_actions') ?? [];
-        if (! empty($actions)) {
+        if (!empty($actions)) {
             $replaceOrder = isset($actions[$saveAction]) ? $actions[$saveAction]['order'] : count($actions) + 1;
 
             foreach ($actions as $key => $sv) {
@@ -200,7 +200,7 @@ trait SaveActions
     public function orderSaveActions(array $saveActions)
     {
         foreach ($saveActions as $sv => $order) {
-            if (! is_int($order)) {
+            if (!is_int($order)) {
                 $this->orderSaveAction($order, $sv + 1);
             } else {
                 $this->orderSaveAction($sv, $order);
@@ -217,7 +217,7 @@ trait SaveActions
     {
         $actions = $this->getOperationSetting('save_actions') ?? [];
 
-        uasort($actions, function ($a, $b) {
+        uasort($actions, function($a, $b) {
             return $a['order'] <=> $b['order'];
         });
 
@@ -239,7 +239,7 @@ trait SaveActions
             }
         }
 
-        return array_filter($actions, function ($action) {
+        return array_filter($actions, function($action) {
             return $action['visible'] == true;
         }, ARRAY_FILTER_USE_BOTH);
     }
@@ -303,8 +303,7 @@ trait SaveActions
      */
     public function setSaveAction($forceSaveAction = null)
     {
-        $saveAction = $forceSaveAction ?:
-            \Request::input('save_action', $this->getFallBackSaveAction());
+        $saveAction = $forceSaveAction ?: \Request::input('save_action', $this->getFallBackSaveAction());
 
         $showBubble = $this->getOperationSetting('showSaveActionChange') ?? config('backpack.crud.operations.'.$this->getCurrentOperation().'.showSaveActionChange') ?? true;
 
@@ -372,20 +371,20 @@ trait SaveActions
         $defaultSaveActions = [
             [
                 'name' => 'save_and_back',
-                'visible' => function ($crud) {
+                'visible' => function($crud) {
                     return $crud->hasAccess('list');
                 },
-                'redirect' => function ($crud, $request, $itemId = null) {
+                'redirect' => function($crud, $request, $itemId = null) {
                     return $request->has('http_referrer') ? $request->get('http_referrer') : $crud->route;
                 },
                 'button_text' => trans('backpack::crud.save_action_save_and_back'),
             ],
             [
                 'name' => 'save_and_edit',
-                'visible' => function ($crud) {
+                'visible' => function($crud) {
                     return $crud->hasAccess('update');
                 },
-                'redirect' => function ($crud, $request, $itemId = null) {
+                'redirect' => function($crud, $request, $itemId = null) {
                     $itemId = $itemId ?: $request->input('id');
                     $redirectUrl = $crud->route.'/'.$itemId.'/edit';
                     if ($request->has('locale')) {
@@ -397,17 +396,17 @@ trait SaveActions
 
                     return $redirectUrl;
                 },
-                'referrer_url' => function ($crud, $request, $itemId) {
+                'referrer_url' => function($crud, $request, $itemId) {
                     return url($crud->route.'/'.$itemId.'/edit');
                 },
                 'button_text' => trans('backpack::crud.save_action_save_and_edit'),
             ],
             [
                 'name' => 'save_and_new',
-                'visible' => function ($crud) {
+                'visible' => function($crud) {
                     return $crud->hasAccess('create');
                 },
-                'redirect' => function ($crud, $request, $itemId = null) {
+                'redirect' => function($crud, $request, $itemId = null) {
                     return $this->route.'/create';
                 },
                 'button_text' => trans('backpack::crud.save_action_save_and_new'),
