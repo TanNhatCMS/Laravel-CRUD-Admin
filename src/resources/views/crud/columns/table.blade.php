@@ -12,6 +12,13 @@
 	if (is_string($value)) {
 	    $value = json_decode($value);
 	}
+    
+    // if the json value is marked as only one assoc array, let's adapt it
+	// when json attribute is stored as {key: val, key: val} not [{key: val, key: val}]
+	if ((!empty($column['only_assoc'])) && ($column['only_assoc'] === true)) {
+		$value = [$value];
+	}
+
 
 @endphp
 
