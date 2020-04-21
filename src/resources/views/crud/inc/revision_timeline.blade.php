@@ -17,7 +17,7 @@
           <strong class="time"><i class="fa fa-clock-o"></i> {{ date('h:ia', strtotime($history->created_at)) }}</strong> -
           {{ $history->userResponsible()?$history->userResponsible()->name:trans('backpack::crud.guest_user') }} {{ trans('backpack::crud.changed_the') }} {{ $history->fieldName() }}
           <div class="card-header-actions">
-            <form class="card-header-action" method="post" action="{{ url(\Request::url().'/'.$history->id.'/restore') }}">
+            <form class="card-header-action" method="post" action="{{ url(\Request::path().'/'.$history->id.'/restore') }}">
               {!! csrf_field() !!}
               <button type="submit" class="btn btn-outline-danger btn-sm restore-btn" data-entry-id="{{ $entry->id }}" data-revision-id="{{ $history->id }}" onclick="onRestoreClick(event)">
                 <i class="fa fa-undo"></i> {{ trans('backpack::crud.undo') }}</button>
@@ -52,7 +52,7 @@
       e.preventDefault();
       var entryId = $(e.target).attr('data-entry-id');
       var revisionId = $(e.target).attr('data-revision-id');
-      $.ajax('{{ \Request::url().'/' }}' +  revisionId + '/restore', {
+      $.ajax('{{ url(\Request::path()).'/' }}' +  revisionId + '/restore', {
         method: 'POST',
         data: {
           revision_id: revisionId
