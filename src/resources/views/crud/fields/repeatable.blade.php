@@ -16,10 +16,11 @@
       @include('crud::fields.inc.attributes')
   >
 
-  <div class="container-repeatable-elements">
+  <div class="container-repeatable-elements" id="sortable">
     <div class="col-md-12 well repeatable-element row m-1 p-2">
       @if (isset($field['fields']) && is_array($field['fields']) && count($field['fields']))
-        <button type="button" class="close delete-element"><span aria-hidden="true">×</span></button>
+      	<div class="move move-element action-element"><span aria-hidden="true">=</span></div>
+        <button type="button" class="close delete-element action-element"><span aria-hidden="true">×</span></button>
         @foreach($field['fields'] as $subfield)
           @php
               $fieldViewNamespace = $subfield['view_namespace'] ?? 'crud::fields';
@@ -56,17 +57,29 @@
           border: 1px solid rgba(0,40,100,.12);
           border-radius: 5px;
           background-color: #f0f3f94f;
+          margin-bottom: 20px !important;
         }
-        .container-repeatable-elements .delete-element {
+        .container-repeatable-elements .action-element {
           z-index: 99;
           position: absolute!important;
-          margin-left: -24px;
-          margin-top: 0px;
           height: 30px;
           width: 30px;
           border-radius: 15px;
           text-align: center;
           background-color: #e8ebf0!important;;
+        }
+
+        .container-repeatable-elements .delete-element {
+					top: -15px;
+					right: -15px;
+        }
+
+        .container-repeatable-elements .move-element {
+					top: 15px;
+					left: -15px;
+					outline: none;
+					cursor: move;
+					line-height: 29px;
         }
       </style>
   @endpush
@@ -75,7 +88,15 @@
   {{-- push things in the after_scripts section --}}
 
   @push('crud_fields_scripts')
+  		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
       <script>
+				$( function() {
+			    $( "#sortable" ).sortable({
+			    	handle: ".move-element"
+			    });
+			    $( "#sortable" ).disableSelection();
+			  });
+
         /**
          * Takes all inputs and makes them an object.
          */
