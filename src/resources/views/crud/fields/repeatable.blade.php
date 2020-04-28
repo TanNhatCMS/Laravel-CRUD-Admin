@@ -16,10 +16,10 @@
       @include('crud::fields.inc.attributes')
   >
 
-  <div class="container-repeatable-elements" id="sortable">
+  <div class="container-repeatable-elements">
     <div class="col-md-12 well repeatable-element row m-1 p-2">
       @if (isset($field['fields']) && is_array($field['fields']) && count($field['fields']))
-      	<div class="move move-element action-element"><span aria-hidden="true">=</span></div>
+      	<div class="move move-element action-element"><i class="fa fa-arrows-alt"></i></div>
         <button type="button" class="close delete-element action-element"><span aria-hidden="true">×</span></button>
         @foreach($field['fields'] as $subfield)
           @php
@@ -71,15 +71,16 @@
 
         .container-repeatable-elements .delete-element {
 					top: -15px;
-					right: -15px;
+					left: -15px;
         }
 
         .container-repeatable-elements .move-element {
-					top: 15px;
+					top: 25px;
 					left: -15px;
 					outline: none;
 					cursor: move;
-					line-height: 29px;
+					transform: rotate(45deg);
+					line-height: 30px;
         }
       </style>
   @endpush
@@ -88,13 +89,13 @@
   {{-- push things in the after_scripts section --}}
 
   @push('crud_fields_scripts')
-  		<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  		<script src="{{ asset('packages/jquery-ui-dist/jquery-ui.min.js') }}"></script>
       <script>
 				$( function() {
-			    $( "#sortable" ).sortable({
+			    $( ".container-repeatable-elements" ).sortable({
 			    	handle: ".move-element"
 			    });
-			    $( "#sortable" ).disableSelection();
+			    $( ".container-repeatable-elements" ).disableSelection();
 			  });
 
         /**
