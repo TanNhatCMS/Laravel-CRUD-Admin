@@ -29,8 +29,8 @@
     <label>{!! $field['label'] !!}</label>
     @include('crud::inc.field_translatable_icon')
 
-    <input class="array-json" 
-            type="hidden" 
+    <input class="array-json"
+            type="hidden"
             data-init-function="bpFieldInitTableElement"
             name="{{ $field['name'] }}">
 
@@ -55,14 +55,18 @@
                 <tr class="array-row clonable" style="display: none;">
                     @foreach( $field['columns'] as $column => $label)
                     <td>
-                        <input class="form-control form-control-sm" type="text" data-name="item.{{ $column }}">
+                        <input class="form-control form-control-sm" type="text" data-name="item.{{ $column }}" @if (isset($field['readonly']) && $field['readonly']) readonly @endif>
                     </td>
                     @endforeach
                     <td>
-                        <span class="btn btn-sm btn-light sort-handle pull-right"><span class="sr-only">sort item</span><i class="fa fa-sort" role="presentation" aria-hidden="true"></i></span>
+                        @if (! isset($field['readonly']) || ! $field['readonly'])
+                            <span class="btn btn-sm btn-light sort-handle pull-right"><span class="sr-only">sort item</span><i class="fa fa-sort" role="presentation" aria-hidden="true"></i></span>
+                        @endif
                     </td>
                     <td>
-                        <button class="btn btn-sm btn-light removeItem" type="button"><span class="sr-only">delete item</span><i class="fa fa-trash" role="presentation" aria-hidden="true"></i></button>
+                        @if (! isset($field['readonly']) || ! $field['readonly'])
+                            <button class="btn btn-sm btn-light removeItem" type="button"><span class="sr-only">delete item</span><i class="fa fa-trash" role="presentation" aria-hidden="true"></i></button>
+                        @endif
                     </td>
                 </tr>
 
@@ -70,9 +74,11 @@
 
         </table>
 
-        <div class="array-controls btn-group m-t-10">
-            <button class="btn btn-sm btn-light" type="button" data-button-type="addItem"><i class="fa fa-plus"></i> {{trans('backpack::crud.add')}} {{ $item_name }}</button>
-        </div>
+        @if (! isset($field['readonly']) || ! $field['readonly'])
+            <div class="array-controls btn-group m-t-10">
+                <button class="btn btn-sm btn-light" type="button" data-button-type="addItem"><i class="fa fa-plus"></i> {{trans('backpack::crud.add')}} {{ $item_name }}</button>
+            </div>
+        @endif
 
     </div>
 
