@@ -1,4 +1,7 @@
 @php
+    if(!isset($entry)){
+        return;
+    }
     if (!isset($widget['edit_button']) || $widget['edit_button'] !== false) {
         $widget['edit_button'] = true;
     }

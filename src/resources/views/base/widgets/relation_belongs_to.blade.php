@@ -1,4 +1,7 @@
 @php
+    if(!isset($entry)){
+        return;
+    }
     if(!isset($widget['columns'])){
         foreach ($entry->{$widget['name']}->getFillable() as $propertyName){
             $widget['columns'][$propertyName] = $crud->makeLabel($propertyName);
