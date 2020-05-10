@@ -31,12 +31,12 @@
             @endphp
             @includeWhen(!empty($column['wrapper']), 'crud::columns.inc.wrapper_start')
                 @if($column['escaped'])
-                    {{ $column['text'] }}<?
+                    {{ $column['text'] }}<?php
                 ?>@else
-                    {!! $column['text'] !!}<?
-                ?>@endif<?
-            ?>@includeWhen(!empty($column['wrapper']), 'crud::columns.inc.wrapper_end')<?
-        
+                    {!! $column['text'] !!}<?php
+                ?>@endif<?php
+            ?>@includeWhen(!empty($column['wrapper']), 'crud::columns.inc.wrapper_end')<?php
+
             ?>@if(!$loop->last), @endif
         @endforeach
     @else
