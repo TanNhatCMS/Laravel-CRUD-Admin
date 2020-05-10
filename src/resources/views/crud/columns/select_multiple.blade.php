@@ -9,12 +9,11 @@
 
     if(!$results->isEmpty()) {
         $related_key = $results->first()->getKeyName();
-        $results_array = $results->pluck($column['attribute'],$related_key)->toArray();
-        $lastKey = array_key_last($results_array);
+        $results_array = $results->pluck($column['attribute'], $related_key)->toArray();
     }
 
-    foreach ($results_array as $key => $text) {
-        $text = Str::limit($text, $column['limit'], '[...]');
+    foreach ($results_array as $key => $text) { 
+        $results_array[$key] = Str::limit($text, $column['limit'], '[...]');
     }
 @endphp
 
@@ -27,13 +26,14 @@
 
             @includeWhen(!empty($column['wrapper']), 'crud::columns.inc.wrapper_start')
                 @if($column['escaped'])
-                    {{ $text }}
-                @else
-                    {!! $text !!}
-                @endif
-            @includeWhen(!empty($column['wrapper']), 'crud::columns.inc.wrapper_end')
+                    {{ $text }}<?
+                ?>@else
+                    {!! $text !!}<?
+                ?>@endif<?
+            ?>@includeWhen(!empty($column['wrapper']), 'crud::columns.inc.wrapper_end')<?
 
-            @if($lastKey != $key), @endif
+            ?>@if(!$loop->last), @endif
+
         @endforeach
     @else
         -
