@@ -84,7 +84,7 @@ trait SaveActions
             return $request->has('http_referrer') ? $request->get('http_referrer') : $crud->route;
         };
         $saveAction['visible'] = $saveAction['visible'] ?? true;
-        $saveAction['button_text'] = $saveAction['button_text'] ?? $saveAction['name'];
+        $saveAction['button_text'] = $saveAction['button_text'] ?? trans('backpack::crud.' . $saveAction['name']);
         $saveAction['order'] = isset($saveAction['order']) ? $this->orderSaveAction($saveAction['name'], $saveAction['order']) : $orderCounter;
 
         $actions = $this->getOperationSetting('save_actions') ?? [];
