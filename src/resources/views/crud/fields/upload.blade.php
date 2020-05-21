@@ -2,10 +2,6 @@
    if (!isset($field['wrapper']) || !isset($field['wrapper']['data-init-function'])){
         $field['wrapper']['data-init-function'] = 'bpFieldInitUploadElement';
     }
-
-    if (!isset($field['wrapper']) || !isset($field['wrapper']['data-field-name'])) {
-        $field['wrapper']['data-field-name'] = $field['name'];
-    }
 @endphp
 
 <!-- text input -->
@@ -148,7 +144,7 @@
             function bpFieldInitUploadElement(element) {
                 var fileInput = element.find(".file_input");
                 var fileClearButton = element.find(".file_clear_button");
-                var fieldName = element.attr('data-field-name');
+                var fieldName = fileInput.attr('name');
                 var inputWrapper = element.find(".backstrap-file");
                 var inputLabel = element.find(".backstrap-file-label");
 
