@@ -197,22 +197,19 @@
                     var $rows = $tableWrapper.find('tbody tr').not('.clonable');
                     var $hiddenField = $tableWrapper.find('input.array-json');
 
-                    var json = '[';
-                    var otArr = [];
+                    var resArr = [];
                     var tbl2 = $rows.each(function(i) {
                         x = $(this).children().closest('td').find('input');
-                        var itArr = [];
+                        var rowObj = {};
                         x.each(function() {
                             if(this.value.length > 0) {
-                                var key = $(this).attr('data-cell-name').replace('item.','');
-                                var value = this.value.replace(/(['"])/g, "\\$1"); // escapes single and double quotes
-
-                                itArr.push('"' + key + '":"' + value + '"');
+                                var key = $(this).attr('data-name').replace('item.','');
+                                rowObj[key] = this.value;
                             }
                         });
-                        otArr.push('{' + itArr.join(',') + '}');
+                        resArr.push(rowObj);
                     })
-                    json += otArr.join(",") + ']';
+                    var json = JSON.stringify(resArr);
 
                     var totalRows = $rows.length;
 
