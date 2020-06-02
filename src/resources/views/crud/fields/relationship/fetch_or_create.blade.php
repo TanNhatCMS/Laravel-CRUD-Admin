@@ -1,17 +1,13 @@
 <!--  relationship  -->
 
 @php
-
-    //in case entity is superNews we want the url friendly super-news
-    $entityWithoutAttribute = $crud->getOnlyRelationEntity($field);
-    $routeEntity = Str::kebab($entityWithoutAttribute);
+    //in case entity is someRelation.attribute we want only the someRelation part.
+    $routeEntity = $crud->getOnlyRelationEntity($field);
     $connected_entity = new $field['model'];
     $connected_entity_key_name = $connected_entity->getKeyName();
-
     // make sure the $field['value'] takes the proper value
     // and format it to JSON, so that select2 can parse it
     $current_value = old(square_brackets_to_dots($field['name'])) ?? old($field['name']) ?? $field['value'] ?? $field['default'] ?? '';
-
     if ($current_value != false) {
         switch (gettype($current_value)) {
             case 'array':
@@ -38,42 +34,28 @@
                                 ->get()
                                 ->pluck($field['attribute'], $connected_entity_key_name)
                                 ->toArray();
-
                 break;
         }
     }
     $field['value'] = json_encode($current_value);
-
-
-    $field['data_source'] = $field['data_source'] ?? url($crud->route.'/fetch/'.$routeEntity);
+    $field['data_source'] = $field['data_source'] ?? url($crud->route.'/fetch/'. Str::snake($field['name']));
     $field['include_all_form_fields'] = $field['include_all_form_fields'] ?? true;
-
-
-
 $activeInlineCreate = !empty($field['inline_create']) ? true : false;
-
 if($activeInlineCreate) {
-
-
     //we check if this field is not beeing requested in some InlineCreate operation.
     //this variable is setup by InlineCreate modal when loading the fields.
     if(!isset($inlineCreate)) {
         //by default, when creating an entity we want it to be selected/added to selection.
         $field['inline_create']['force_select'] = $field['inline_create']['force_select'] ?? true;
-
         $field['inline_create']['modal_class'] = $field['inline_create']['modal_class'] ?? 'modal-dialog';
-
-        //if user don't specify a different entity in inline_create we assume it's the same from $field['entity'] kebabed
+        //if user don't specify a different entity in inline_create we assume it's the same from $field['entity']
         $field['inline_create']['entity'] = $field['inline_create']['entity'] ?? $routeEntity;
-
         //route to create a new entity
         $field['inline_create']['create_route'] = route($field['inline_create']['entity']."-inline-create-save");
-
         //route to modal
         $field['inline_create']['modal_route'] = route($field['inline_create']['entity']."-inline-create");
     }
 }
-
 @endphp
 
 @include('crud::fields.inc.wrapper_start')
@@ -147,9 +129,7 @@ if($activeInlineCreate) {
             <script src="{{ asset('packages/select2/dist/js/i18n/' . app()->getLocale() . '.js') }}"></script>
             @endif
             <script>
-
 document.styleSheets[0].addRule('.select2-selection__clear::after','content:  "{{ trans('backpack::crud.clear') }}";');
-
 // this is the function responsible for querying the ajax endpoint with our query string, emulating the select2
 // ajax search mechanism.
 var performAjaxSearch = function (element, $searchString) {
@@ -157,7 +137,6 @@ var performAjaxSearch = function (element, $searchString) {
     var $refreshUrl = element.attr('data-data-source');
     var $method = element.attr('data-method');
     var form = element.closest('form')
-
     return new Promise(function (resolve, reject) {
         $.ajax({
             url: $refreshUrl,
@@ -175,18 +154,14 @@ var performAjaxSearch = function (element, $searchString) {
             })(),
             type: $method,
             success: function (result) {
-
                 resolve(result);
             },
             error: function (result) {
-
                 reject(result);
             }
         });
     });
 };
-
-
   // this function is responsible for fetching some default option when developer don't allow null on field
 if (!window.fetchDefaultEntry) {
 var fetchDefaultEntry = function (element) {
@@ -212,10 +187,8 @@ var fetchDefaultEntry = function (element) {
                     $key = result[0][$relatedKeyName];
                     $value = processItemText(result[0], $relatedAttribute, $appLang);
                 }
-
                 $pair = { [$relatedKeyName] : $key, [$relatedAttribute] : $value}
                 $return = {...$return, ...$pair};
-
                 $(element).attr('data-current-value', JSON.stringify($return));
                 resolve($return);
             },
@@ -226,38 +199,46 @@ var fetchDefaultEntry = function (element) {
     });
 };
 }
-
 //this setup the "+Add" button in page with corresponding click handler.
 //when clicked, fetches the html for the modal to show
-
 function setupInlineCreateButtons(element) {
+    var form = element.closest('form');
     var $fieldEntity = element.attr('data-field-related-name');
     var $inlineCreateButtonElement = $(element).parent().find('.inline-create-button');
     var $inlineModalRoute = element.attr('data-inline-modal-route');
     var $inlineModalClass = element.attr('data-inline-modal-class');
     var $parentLoadedFields = element.attr('data-parent-loaded-fields');
-    $inlineCreateButtonElement.on('click', function () {
+    var $includeAllFormFields = element.attr('data-include-all-form-fields')=='false' ? false : true;
 
+    $inlineCreateButtonElement.on('click', function () {
         //we change button state so users know something is happening.
         var loadingText = '<span class="la la-spinner la-spin" style="font-size:18px;"></span>';
         if ($inlineCreateButtonElement.html() !== loadingText) {
             $inlineCreateButtonElement.data('original-text', $inlineCreateButtonElement.html());
             $inlineCreateButtonElement.html(loadingText);
-
-
         }
         $.ajax({
             url: $inlineModalRoute,
-            data: {
-                'entity': $fieldEntity,
-                'modal_class' : $inlineModalClass,
-                'parent_loaded_fields' : $parentLoadedFields,
-            },
+            data: (function() {
+                if ($includeAllFormFields) {
+                    return {
+                        'entity': $fieldEntity,
+                        'modal_class' : $inlineModalClass,
+                        'parent_loaded_fields' : $parentLoadedFields,
+                        form: form.serializeArray() // all other form inputs
+                    };
+                } else {
+                    return {
+                        'entity': $fieldEntity,
+                        'modal_class' : $inlineModalClass,
+                        'parent_loaded_fields' : $parentLoadedFields
+                    };
+                }
+            })(),
             type: 'POST',
             success: function (result) {
                 $('body').append(result);
                 triggerModal(element);
-
             },
             error: function (result) {
                 // Show an alert with the result
@@ -270,18 +251,14 @@ function setupInlineCreateButtons(element) {
                 });
             }
         });
-
     });
-
 }
-
 // when an entity is created we query the ajax endpoint to check if the created option is returned.
 function ajaxSearch(element, created) {
     var $relatedAttribute = element.attr('data-field-attribute');
     var $relatedKeyName = element.attr('data-connected-entity-key-name');
     var $searchString = created[$relatedAttribute];
     var $appLang = element.attr('data-app-current-lang');
-
     //we run the promise with ajax call to search endpoint to check if we got the created entity back
     //in case we do, we add it to the selected options.
     performAjaxSearch(element, $searchString).then(result => {
@@ -295,16 +272,13 @@ function ajaxSearch(element, created) {
                     }
                 }
         });
-
         if(inCreated.length) {
             selectOption(element, created);
         }
     });
 }
-
 //this is the function called when button to add is pressed,
 //it triggers the modal on page and initialize the fields
-
 function triggerModal(element) {
     var $fieldName = element.attr('data-field-related-name');
     var $modal = $('#inline-create-dialog');
@@ -314,26 +288,17 @@ function triggerModal(element) {
     var $inlineCreateRoute = element.attr('data-inline-create-route');
     var $ajax = element.attr('data-field-ajax') == 'true' ? true : false;
     var $force_select = (element.attr('data-force-select') == 'true') ? true : false;
-
-
     $modal.modal();
-
     initializeFieldsWithJavascript($form);
-
     $modalCancelButton.on('click', function () {
         $($modal).modal('hide');
     });
-
     //when you hit save on modal save button.
     $modalSaveButton.on('click', function () {
-
         $form = document.getElementById($fieldName+"-inline-create-form");
-
         //this is needed otherwise fields like ckeditor don't post their value.
         $($form).trigger('form-pre-serialize');
-
         var $formData = new FormData($form);
-
         //we change button state so users know something is happening.
         //we also disable it to prevent double form submition
         var loadingText = '<i class="la la-spinner la-spin"></i> saving...';
@@ -342,8 +307,6 @@ function triggerModal(element) {
             $modalSaveButton.html(loadingText);
             $modalSaveButton.prop('disabled', true);
         }
-
-
         $.ajax({
             url: $inlineCreateRoute,
             data: $formData,
@@ -351,57 +314,42 @@ function triggerModal(element) {
             contentType: false,
             type: 'POST',
             success: function (result) {
-
                 $createdEntity = result.data;
-
                 if(!$force_select) {
                     //if developer did not force the created entity to be selected we first try to
                     //check if created is still available upon model re-search.
                     ajaxSearch(element, result.data);
-
                 }else{
                     selectOption(element, result.data);
                 }
-
                 $modal.modal('hide');
-
-
-
                 new Noty({
                     type: "info",
                     text: '{{ trans('backpack::crud.related_entry_created_success') }}',
                 }).show();
             },
             error: function (result) {
-
                 var $errors = result.responseJSON.errors;
-
                 let message = '';
                 for (var i in $errors) {
                     message += $errors[i] + ' \n';
                 }
-
                 new Noty({
                     type: "error",
                     text: '<strong>{{ trans('backpack::crud.related_entry_created_error') }}</strong><br> '+message,
                 }).show();
-
                 //revert save button back to normal
                 $modalSaveButton.prop('disabled', false);
                 $modalSaveButton.html($modalSaveButton.data('original-text'));
             }
         });
     });
-
     $modal.on('hidden.bs.modal', function (e) {
         $modal.remove();
-
         //when modal is closed (canceled or success submited) we revert the "+ Add" loading state back to normal.
         var $inlineCreateButtonElement = $(element).parent().find('.inline-create-button');
         $inlineCreateButtonElement.html($inlineCreateButtonElement.data('original-text'));
     });
-
-
     $modal.on('shown.bs.modal', function (e) {
         $modal.on('keyup',  function (e) {
         if($modal.is(':visible')) {
@@ -415,7 +363,6 @@ function triggerModal(element) {
     });
     });
 }
-
 //function responsible for adding an option to the select
 //it parses any previous options in case of select multiple.
 function selectOption(element, option) {
@@ -423,31 +370,20 @@ function selectOption(element, option) {
     var $relatedKeyName = element.attr('data-connected-entity-key-name');
     var $multiple = element.prop('multiple');
     var $appLang = element.attr('data-app-current-lang');
-
     var $optionText = processItemText(option, $relatedAttribute, $appLang);
-
     var $option = new Option($optionText, option[$relatedKeyName]);
-
         $(element).append($option);
-
         if($multiple) {
             //we get any options previously selected
             var selectedOptions = $(element).val();
-
             //we add the option to the already selected array.
             selectedOptions.push(option[$relatedKeyName]);
             $(element).val(selectedOptions);
-
         }else{
             $(element).val(option[$relatedKeyName]);
         }
-
         $(element).trigger('change');
-
 }
-
-
-
 function bpFieldInitFetchOrCreateElement(element) {
     var form = element.closest('form');
     var $inlineField = element.attr('data-is-inline');
@@ -465,7 +401,6 @@ function bpFieldInitFetchOrCreateElement(element) {
     var $appLang = element.attr('data-app-current-lang');
     var $selectedOptions = JSON.parse(element.attr('data-selected-options') ?? null);
     var $multiple = element.prop('multiple');
-
     var FetchOrCreateAjaxFetchSelectedEntry = function (element) {
             return new Promise(function (resolve, reject) {
                 $.ajax({
@@ -475,7 +410,6 @@ function bpFieldInitFetchOrCreateElement(element) {
                     },
                     type: $method,
                     success: function (result) {
-
                         resolve(result);
                     },
                     error: function (result) {
@@ -484,11 +418,9 @@ function bpFieldInitFetchOrCreateElement(element) {
                 });
             });
         };
-
        if($allows_null && !$multiple) {
         $(element).append('<option value="">'+$placeholder+'</option>');
        }
-
         if (typeof $selectedOptions !== typeof undefined &&
             $selectedOptions !== false &&
                 $selectedOptions != '' &&
@@ -496,43 +428,34 @@ function bpFieldInitFetchOrCreateElement(element) {
                 $selectedOptions != [])
         {
             var optionsForSelect = [];
-
             FetchOrCreateAjaxFetchSelectedEntry(element).then(result => {
                 result.forEach(function(item) {
                 $itemText = processItemText(item, $fieldAttribute, $appLang);
                 $itemValue = item[$connectedEntityKeyName];
                 //add current key to be selected later.
                 optionsForSelect.push($itemValue);
-
                 //create the option in the select
                 $(element).append('<option value="'+$itemValue+'">'+$itemText+'</option>');
         });
-
         // set the option keys as selected.
         $(element).val(optionsForSelect);
         $(element).trigger('change');
     });
 }
-
             var $item = false;
-
             var $value = JSON.parse(element.attr('data-current-value'))
-
             if(Object.keys($value).length > 0) {
                 $item = true;
             }
             var selectedOptions = [];
             var $currentValue = $item ? $value : '';
-
             //we reselect the previously selected options if any.
             for (const [key, value] of Object.entries($currentValue)) {
                 selectedOptions.push(key);
                 var $option = new Option(value, key);
                 $(element).append($option);
             }
-
             $(element).val(selectedOptions);
-
             //null is not allowed we fetch some default entry
             if(!$allows_null && !$item && $selectedOptions == null) {
                 fetchDefaultEntry(element).then(result => {
@@ -541,17 +464,11 @@ function bpFieldInitFetchOrCreateElement(element) {
                     $(element).trigger('change');
                 });
             }
-
-
-
         //Checks if field is not beeing inserted in one inline create modal and setup buttons
         if($inlineField == "false") {
             setupInlineCreateButtons(element);
         }
-
             if (!element.hasClass("select2-hidden-accessible")) {
-
-
                     element.select2({
                     theme: "bootstrap",
                     placeholder: $placeholder,
@@ -563,19 +480,19 @@ function bpFieldInitFetchOrCreateElement(element) {
                     dataType: 'json',
                     quietMillis: 500,
                     data: function (params) {
-                    if ($includeAllFormFields) {
-                    return {
-                        q: params.term, // search term
-                        page: params.page, // pagination
-                        form: form.serializeArray() // all other form inputs
-                    };
-                } else {
-                    return {
-                        q: params.term, // search term
-                        page: params.page, // pagination
-                    };
-                }
-            },
+                        if ($includeAllFormFields) {
+                            return {
+                                q: params.term, // search term
+                                page: params.page, // pagination
+                                form: form.serializeArray() // all other form inputs
+                            };
+                        } else {
+                            return {
+                                q: params.term, // search term
+                                page: params.page, // pagination
+                            };
+                        }
+                    },
             processResults: function (data, params) {
                 params.page = params.page || 1;
                 //if we have data.data here it means we returned a paginated instance from controller.
@@ -584,7 +501,6 @@ function bpFieldInitFetchOrCreateElement(element) {
                 var result = {
                     results: $.map(data.data, function (item) {
                         var $itemText = processItemText(item, $fieldAttribute, $appLang);
-
                         return {
                             text: $itemText,
                             id: item[$connectedEntityKeyName]
@@ -598,7 +514,6 @@ function bpFieldInitFetchOrCreateElement(element) {
                     var result = {
                         results: $.map(data, function (item) {
                             var $itemText = processItemText(item, $fieldAttribute, $appLang);
-
                             return {
                                 text: $itemText,
                                 id: item[$connectedEntityKeyName]
@@ -609,21 +524,18 @@ function bpFieldInitFetchOrCreateElement(element) {
                         }
                     }
                 }
-
                 return result;
             },
             cache: true
         },
                 });
             }
-
         for (var i=0; i < $dependencies.length; i++) {
         $dependency = $dependencies[i];
         $('input[name='+$dependency+'], select[name='+$dependency+'], checkbox[name='+$dependency+'], radio[name='+$dependency+'], textarea[name='+$dependency+']').change(function () {
             element.val(null).trigger("change");
         });
     }
-
         }
 if (typeof processItemText !== 'function') {
     function processItemText(item, $fieldAttribute, $appLang) {
@@ -640,7 +552,6 @@ if (typeof processItemText !== 'function') {
 }
             </script>
         @endpush
-
     @endif
     {{-- End of Extra CSS and JS --}}
     {{-- ########################################## --}}
