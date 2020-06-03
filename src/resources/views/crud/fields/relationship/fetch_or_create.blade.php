@@ -236,6 +236,8 @@ function setupInlineCreateButtons(element) {
     var $inlineModalRoute = element.attr('data-inline-modal-route');
     var $inlineModalClass = element.attr('data-inline-modal-class');
     var $parentLoadedFields = element.attr('data-parent-loaded-fields');
+    var $includeAllFormFields = element.attr('data-include-all-form-fields')=='false' ? false : true;
+
     $inlineCreateButtonElement.on('click', function () {
 
         //we change button state so users know something is happening.
@@ -248,11 +250,22 @@ function setupInlineCreateButtons(element) {
         }
         $.ajax({
             url: $inlineModalRoute,
-            data: {
-                'entity': $fieldEntity,
-                'modal_class' : $inlineModalClass,
-                'parent_loaded_fields' : $parentLoadedFields,
-            },
+            data: (function() {
+                if ($includeAllFormFields) {
+                    return {
+                        'entity': $fieldEntity,
+                        'modal_class' : $inlineModalClass,
+                        'parent_loaded_fields' : $parentLoadedFields,
+                        'form' : form.serializeArray() // all other form inputs
+                    };
+                } else {
+                    return {
+                        'entity': $fieldEntity,
+                        'modal_class' : $inlineModalClass,
+                        'parent_loaded_fields' : $parentLoadedFields
+                    };
+                }
+            })(),
             type: 'POST',
             success: function (result) {
                 $('body').append(result);
