@@ -231,6 +231,7 @@ var fetchDefaultEntry = function (element) {
 //when clicked, fetches the html for the modal to show
 
 function setupInlineCreateButtons(element) {
+    var form = element.closest('form');
     var $fieldEntity = element.attr('data-field-related-name');
     var $inlineCreateButtonElement = $(element).parent().find('.inline-create-button');
     var $inlineModalRoute = element.attr('data-inline-modal-route');
