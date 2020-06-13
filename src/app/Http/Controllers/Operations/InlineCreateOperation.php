@@ -37,8 +37,12 @@ trait InlineCreateOperation
         if (method_exists($this, 'setup')) {
             $this->setup();
         }
-        if (method_exists($this, 'setupCreateOperation')) {
-            $this->setupCreateOperation();
+        if (method_exists($this, 'setupInlineCreateOperation')) {
+            $this->setupInlineCreateOperation();
+        } else {
+            if (method_exists($this, 'setupCreateOperation')) {
+                $this->setupCreateOperation();
+            }
         }
 
         $this->crud->applyConfigurationFromSettings('create');
