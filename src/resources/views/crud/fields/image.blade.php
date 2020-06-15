@@ -1,6 +1,8 @@
 @php
     $prefix = isset($field['prefix']) ? $field['prefix'] : '';
     $value = old(square_brackets_to_dots($field['name'])) ?? $field['value'] ?? $field['default'] ?? '';
+    $storeValue = $value;
+
     $value = $value
         ? preg_match('/^data\:image\//', $value)
             ? $value
@@ -8,7 +10,7 @@
                 ? Storage::disk($field['disk'])->url($prefix.$value)
                 : url($prefix.$value))
         :''; // if validation failed, tha value will be base64, so no need to create a URL for it
-
+    
     if (! function_exists('maximumServerUploadSizeInBytes')) {
         function maximumServerUploadSizeInBytes() {
 
@@ -66,7 +68,7 @@
     <div class="btn-group">
         <div class="btn btn-light btn-sm btn-file">
             {{ trans('backpack::crud.choose_file') }} <input type="file" accept="image/*" data-handle="uploadImage"  @include('crud::fields.inc.attributes', ['default_class' => 'hide'])>
-            <input type="hidden" data-handle="hiddenImage" name="{{ $field['name'] }}" value="{{ $value }}">
+            <input type="hidden" data-handle="hiddenImage" name="{{ $field['name'] }}" data-show-value="{{ $value }}" value="{{ $storeValue }}">
         </div>
         @if(isset($field['crop']) && $field['crop'])
         <button class="btn btn-light btn-sm" data-handle="rotateLeft" type="button" style="display: none;"><i class="la la-rotate-left"></i></button>
@@ -177,7 +179,7 @@
                         $remove.hide();
                     }
                     // Make the main image show the image in the hidden input
-                    $mainImage.attr('src', $hiddenImage.val());
+                    $mainImage.attr('src', $hiddenImage.attr('data-show-value'));
 
 
                     // Only initialize cropper plugin if crop is set to true
@@ -187,6 +189,7 @@
                             $mainImage.cropper("destroy");
                             $mainImage.attr('src','');
                             $hiddenImage.val('');
+                            $hiddenImage.attr('data-show-value', '');
                             $rotateLeft.hide();
                             $rotateRight.hide();
                             $zoomIn.hide();
@@ -200,6 +203,7 @@
                         $remove.click(function() {
                             $mainImage.attr('src','');
                             $hiddenImage.val('');
+                            $hiddenImage.attr('data-show-value', '');
                             $remove.hide();
                             $previews.hide();
                         });
@@ -233,6 +237,7 @@
                                     $mainImage.on('ready cropstart cropend', function() {
                                         var imageURL = $mainImage.cropper('getCroppedCanvas').toDataURL(file.type);
                                         $hiddenImage.val(imageURL);
+                                        $hiddenImage.attr('data-show-value', imageURL);
                                         return true;
                                     });
                                     $rotateLeft.click(function() {
@@ -260,6 +265,7 @@
                                 } else {
                                     $mainImage.attr('src',this.result);
                                     $hiddenImage.val(this.result);
+                                    $hiddenImage.attr('data-show-value', this.result);
                                     $remove.show();
                                 }
                             };
