@@ -77,12 +77,12 @@ trait Relationships
             case 'BelongsToMany':
                 return [
                     'pivot_key_name' => $relation->getForeignPivotKeyName(),
-                    'related_pivot_key_name' => $relation->getRelatedPivotKeyName()
+                    'related_pivot_key_name' => $relation->getRelatedPivotKeyName(),
                 ];
                 break;
             case 'BelongsTo':
                 return [
-                    'related_key_name' => $relation->getForeignKeyName()
+                    'related_key_name' => $relation->getForeignKeyName(),
                 ];
                 break;
                 default:

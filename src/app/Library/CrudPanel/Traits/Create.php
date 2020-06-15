@@ -122,7 +122,7 @@ trait Create
                     $pivot_data = [];
 
                     if (isset($field['pivot_fields']) && isset($field['pivot_fields']['fields'])) {
-                        $pivot_fields = !isset($data['pivot_fields_'.$field['name'].'_'.$pivot_id]) ?: json_decode($data['pivot_fields_'.$field['name'].'_'.$pivot_id]);
+                        $pivot_fields = ! isset($data['pivot_fields_'.$field['name'].'_'.$pivot_id]) ?: json_decode($data['pivot_fields_'.$field['name'].'_'.$pivot_id]);
                         foreach ($pivot_fields as $pivot_field_name => $pivot_field_value) {
                             $pivot_data[$pivot_field_name] = $pivot_field_value;
                         }
