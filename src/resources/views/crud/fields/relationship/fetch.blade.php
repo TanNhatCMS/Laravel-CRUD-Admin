@@ -11,6 +11,13 @@
     // a crud field like this one.
     $field['type'] = 'fetch';
 
+    if(isset($field['pivot_fields'])) {
+        $field['pivot_fields']['relation'] = $field['pivot_fields']['relation'] ?? $field['name'];
+        foreach ($field['pivot_fields']['fields'] as &$subfield) {
+            $subfield = $crud->makeSureFieldHasNecessaryAttributes($subfield);
+        }
+    }
+
     $field['multiple'] = $field['multiple'] ?? $crud->guessIfFieldHasMultipleFromRelationType($field['relation_type']);
     $field['data_source'] = $field['data_source'] ?? url($crud->route.'/fetch/'.$routeEntity);
     $field['attribute'] = $field['attribute'] ?? $connected_entity->identifiableAttribute();
@@ -60,6 +67,7 @@
     <select
         style="width:100%"
         name="{{ $field['name'].($field['multiple']?'[]':'') }}"
+        data-clean-name="{{ $field['name'] }}"
         data-init-function="bpFieldInitFetchElement"
         data-column-nullable="{{ var_export($field['allows_null']) }}"
         data-dependencies="{{ isset($field['dependencies'])?json_encode(Arr::wrap($field['dependencies'])): json_encode([]) }}"
@@ -188,6 +196,7 @@
         var $appLang = element.attr('data-app-current-lang');
         var $selectedOptions = JSON.parse(element.attr('data-selected-options') ?? null);
         var $multiple = element.prop('multiple');
+        var $cleanName = element.attr('data-clean-name');
 
         var FetchAjaxFetchSelectedEntry = function (element) {
             return new Promise(function (resolve, reject) {
@@ -252,8 +261,7 @@
 
         for (const [key, value] of Object.entries($currentValue)) {
             selectedOptions.push(key);
-            var $option = new Option(value, key);
-            $(element).append($option);
+            $(element).append('<option value="'+key+'">'+value+'</option>');
         }
 
         $(element).val(selectedOptions);
@@ -275,6 +283,8 @@
                 placeholder: $placeholder,
                 minimumInputLength: $minimumInputLength,
                 allowClear: $allows_null,
+                escapeMarkup: function(m) { return m; },
+                templateSelection: addPivotEditIcon,
                 ajax: {
                     url: $dataSource,
                     type: $method,
@@ -305,6 +315,7 @@
 
                                 return {
                                     text: $itemText,
+                                    connected_entity: item['name'],
                                     id: item[$connectedEntityKeyName]
                                 }
                             }),
@@ -319,6 +330,7 @@
 
                                     return {
                                         text: $itemText,
+                                        connected_entity: item['name'],
                                         id: item[$connectedEntityKeyName]
                                     }
                                 }),
@@ -336,6 +348,8 @@
         if (!$(element).hasClass("select2-hidden-accessible"))
         {
             $(element).select2($select2Settings);
+
+            jQuery.fn.select2.defaults.defaults.escapeMarkup(function (m) { return m;})
              // if any dependencies have been declared
             // when one of those dependencies changes value
             // reset the select2 value
@@ -347,6 +361,18 @@
 
             }
         }
+
+        $(element).on('select2:select', function (e) {
+                console.log(this)
+        });
+
+        $('.dialog-opener').on('click', function (e) {
+            console.log(this);
+            e.preventDefault();
+            e.stopPropagation();
+            console.log($(e.target));
+            console.log($(e.target).attr('data-edit-id'));
+        });
     }
 
     if (typeof processItemText !== 'function') {
@@ -361,7 +387,20 @@
                         return item[$fieldAttribute];
                     }
     }
-}
+    }
+
+    if (typeof addPivotEditIcon !== 'function') {
+        function addPivotEditIcon(option,container) {
+            if (!option.id) {
+                return option.text;
+            }
+            var $valueWithEditIcon = $(
+                '<span>' + option.text + ' <i class="la la-edit dialog-opener" data-edit-id="'+option.id+'"></i>'
+            );
+
+            return $valueWithEditIcon;
+        }
+    }
 </script>
 @endpush
 @endif

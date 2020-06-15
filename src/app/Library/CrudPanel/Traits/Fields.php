@@ -40,6 +40,7 @@ trait Fields
 
         if (isset($field['entity'])) {
             $field = $this->makeSureFieldHasRelationType($field);
+            $field = array_merge($field, $this->inferExtraRelationInfo($field));
             $field = $this->makeSureFieldHasModel($field);
             $field = $this->overwriteFieldNameFromEntity($field);
             $field = $this->makeSureFieldHasAttribute($field);

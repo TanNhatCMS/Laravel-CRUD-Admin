@@ -121,9 +121,10 @@ trait Create
                 foreach ($values as $pivot_id) {
                     $pivot_data = [];
 
-                    if (isset($field['pivotFields'])) {
-                        foreach ($field['pivotFields'] as $pivot_field_name) {
-                            $pivot_data[$pivot_field_name] = $data[$pivot_field_name][$pivot_id];
+                    if (isset($field['pivot_fields']) && isset($field['pivot_fields']['fields'])) {
+                        $pivot_fields = !isset($data['pivot_fields_'.$field['name'].'_'.$pivot_id]) ?: json_decode($data['pivot_fields_'.$field['name'].'_'.$pivot_id]);
+                        foreach ($pivot_fields as $pivot_field_name => $pivot_field_value) {
+                            $pivot_data[$pivot_field_name] = $pivot_field_value;
                         }
                     }
                     $relation_data[$pivot_id] = $pivot_data;

@@ -70,6 +70,27 @@ trait Relationships
         return Arr::last(explode('\\', get_class($relation)));
     }
 
+    public function inferExtraRelationInfo($field)
+    {
+        $relation = $this->getRelationInstance($field);
+        switch ($field['relation_type']) {
+            case 'BelongsToMany':
+                return [
+                    'pivot_key_name' => $relation->getForeignPivotKeyName(),
+                    'related_pivot_key_name' => $relation->getRelatedPivotKeyName()
+                ];
+                break;
+            case 'BelongsTo':
+                return [
+                    'related_key_name' => $relation->getForeignKeyName()
+                ];
+                break;
+                default:
+                return [];
+            break;
+        }
+    }
+
     /**
      * Parse the field name back to the related entity after the form is submited.
      * Its called in getAllFieldNames().
