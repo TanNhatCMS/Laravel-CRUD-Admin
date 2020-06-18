@@ -491,4 +491,33 @@ trait Fields
     {
         return new CrudField($name);
     }
+
+    /**
+     * Grouping fields in tab
+     *
+     * @param  string  $name
+     * @param  array  $fields
+     * @return void
+     */
+    public function tab(string $name, array $fields) :void
+    {
+        foreach ($fields as $field) {
+            if ($field instanceof CrudField) {
+                $field->tab($name);
+            }
+
+            if (is_array($field)) {
+                $field['tab'] = $name;
+                $this->addField($field);
+            }
+
+            if (is_string($field)) {
+                $field = [
+                    'name' => $field,
+                    'tab' => $name,
+                ];
+                $this->addField($field);
+            }
+        }
+    }
 }
