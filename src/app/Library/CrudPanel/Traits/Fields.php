@@ -493,13 +493,13 @@ trait Fields
     }
 
     /**
-     * Grouping fields in tab
+     * Grouping fields in tab.
      *
      * @param  string  $name
      * @param  array  $fields
      * @return void
      */
-    public function tab(string $name, array $fields) :void
+    public function tab(string $name, array $fields): void
     {
         foreach ($fields as $field) {
             if ($field instanceof CrudField) {
@@ -514,7 +514,7 @@ trait Fields
             if (is_string($field)) {
                 $field = [
                     'name' => $field,
-                    'tab' => $name,
+                    'tab'  => $name,
                 ];
                 $this->addField($field);
             }
