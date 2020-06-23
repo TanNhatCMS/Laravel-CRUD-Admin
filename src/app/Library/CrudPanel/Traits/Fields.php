@@ -184,7 +184,7 @@ trait Fields
      * @param string $fieldName         The field name
      * @param array  $modifications An array of changes to be made.
      */
-    public function modifyField($fieldName, $modifications)
+    public function modifyField($fieldName, $modifications, $operation)
     {
         $fieldsArray = $this->fields();
         $field = $this->firstFieldWhere('name', $fieldName);
@@ -196,7 +196,7 @@ trait Fields
 
         $this->enableTabsIfFieldUsesThem($modifications);
 
-        $this->setOperationSetting('fields', $fieldsArray);
+        $this->setOperationSetting('fields', $fieldsArray, $operation);
     }
 
     /**
