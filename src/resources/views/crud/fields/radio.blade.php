@@ -2,7 +2,7 @@
 @php
     $options = $field['options'];
     $defaultValue = $field['default'] ?? (count($options) > 0 ? array_key_first($options) : '');
-    $fieldValue = is_null($field['value']) ? $defaultValue : (is_bool($field['value']) ? (int)$field['value'] : $field['value']);
+    $fieldValue = !isset($field['value']) ? $defaultValue : (is_bool($field['value']) ? (int)$field['value'] : $field['value']);
     $oldValue = old(square_brackets_to_dots($field['name']));
     $currentValue = is_null($oldValue) ? $fieldValue : (is_bool($oldValue) ? (int)$oldValue : $oldValue);
     $optionValue = $currentValue;
@@ -76,6 +76,7 @@
             });
 
             // select the right radios
+            console.log(value);
             element.find('input[type=radio][value="'+value+'"]').prop('checked', true);
         }
     </script>
