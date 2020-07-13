@@ -1,7 +1,11 @@
 <!-- radio -->
 @php
-    $optionValue = old(square_brackets_to_dots($field['name'])) ?? $field['value'] ?? $field['default'] ?? 0;
-    $optionValue = is_bool($optionValue) ? (int)$optionValue : $optionValue;
+    $options = $field['options'];
+    $defaultValue = $field['default'] ?? (count($options) > 0 ? array_key_first($options) : '');
+    $fieldValue = is_null($field['value']) ? $defaultValue : (is_bool($field['value']) ? (int)$field['value'] : $field['value']);
+    $oldValue = old(square_brackets_to_dots($field['name']));
+    $currentValue = is_null($oldValue) ? $fieldValue : (is_bool($oldValue) ? (int)$oldValue : $oldValue);
+    $optionValue = $currentValue;
 
     // if the class isn't overwritten, use 'radio'
     if (!isset($field['attributes']['class'])) {
