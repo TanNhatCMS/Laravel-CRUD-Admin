@@ -4,10 +4,10 @@
     @include('crud::fields.inc.translatable_icon')
     <div class="checkbox">
         <input type="hidden" name="{{ $field['name'] }}" value="0">
+        <label class="form-check-label font-weight-normal">
     	  <input type="checkbox"
                name="{{ $field['name'] }}"
                value="1"
-               id="{{ $field['name'] }}_box"
           @if (old(square_brackets_to_dots($field['name'])) ?? $field['value'] ?? $field['default'] ?? false)
                  checked
           @endif
@@ -18,7 +18,7 @@
         	  @endforeach
           @endif
           >
-    	<label class="form-check-label font-weight-normal" for="{{ $field['name'] }}_box">{!! $field['label'] !!}</label>
+        {!! $field['label'] !!}</label>
 
         {{-- HINT --}}
         @if (isset($field['hint']))
