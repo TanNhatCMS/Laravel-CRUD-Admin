@@ -225,7 +225,7 @@ var fetchDefaultEntry = function (element) {
                     $key = result.data[0][$relatedKeyName];
                     $value = processItemText(result.data[0], $relatedAttribute, $appLang);
                 }else{
-                    $key = result[0][$relatedKeyName];
+                    $key = null;
                     $value = processItemText(result[0], $relatedAttribute, $appLang);
                 }
 
@@ -674,18 +674,23 @@ function bpFieldInitFetchOrCreateElement(element) {
     }
 
         }
+
 if (typeof processItemText !== 'function') {
     function processItemText(item, $fieldAttribute, $appLang) {
+        if (!item) {
+            return item; // Should return `null` or `undefined`.
+        }
+
         if(typeof item[$fieldAttribute] === 'object' && item[$fieldAttribute] !== null)  {
-                if(item[$fieldAttribute][$appLang] != 'undefined') {
-                    return item[$fieldAttribute][$appLang];
-                }else{
-                    return item[$fieldAttribute][0];
-                }
+            if(item[$fieldAttribute][$appLang] != 'undefined') {
+                return item[$fieldAttribute][$appLang];
             }else{
-                return item[$fieldAttribute];
+                return item[$fieldAttribute][0];
             }
-}
+        }else{
+            return item[$fieldAttribute];
+        }
+    }
 }
             </script>
         @endpush
