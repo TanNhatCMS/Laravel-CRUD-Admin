@@ -35,10 +35,10 @@ return [
     'language'          => 'Langue',
 
     // CRUD table view
-    'all'                       => 'Tous les ',
+    'all'                       => 'Tous ',
     'in_the_database'           => 'dans la base de données',
     'list'                      => 'Liste',
-    'reset'                     => 'Reset',
+    'reset'                     => 'Réinitialiser',
     'actions'                   => 'Actions',
     'preview'                   => 'Aperçu',
     'delete'                    => 'Supprimer',

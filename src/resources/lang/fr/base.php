@@ -40,6 +40,7 @@ return [
     'cancel'                 => 'Annuler',
     'error'                  => 'Erreur',
     'success'                => 'Succès',
+    'warning'                => 'Attention',
     'old_password_incorrect' => 'L’ancien mot de passe est erroné.',
     'password_dont_match'    => 'Les mots de passe ne correspondent pas.',
     'password_empty'         => 'Assurez-vous de bien avoir rempli les champs de mot de passe.',
