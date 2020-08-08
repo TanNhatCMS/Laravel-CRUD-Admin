@@ -11,7 +11,7 @@ return [
     'registration_closed'    => 'Inscription fermée.',
     'first_page_you_see'     => 'La première page que vous voyez après connexion',
     'login_status'           => 'Etat de connexion',
-    'logged_in'              => 'Vous êtes connecté!',
+    'logged_in'              => 'Vous êtes connecté !',
     'toggle_navigation'      => 'Afficher/masquer la navigation',
     'administration'         => 'ADMINISTRATION',
     'user'                   => 'UTILISATEUR',
@@ -48,11 +48,11 @@ return [
     'account_updated'        => 'Compte mis à jour avec succès.',
     'unknown_error'          => 'Un erreur s’est produite. Veuillez réessayer.',
     'error_saving'           => 'Erreur lors de l’enregistrement. Veuillez réessayer.',
-    'welcome'                => 'Bienvenue!',
+    'welcome'                => 'Bienvenue !',
     'use_sidebar'            => 'Utilisez la barre latérale pour ajouter, modifier ou supprimer du contenu.',
 
     'password_reset' => [
-        'greeting' => 'Bonjour!',
+        'greeting' => 'Bonjour !',
         'subject'  => 'Réinitialisation du mot de passe',
         'line_1'   => 'Vous recevez cet email car nous avons reçu une demande de réinitialisation de votre mot de passe.',
         'line_2'   => 'Cliquez sur le lien suivant pour le réinitialiser:',
