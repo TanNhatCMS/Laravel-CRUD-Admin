@@ -219,9 +219,9 @@ class CrudPanel
      */
     public function setEntityPronounStrings($singular_indefinite, $singular_definite, $plural_indefinite = '', $plural_definite = '')
     {
-        foreach(['singular_indefinite', 'singular_definite', 'plural_indefinite', 'plural_definite'] as $var) {
+        foreach (['singular_indefinite', 'singular_definite', 'plural_indefinite', 'plural_definite'] as $var) {
             // add a space after the pronoun when need
-            if ($$var && !in_array(substr($$var, -1), ["'", "‘"])) {
+            if ($$var && ! in_array(substr($$var, -1), ["'", '‘'])) {
                 $$var .= ' ';
             }
             // set the variable
