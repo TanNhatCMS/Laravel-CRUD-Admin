@@ -35,7 +35,7 @@ return [
     'language'          => 'Langue',
 
     // CRUD table view
-    'all'                       => 'Tous ',
+    'all'                       => 'Tous les ',
     'in_the_database'           => 'dans la base de données',
     'list'                      => 'Liste',
     'reset'                     => 'Réinitialiser',
