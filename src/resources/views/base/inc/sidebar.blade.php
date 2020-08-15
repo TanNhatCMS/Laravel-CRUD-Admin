@@ -58,11 +58,11 @@
       // If not found, look for the link that starts with the url
       if(!$curentPageLink.length > 0){
           $curentPageLink = $navLinks.filter( function() {
-            if ($(this).attr('href').startsWith(full_url)) {
+            if ($(this).attr('href').split('?')[0] === full_url) {
               return true;
             }
 
-            if (full_url.startsWith($(this).attr('href'))) {
+            if (full_url.split('?')[0] === $(this).attr('href')) {
               return true;
             }
 
