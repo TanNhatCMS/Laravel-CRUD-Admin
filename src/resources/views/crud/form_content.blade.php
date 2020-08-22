@@ -35,12 +35,21 @@
     <script>
     function initializeFieldsWithJavascript(container) {
       var selector;
+
       if (container instanceof jQuery) {
         selector = container;
       } else {
         selector = $(container);
       }
-      selector.find("[data-init-function]").not("[data-initialized=true]").each(function () {
+
+      var $elements = selector.find("[data-init-function]").not("[data-initialized=true]");
+
+      // If it's not a repeatable container we exclude all the repeatable fields from the initialization
+      if (!selector.hasClass('repeatable-element')) {
+        $elements = $elements.not(".repeatable-field-input");
+      }
+
+      $elements.each(function (key, el) {
         var element = $(this);
         var functionName = element.data('init-function');
 

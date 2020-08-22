@@ -31,8 +31,12 @@
               $fieldViewNamespace = $subfield['view_namespace'] ?? 'crud::fields';
               $fieldViewPath = $fieldViewNamespace.'.'.$subfield['type'];
               $subfield['showAsterisk'] = false;
+              //we add this class to the field so that we can exclude it from the main form initialization.
+              //this field will be initialized when the parent repeatable container initializes.
+              $subfield['attributes']['class'] = isset($subfield['attributes']['class']) ?
+                                                $subfield['attributes']['class'] . ' repeatable-field-input' :
+                                                'repeatable-field-input';
           @endphp
-
           @include($fieldViewPath, ['field' => $subfield])
         @endforeach
 
