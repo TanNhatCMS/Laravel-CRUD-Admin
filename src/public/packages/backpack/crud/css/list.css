@@ -18,7 +18,7 @@
 	    font: normal normal normal 14px/1 "Line Awesome Free";
 	    font-weight: 900;
 	}
-	
+
 	/* Removes the horizontal scroll (if the width allows it) */
 	.box-body.table-responsive {
 	    padding-left: 15px;
@@ -211,7 +211,7 @@
 		#datatable_search_stack label {
 			width: 100%;
 		}
-	
+
 		#datatable_search_stack input[type="search"] {
 			width: 100%;
 		}
@@ -240,4 +240,30 @@
 /*	Allow dropdown buttons to push the height/width of the rapper so that they're entirely visible	*/
 	.fixed .wrapper {
 		overflow: visible;
+    }
+
+    @media (max-width: 435px) {
+        #bottom_buttons {
+            display:flex;
+        }
+
+        #bottom_buttons > .bulk-button {
+            display: flex;
+            max-height: 2.2em;
+        }
+	}
+
+	@media (min-width: 576px) and (max-width: 814px) {
+		.dt-buttons {
+			display: flex !important;
+		}
+		.dt-buttons .btn-group:not(:first-child) {
+			margin-left: 0.2em !important;
+		}
+	}
+
+	@media (min-width: 576px) and (max-width: 767px) {
+		.pagination_buttons {
+			margin: 0 auto;
+		}
 	}
