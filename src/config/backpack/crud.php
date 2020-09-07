@@ -21,6 +21,10 @@ return [
             // To override per view use $this->crud->setListContentClass('class-string')
             'contentClass' => 'col-md-12',
 
+            // Define the size/looks of the header div for all CRUDs
+            // To override per view use $this->crud->setListHeaderClass('class-string')
+            'headerClass' => 'col-md-12',
+
             // enable the datatables-responsive plugin, which hides columns if they don't fit?
             // if not, a horizontal scrollbar will be shown instead
             'responsiveTable' => true,
@@ -72,6 +76,10 @@ return [
             // To override per view use $this->crud->setCreateContentClass('class-string')
             'contentClass' => 'col-md-8 bold-labels',
 
+            // Define the size/looks of the header div for all CRUDs
+            // To override per view use $this->crud->setCreateHeaderClass('class-string')
+            'headerClass' => 'col-md-8',
+
             // When using tabbed forms (create & update), what kind of tabs would you like?
             'tabsType' => 'horizontal', //options: horizontal, vertical
 
@@ -108,6 +116,10 @@ return [
             // To override per view use $this->crud->setEditContentClass('class-string')
             'contentClass'   => 'col-md-8 bold-labels',
 
+            // Define the size/looks of the header div for all CRUDs
+            // To override per view use $this->crud->setEditHeaderClass('class-string')
+            'headerClass'   => 'col-md-8',
+
             // When using tabbed forms (create & update), what kind of tabs would you like?
             'tabsType' => 'horizontal', //options: horizontal, vertical
 
@@ -143,6 +155,10 @@ return [
             // Define the size/looks of the content div for all CRUDs
             // To override per Controller use $this->crud->setShowContentClass('class-string')
             'contentClass' => 'col-md-8',
+
+            // Define the size/looks of the header div for all CRUDs
+            // To override per Controller use $this->crud->setShowHeaderClass('class-string')
+            'headerClass' => 'col-md-8',
         ],
 
         /*
@@ -152,6 +168,10 @@ return [
             // Define the size/looks of the content div for all CRUDs
             // To override per Controller use $this->crud->setReorderContentClass('class-string')
             'contentClass'   => 'col-md-8 col-md-offset-2',
+
+            // Define the size/looks of the header div for all CRUDs
+            // To override per Controller use $this->crud->setReorderHeaderClass('class-string')
+            'headerClass'   => 'col-md-8 col-md-offset-2',
         ],
 
     ],

@@ -50,6 +50,26 @@ trait Views
         return $this->get('create.contentClass') ?? config('backpack.crud.operations.create.contentClass', 'col-md-8 bold-labels');
     }
 
+    /**
+     * Sets the create header class.
+     *
+     * @param string $class header class
+     */
+    public function setCreateHeaderClass(string $class)
+    {
+        return $this->set('create.headerClass', $class);
+    }
+
+    /**
+     * Gets the create header class.
+     *
+     * @return string header class for create view
+     */
+    public function getCreateHeaderClass()
+    {
+        return $this->get('create.headerClass') ?? config('backpack.crud.operations.create.headerClass', 'col-md-8');
+    }
+
     // -------
     // READ
     // -------
@@ -94,6 +114,26 @@ trait Views
     public function getListContentClass()
     {
         return $this->get('list.contentClass') ?? config('backpack.crud.operations.list.contentClass', 'col-md-12');
+    }
+
+    /**
+     * Sets the list header class.
+     *
+     * @param string $class header class
+     */
+    public function setListHeaderClass(string $class)
+    {
+        return $this->set('list.headerClass', $class);
+    }
+
+    /**
+     * Gets the list header class.
+     *
+     * @return string header class for list view
+     */
+    public function getListHeaderClass()
+    {
+        return $this->get('list.headerClass') ?? config('backpack.crud.operations.list.headerClass', 'col-md-12');
     }
 
     /**
@@ -160,6 +200,26 @@ trait Views
         return $this->get('show.contentClass') ?? config('backpack.crud.operations.show.contentClass', 'col-md-8 col-md-offset-2');
     }
 
+    /**
+     * Sets the edit header class.
+     *
+     * @param string $class header class
+     */
+    public function setShowHeaderClass(string $class)
+    {
+        return $this->set('show.headerClass', $class);
+    }
+
+    /**
+     * Gets the edit header class.
+     *
+     * @return string header class for edit view
+     */
+    public function getShowHeaderClass()
+    {
+        return $this->get('show.headerClass') ?? config('backpack.crud.operations.show.headerClass', 'col-md-8 col-md-offset-2');
+    }
+
     // -------
     // UPDATE
     // -------
@@ -207,6 +267,26 @@ trait Views
     }
 
     /**
+     * Sets the edit header class.
+     *
+     * @param string $class header class
+     */
+    public function setEditHeaderClass(string $class)
+    {
+        return $this->set('update.headerClass', $class);
+    }
+
+    /**
+     * Gets the edit header class.
+     *
+     * @return string header class for edit view
+     */
+    public function getEditHeaderClass()
+    {
+        return $this->get('update.headerClass') ?? config('backpack.crud.operations.update.headerClass', 'col-md-8');
+    }
+
+    /**
      * Sets the reorder template.
      *
      * @param string $view name of the template file
@@ -248,6 +328,26 @@ trait Views
         return $this->get('reorder.contentClass') ?? config('backpack.crud.operations.reorder.contentClass', 'col-md-8 col-md-offset-2');
     }
 
+    /**
+     * Sets the reorder header class.
+     *
+     * @param string $class header class
+     */
+    public function setReorderHeaderClass(string $class)
+    {
+        return $this->set('reorder.headerClass', $class);
+    }
+
+    /**
+     * Gets the reorder&nest header class.
+     *
+     * @return string header class for reorder and nest view
+     */
+    public function getReorderHeaderClass()
+    {
+        return $this->get('reorder.headerClass') ?? config('backpack.crud.operations.reorder.headerClass', 'col-md-8 col-md-offset-2');
+    }
+
     // -------
     // ALIASES
     // -------
@@ -275,6 +375,11 @@ trait Views
     public function setUpdateContentClass(string $editContentClass)
     {
         return $this->setEditContentClass($editContentClass);
+    }
+
+    public function setUpdateHeaderClass(string $editHeaderClass)
+    {
+        return $this->setEditHeaderClass($editHeaderClass);
     }
 
     public function getUpdateContentClass()
