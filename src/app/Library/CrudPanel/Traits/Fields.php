@@ -38,7 +38,7 @@ trait Fields
         $field = $this->makeSureFieldHasEntity($field);
         $field = $this->makeSureFieldHasLabel($field);
 
-        if (isset($field['entity']) && $field['entity'] !== false) {
+        if (isset($field['entity'])) {
             $field = $this->makeSureFieldHasRelationType($field);
             $field = $this->makeSureFieldHasModel($field);
             $field = $this->overwriteFieldNameFromEntity($field);

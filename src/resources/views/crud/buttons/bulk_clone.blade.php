@@ -17,7 +17,7 @@
 	      	return;
 	      }
 
-	      var message = "{!! trans('backpack::crud.bulk_clone_are_you_sure') !!}";
+	      var message = "Are you sure you want to clone these :number entries?";
 	      message = message.replace(":number", crud.checkedItems.length);
 
 	      // show confirm message
@@ -54,7 +54,7 @@
 						  // Show an alert with the result
 		    	          new Noty({
 				            type: "success",
-				            text: "<strong>{!! trans('backpack::crud.bulk_clone_sucess_title') !!}</strong><br>"+crud.checkedItems.length+" {!! trans('backpack::crud.bulk_clone_sucess_message') !!}"
+				            text: "<strong>Entries cloned</strong><br>"+crud.checkedItems.length+" new entries have been added."
 				          }).show();
 
 						  crud.checkedItems = [];
@@ -64,7 +64,7 @@
 						  // Show an alert with the result
 		    	          new Noty({
 				            type: "danger",
-				            text: "<strong>{!! trans('backpack::crud.bulk_clone_error_title') !!}</strong><br>"+crud.checkedItems.length+" {!! trans('backpack::crud.bulk_clone_error_message') !!}"
+				            text: "<strong>Cloning failed</strong><br>One or more entries could not be created. Please try again."
 				          }).show();
 						}
 					});

@@ -17,6 +17,7 @@
                 $list[$column['visible_key']][] = $item[$column['visible_key']];
             }
         }
+        $lastKey = array_key_last($list[$column['visible_key']]);
     }
 
     $column['escaped'] = $column['escaped'] ?? true;
@@ -29,18 +30,14 @@
                 $column['text'] = $text;
                 $related_key = $key;
             @endphp
-
-            <span class="d-inline-flex">
-                @includeWhen(!empty($column['wrapper']), 'crud::columns.inc.wrapper_start')
-                    @if($column['escaped'])
-                        {{ $column['text'] }}
-                    @else
-                        {!! $column['text'] !!}
-                    @endif
-                @includeWhen(!empty($column['wrapper']), 'crud::columns.inc.wrapper_end')
-            
-                @if(!$loop->last), @endif
-            </span>
+            @includeWhen(!empty($column['wrapper']), 'crud::columns.inc.wrapper_start')
+                @if($column['escaped'])
+                    {{ $column['text'] }}
+                @else
+                    {!! $column['text'] !!}
+                @endif
+            @includeWhen(!empty($column['wrapper']), 'crud::columns.inc.wrapper_end')
+        @if($lastKey != $key),@endif
         @endforeach
     @else
         -

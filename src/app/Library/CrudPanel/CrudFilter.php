@@ -2,15 +2,12 @@
 
 namespace Backpack\CRUD\app\Library\CrudPanel;
 
-use Closure;
-use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\ParameterBag;
 
 class CrudFilter
 {
     public $name; // the name of the filtered variable (db column name)
     public $type = 'select2'; // the name of the filter view that will be loaded
-    public $key; //camelCased version of filter name to use in internal ids, js functions and css classes.
     public $label;
     public $placeholder;
     public $values;
@@ -33,7 +30,6 @@ class CrudFilter
         } else {
             // it means we're creating the filter now,
             $this->name = $options['name'];
-            $this->key = Str::camel($options['name']);
             $this->type = $options['type'] ?? $this->type;
             $this->label = $options['label'] ?? $this->crud()->makeLabel($this->name);
             $this->viewNamespace = $options['view_namespace'] ?? $this->viewNamespace;
@@ -106,11 +102,6 @@ class CrudFilter
         $input = $input ?? new ParameterBag($this->crud()->getRequest()->all());
 
         if (! $input->has($this->name)) {
-            // if fallback logic was supplied and is a closure
-            if (is_callable($this->fallbackLogic)) {
-                return ($this->fallbackLogic)();
-            }
-
             return;
         }
 
@@ -119,6 +110,11 @@ class CrudFilter
             return ($this->logic)($input->get($this->name));
         } else {
             return $this->applyDefaultLogic($this->name, false);
+        }
+
+        // if fallback logic was supplied and is a closure
+        if (is_callable($this->fallbackLogic)) {
+            return ($this->fallbackLogic)();
         }
     }
 
@@ -280,12 +276,12 @@ class CrudFilter
      * For example, the dropdown, select2 and select2 filters let the user select
      * pre-determined values to filter with. This is how to set those values that will be picked up.
      *
-     * @param  array|function $value Key-value array with values for the user to pick from, or a function which also return a Key-value array.
+     * @param  array $value Key-value array with values for the user to pick from.
      * @return CrudFilter
      */
     public function values($value)
     {
-        $this->values = (! is_string($value) && is_callable($value)) ? $value() : $value;
+        $this->values = $value;
 
         return $this->save();
     }

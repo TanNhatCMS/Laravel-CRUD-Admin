@@ -4,7 +4,7 @@
  * For LGPL see License.txt in the project root for license information.
  * For commercial licenses see https://www.tiny.cloud/
  *
- * Version: 5.4.2 (2020-08-17)
+ * Version: 5.2.2 (2020-04-23)
  */
 (function (domGlobals) {
     'use strict';
@@ -17,16 +17,20 @@
       var set = function (v) {
         value = v;
       };
+      var clone = function () {
+        return Cell(get());
+      };
       return {
         get: get,
-        set: set
+        set: set,
+        clone: clone
       };
     };
 
-    var global = tinymce.util.Tools.resolve('tinymce.PluginManager');
+    var global$1 = tinymce.util.Tools.resolve('tinymce.PluginManager');
 
     var hasProPlugin = function (editor) {
-      if (/(^|[ ,])powerpaste([, ]|$)/.test(editor.getParam('plugins')) && global.get('powerpaste')) {
+      if (/(^|[ ,])powerpaste([, ]|$)/.test(editor.settings.plugins) && global$1.get('powerpaste')) {
         if (typeof domGlobals.window.console !== 'undefined' && domGlobals.window.console.log) {
           domGlobals.window.console.log('PowerPaste is incompatible with Paste plugin! Remove \'paste\' from the \'plugins\' option.');
         }
@@ -35,6 +39,7 @@
         return false;
       }
     };
+    var DetectProPlugin = { hasProPlugin: hasProPlugin };
 
     var get = function (clipboard, quirks) {
       return {
@@ -42,6 +47,7 @@
         quirks: quirks
       };
     };
+    var Api = { get: get };
 
     var firePastePreProcess = function (editor, html, internal, isWordHtml) {
       return editor.fire('PastePreProcess', {
@@ -63,21 +69,28 @@
     var firePaste = function (editor, ieFake) {
       return editor.fire('paste', { ieFake: ieFake });
     };
+    var Events = {
+      firePastePreProcess: firePastePreProcess,
+      firePastePostProcess: firePastePostProcess,
+      firePastePlainTextToggle: firePastePlainTextToggle,
+      firePaste: firePaste
+    };
 
     var togglePlainTextPaste = function (editor, clipboard) {
       if (clipboard.pasteFormat.get() === 'text') {
         clipboard.pasteFormat.set('html');
-        firePastePlainTextToggle(editor, false);
+        Events.firePastePlainTextToggle(editor, false);
       } else {
         clipboard.pasteFormat.set('text');
-        firePastePlainTextToggle(editor, true);
+        Events.firePastePlainTextToggle(editor, true);
       }
       editor.focus();
     };
+    var Actions = { togglePlainTextPaste: togglePlainTextPaste };
 
     var register = function (editor, clipboard) {
       editor.addCommand('mceTogglePlainTextPaste', function () {
-        togglePlainTextPaste(editor, clipboard);
+        Actions.togglePlainTextPaste(editor, clipboard);
       });
       editor.addCommand('mceInsertClipboardContent', function (ui, value) {
         if (value.content) {
@@ -88,6 +101,7 @@
         }
       });
     };
+    var Commands = { register: register };
 
     var noop = function () {
     };
@@ -113,7 +127,7 @@
         return n;
       };
       var me = {
-        fold: function (n, _s) {
+        fold: function (n, s) {
           return n();
         },
         is: never,
@@ -141,6 +155,9 @@
         },
         toString: constant('none()')
       };
+      if (Object.freeze) {
+        Object.freeze(me);
+      }
       return me;
     }();
     var some = function (a) {
@@ -205,12 +222,25 @@
       from: from
     };
 
-    var isSimpleType = function (type) {
+    var typeOf = function (x) {
+      if (x === null) {
+        return 'null';
+      }
+      var t = typeof x;
+      if (t === 'object' && (Array.prototype.isPrototypeOf(x) || x.constructor && x.constructor.name === 'Array')) {
+        return 'array';
+      }
+      if (t === 'object' && (String.prototype.isPrototypeOf(x) || x.constructor && x.constructor.name === 'String')) {
+        return 'string';
+      }
+      return t;
+    };
+    var isType = function (type) {
       return function (value) {
-        return typeof value === type;
+        return typeOf(value) === type;
       };
     };
-    var isFunction = isSimpleType('function');
+    var isFunction = isType('function');
 
     var nativeSlice = Array.prototype.slice;
     var map = function (xs, f) {
@@ -248,6 +278,651 @@
       return nativeSlice.call(x);
     };
 
+    var exports$1 = {}, module = { exports: exports$1 };
+    (function (define, exports, module, require) {
+      (function (f) {
+        if (typeof exports === 'object' && typeof module !== 'undefined') {
+          module.exports = f();
+        } else if (typeof define === 'function' && define.amd) {
+          define([], f);
+        } else {
+          var g;
+          if (typeof window !== 'undefined') {
+            g = window;
+          } else if (typeof global !== 'undefined') {
+            g = global;
+          } else if (typeof self !== 'undefined') {
+            g = self;
+          } else {
+            g = this;
+          }
+          g.EphoxContactWrapper = f();
+        }
+      }(function () {
+        return function () {
+          function r(e, n, t) {
+            function o(i, f) {
+              if (!n[i]) {
+                if (!e[i]) {
+                  var c = 'function' == typeof require && require;
+                  if (!f && c)
+                    return c(i, !0);
+                  if (u)
+                    return u(i, !0);
+                  var a = new Error('Cannot find module \'' + i + '\'');
+                  throw a.code = 'MODULE_NOT_FOUND', a;
+                }
+                var p = n[i] = { exports: {} };
+                e[i][0].call(p.exports, function (r) {
+                  var n = e[i][1][r];
+                  return o(n || r);
+                }, p, p.exports, r, e, n, t);
+              }
+              return n[i].exports;
+            }
+            for (var u = 'function' == typeof require && require, i = 0; i < t.length; i++)
+              o(t[i]);
+            return o;
+          }
+          return r;
+        }()({
+          1: [
+            function (require, module, exports) {
+              var process = module.exports = {};
+              var cachedSetTimeout;
+              var cachedClearTimeout;
+              function defaultSetTimout() {
+                throw new Error('setTimeout has not been defined');
+              }
+              function defaultClearTimeout() {
+                throw new Error('clearTimeout has not been defined');
+              }
+              (function () {
+                try {
+                  if (typeof setTimeout === 'function') {
+                    cachedSetTimeout = setTimeout;
+                  } else {
+                    cachedSetTimeout = defaultSetTimout;
+                  }
+                } catch (e) {
+                  cachedSetTimeout = defaultSetTimout;
+                }
+                try {
+                  if (typeof clearTimeout === 'function') {
+                    cachedClearTimeout = clearTimeout;
+                  } else {
+                    cachedClearTimeout = defaultClearTimeout;
+                  }
+                } catch (e) {
+                  cachedClearTimeout = defaultClearTimeout;
+                }
+              }());
+              function runTimeout(fun) {
+                if (cachedSetTimeout === setTimeout) {
+                  return setTimeout(fun, 0);
+                }
+                if ((cachedSetTimeout === defaultSetTimout || !cachedSetTimeout) && setTimeout) {
+                  cachedSetTimeout = setTimeout;
+                  return setTimeout(fun, 0);
+                }
+                try {
+                  return cachedSetTimeout(fun, 0);
+                } catch (e) {
+                  try {
+                    return cachedSetTimeout.call(null, fun, 0);
+                  } catch (e) {
+                    return cachedSetTimeout.call(this, fun, 0);
+                  }
+                }
+              }
+              function runClearTimeout(marker) {
+                if (cachedClearTimeout === clearTimeout) {
+                  return clearTimeout(marker);
+                }
+                if ((cachedClearTimeout === defaultClearTimeout || !cachedClearTimeout) && clearTimeout) {
+                  cachedClearTimeout = clearTimeout;
+                  return clearTimeout(marker);
+                }
+                try {
+                  return cachedClearTimeout(marker);
+                } catch (e) {
+                  try {
+                    return cachedClearTimeout.call(null, marker);
+                  } catch (e) {
+                    return cachedClearTimeout.call(this, marker);
+                  }
+                }
+              }
+              var queue = [];
+              var draining = false;
+              var currentQueue;
+              var queueIndex = -1;
+              function cleanUpNextTick() {
+                if (!draining || !currentQueue) {
+                  return;
+                }
+                draining = false;
+                if (currentQueue.length) {
+                  queue = currentQueue.concat(queue);
+                } else {
+                  queueIndex = -1;
+                }
+                if (queue.length) {
+                  drainQueue();
+                }
+              }
+              function drainQueue() {
+                if (draining) {
+                  return;
+                }
+                var timeout = runTimeout(cleanUpNextTick);
+                draining = true;
+                var len = queue.length;
+                while (len) {
+                  currentQueue = queue;
+                  queue = [];
+                  while (++queueIndex < len) {
+                    if (currentQueue) {
+                      currentQueue[queueIndex].run();
+                    }
+                  }
+                  queueIndex = -1;
+                  len = queue.length;
+                }
+                currentQueue = null;
+                draining = false;
+                runClearTimeout(timeout);
+              }
+              process.nextTick = function (fun) {
+                var args = new Array(arguments.length - 1);
+                if (arguments.length > 1) {
+                  for (var i = 1; i < arguments.length; i++) {
+                    args[i - 1] = arguments[i];
+                  }
+                }
+                queue.push(new Item(fun, args));
+                if (queue.length === 1 && !draining) {
+                  runTimeout(drainQueue);
+                }
+              };
+              function Item(fun, array) {
+                this.fun = fun;
+                this.array = array;
+              }
+              Item.prototype.run = function () {
+                this.fun.apply(null, this.array);
+              };
+              process.title = 'browser';
+              process.browser = true;
+              process.env = {};
+              process.argv = [];
+              process.version = '';
+              process.versions = {};
+              function noop() {
+              }
+              process.on = noop;
+              process.addListener = noop;
+              process.once = noop;
+              process.off = noop;
+              process.removeListener = noop;
+              process.removeAllListeners = noop;
+              process.emit = noop;
+              process.prependListener = noop;
+              process.prependOnceListener = noop;
+              process.listeners = function (name) {
+                return [];
+              };
+              process.binding = function (name) {
+                throw new Error('process.binding is not supported');
+              };
+              process.cwd = function () {
+                return '/';
+              };
+              process.chdir = function (dir) {
+                throw new Error('process.chdir is not supported');
+              };
+              process.umask = function () {
+                return 0;
+              };
+            },
+            {}
+          ],
+          2: [
+            function (require, module, exports) {
+              (function (setImmediate) {
+                (function (root) {
+                  var setTimeoutFunc = setTimeout;
+                  function noop() {
+                  }
+                  function bind(fn, thisArg) {
+                    return function () {
+                      fn.apply(thisArg, arguments);
+                    };
+                  }
+                  function Promise(fn) {
+                    if (typeof this !== 'object')
+                      throw new TypeError('Promises must be constructed via new');
+                    if (typeof fn !== 'function')
+                      throw new TypeError('not a function');
+                    this._state = 0;
+                    this._handled = false;
+                    this._value = undefined;
+                    this._deferreds = [];
+                    doResolve(fn, this);
+                  }
+                  function handle(self, deferred) {
+                    while (self._state === 3) {
+                      self = self._value;
+                    }
+                    if (self._state === 0) {
+                      self._deferreds.push(deferred);
+                      return;
+                    }
+                    self._handled = true;
+                    Promise._immediateFn(function () {
+                      var cb = self._state === 1 ? deferred.onFulfilled : deferred.onRejected;
+                      if (cb === null) {
+                        (self._state === 1 ? resolve : reject)(deferred.promise, self._value);
+                        return;
+                      }
+                      var ret;
+                      try {
+                        ret = cb(self._value);
+                      } catch (e) {
+                        reject(deferred.promise, e);
+                        return;
+                      }
+                      resolve(deferred.promise, ret);
+                    });
+                  }
+                  function resolve(self, newValue) {
+                    try {
+                      if (newValue === self)
+                        throw new TypeError('A promise cannot be resolved with itself.');
+                      if (newValue && (typeof newValue === 'object' || typeof newValue === 'function')) {
+                        var then = newValue.then;
+                        if (newValue instanceof Promise) {
+                          self._state = 3;
+                          self._value = newValue;
+                          finale(self);
+                          return;
+                        } else if (typeof then === 'function') {
+                          doResolve(bind(then, newValue), self);
+                          return;
+                        }
+                      }
+                      self._state = 1;
+                      self._value = newValue;
+                      finale(self);
+                    } catch (e) {
+                      reject(self, e);
+                    }
+                  }
+                  function reject(self, newValue) {
+                    self._state = 2;
+                    self._value = newValue;
+                    finale(self);
+                  }
+                  function finale(self) {
+                    if (self._state === 2 && self._deferreds.length === 0) {
+                      Promise._immediateFn(function () {
+                        if (!self._handled) {
+                          Promise._unhandledRejectionFn(self._value);
+                        }
+                      });
+                    }
+                    for (var i = 0, len = self._deferreds.length; i < len; i++) {
+                      handle(self, self._deferreds[i]);
+                    }
+                    self._deferreds = null;
+                  }
+                  function Handler(onFulfilled, onRejected, promise) {
+                    this.onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : null;
+                    this.onRejected = typeof onRejected === 'function' ? onRejected : null;
+                    this.promise = promise;
+                  }
+                  function doResolve(fn, self) {
+                    var done = false;
+                    try {
+                      fn(function (value) {
+                        if (done)
+                          return;
+                        done = true;
+                        resolve(self, value);
+                      }, function (reason) {
+                        if (done)
+                          return;
+                        done = true;
+                        reject(self, reason);
+                      });
+                    } catch (ex) {
+                      if (done)
+                        return;
+                      done = true;
+                      reject(self, ex);
+                    }
+                  }
+                  Promise.prototype['catch'] = function (onRejected) {
+                    return this.then(null, onRejected);
+                  };
+                  Promise.prototype.then = function (onFulfilled, onRejected) {
+                    var prom = new this.constructor(noop);
+                    handle(this, new Handler(onFulfilled, onRejected, prom));
+                    return prom;
+                  };
+                  Promise.all = function (arr) {
+                    var args = Array.prototype.slice.call(arr);
+                    return new Promise(function (resolve, reject) {
+                      if (args.length === 0)
+                        return resolve([]);
+                      var remaining = args.length;
+                      function res(i, val) {
+                        try {
+                          if (val && (typeof val === 'object' || typeof val === 'function')) {
+                            var then = val.then;
+                            if (typeof then === 'function') {
+                              then.call(val, function (val) {
+                                res(i, val);
+                              }, reject);
+                              return;
+                            }
+                          }
+                          args[i] = val;
+                          if (--remaining === 0) {
+                            resolve(args);
+                          }
+                        } catch (ex) {
+                          reject(ex);
+                        }
+                      }
+                      for (var i = 0; i < args.length; i++) {
+                        res(i, args[i]);
+                      }
+                    });
+                  };
+                  Promise.resolve = function (value) {
+                    if (value && typeof value === 'object' && value.constructor === Promise) {
+                      return value;
+                    }
+                    return new Promise(function (resolve) {
+                      resolve(value);
+                    });
+                  };
+                  Promise.reject = function (value) {
+                    return new Promise(function (resolve, reject) {
+                      reject(value);
+                    });
+                  };
+                  Promise.race = function (values) {
+                    return new Promise(function (resolve, reject) {
+                      for (var i = 0, len = values.length; i < len; i++) {
+                        values[i].then(resolve, reject);
+                      }
+                    });
+                  };
+                  Promise._immediateFn = typeof setImmediate === 'function' ? function (fn) {
+                    setImmediate(fn);
+                  } : function (fn) {
+                    setTimeoutFunc(fn, 0);
+                  };
+                  Promise._unhandledRejectionFn = function _unhandledRejectionFn(err) {
+                    if (typeof console !== 'undefined' && console) {
+                      console.warn('Possible Unhandled Promise Rejection:', err);
+                    }
+                  };
+                  Promise._setImmediateFn = function _setImmediateFn(fn) {
+                    Promise._immediateFn = fn;
+                  };
+                  Promise._setUnhandledRejectionFn = function _setUnhandledRejectionFn(fn) {
+                    Promise._unhandledRejectionFn = fn;
+                  };
+                  if (typeof module !== 'undefined' && module.exports) {
+                    module.exports = Promise;
+                  } else if (!root.Promise) {
+                    root.Promise = Promise;
+                  }
+                }(this));
+              }.call(this, require('timers').setImmediate));
+            },
+            { 'timers': 3 }
+          ],
+          3: [
+            function (require, module, exports) {
+              (function (setImmediate, clearImmediate) {
+                var nextTick = require('process/browser.js').nextTick;
+                var apply = Function.prototype.apply;
+                var slice = Array.prototype.slice;
+                var immediateIds = {};
+                var nextImmediateId = 0;
+                exports.setTimeout = function () {
+                  return new Timeout(apply.call(setTimeout, window, arguments), clearTimeout);
+                };
+                exports.setInterval = function () {
+                  return new Timeout(apply.call(setInterval, window, arguments), clearInterval);
+                };
+                exports.clearTimeout = exports.clearInterval = function (timeout) {
+                  timeout.close();
+                };
+                function Timeout(id, clearFn) {
+                  this._id = id;
+                  this._clearFn = clearFn;
+                }
+                Timeout.prototype.unref = Timeout.prototype.ref = function () {
+                };
+                Timeout.prototype.close = function () {
+                  this._clearFn.call(window, this._id);
+                };
+                exports.enroll = function (item, msecs) {
+                  clearTimeout(item._idleTimeoutId);
+                  item._idleTimeout = msecs;
+                };
+                exports.unenroll = function (item) {
+                  clearTimeout(item._idleTimeoutId);
+                  item._idleTimeout = -1;
+                };
+                exports._unrefActive = exports.active = function (item) {
+                  clearTimeout(item._idleTimeoutId);
+                  var msecs = item._idleTimeout;
+                  if (msecs >= 0) {
+                    item._idleTimeoutId = setTimeout(function onTimeout() {
+                      if (item._onTimeout)
+                        item._onTimeout();
+                    }, msecs);
+                  }
+                };
+                exports.setImmediate = typeof setImmediate === 'function' ? setImmediate : function (fn) {
+                  var id = nextImmediateId++;
+                  var args = arguments.length < 2 ? false : slice.call(arguments, 1);
+                  immediateIds[id] = true;
+                  nextTick(function onNextTick() {
+                    if (immediateIds[id]) {
+                      if (args) {
+                        fn.apply(null, args);
+                      } else {
+                        fn.call(null);
+                      }
+                      exports.clearImmediate(id);
+                    }
+                  });
+                  return id;
+                };
+                exports.clearImmediate = typeof clearImmediate === 'function' ? clearImmediate : function (id) {
+                  delete immediateIds[id];
+                };
+              }.call(this, require('timers').setImmediate, require('timers').clearImmediate));
+            },
+            {
+              'process/browser.js': 1,
+              'timers': 3
+            }
+          ],
+          4: [
+            function (require, module, exports) {
+              var promisePolyfill = require('promise-polyfill');
+              var Global = function () {
+                if (typeof window !== 'undefined') {
+                  return window;
+                } else {
+                  return Function('return this;')();
+                }
+              }();
+              module.exports = { boltExport: Global.Promise || promisePolyfill };
+            },
+            { 'promise-polyfill': 2 }
+          ]
+        }, {}, [4])(4);
+      }));
+    }(undefined, exports$1, module, undefined));
+    var Promise = module.exports.boltExport;
+
+    var nu = function (baseFn) {
+      var data = Option.none();
+      var callbacks = [];
+      var map = function (f) {
+        return nu(function (nCallback) {
+          get(function (data) {
+            nCallback(f(data));
+          });
+        });
+      };
+      var get = function (nCallback) {
+        if (isReady()) {
+          call(nCallback);
+        } else {
+          callbacks.push(nCallback);
+        }
+      };
+      var set = function (x) {
+        data = Option.some(x);
+        run(callbacks);
+        callbacks = [];
+      };
+      var isReady = function () {
+        return data.isSome();
+      };
+      var run = function (cbs) {
+        each(cbs, call);
+      };
+      var call = function (cb) {
+        data.each(function (x) {
+          domGlobals.setTimeout(function () {
+            cb(x);
+          }, 0);
+        });
+      };
+      baseFn(set);
+      return {
+        get: get,
+        map: map,
+        isReady: isReady
+      };
+    };
+    var pure = function (a) {
+      return nu(function (callback) {
+        callback(a);
+      });
+    };
+    var LazyValue = {
+      nu: nu,
+      pure: pure
+    };
+
+    var errorReporter = function (err) {
+      domGlobals.setTimeout(function () {
+        throw err;
+      }, 0);
+    };
+    var make = function (run) {
+      var get = function (callback) {
+        run().then(callback, errorReporter);
+      };
+      var map = function (fab) {
+        return make(function () {
+          return run().then(fab);
+        });
+      };
+      var bind = function (aFutureB) {
+        return make(function () {
+          return run().then(function (v) {
+            return aFutureB(v).toPromise();
+          });
+        });
+      };
+      var anonBind = function (futureB) {
+        return make(function () {
+          return run().then(function () {
+            return futureB.toPromise();
+          });
+        });
+      };
+      var toLazy = function () {
+        return LazyValue.nu(get);
+      };
+      var toCached = function () {
+        var cache = null;
+        return make(function () {
+          if (cache === null) {
+            cache = run();
+          }
+          return cache;
+        });
+      };
+      var toPromise = run;
+      return {
+        map: map,
+        bind: bind,
+        anonBind: anonBind,
+        toLazy: toLazy,
+        toCached: toCached,
+        toPromise: toPromise,
+        get: get
+      };
+    };
+    var nu$1 = function (baseFn) {
+      return make(function () {
+        return new Promise(baseFn);
+      });
+    };
+    var pure$1 = function (a) {
+      return make(function () {
+        return Promise.resolve(a);
+      });
+    };
+    var Future = {
+      nu: nu$1,
+      pure: pure$1
+    };
+
+    var par = function (asyncValues, nu) {
+      return nu(function (callback) {
+        var r = [];
+        var count = 0;
+        var cb = function (i) {
+          return function (value) {
+            r[i] = value;
+            count++;
+            if (count >= asyncValues.length) {
+              callback(r);
+            }
+          };
+        };
+        if (asyncValues.length === 0) {
+          callback([]);
+        } else {
+          each(asyncValues, function (asyncValue, i) {
+            asyncValue.get(cb(i));
+          });
+        }
+      });
+    };
+
+    var par$1 = function (futures) {
+      return par(futures, Future.nu);
+    };
+    var traverse = function (array, fn) {
+      return par$1(map(array, fn));
+    };
+
     var value = function () {
       var subject = Cell(Option.none());
       var clear = function () {
@@ -270,13 +945,87 @@
       };
     };
 
-    var global$1 = tinymce.util.Tools.resolve('tinymce.Env');
+    var global$2 = tinymce.util.Tools.resolve('tinymce.Env');
 
-    var global$2 = tinymce.util.Tools.resolve('tinymce.util.Delay');
+    var global$3 = tinymce.util.Tools.resolve('tinymce.util.Delay');
 
-    var global$3 = tinymce.util.Tools.resolve('tinymce.util.Promise');
+    var global$4 = tinymce.util.Tools.resolve('tinymce.util.Tools');
 
-    var global$4 = tinymce.util.Tools.resolve('tinymce.util.VK');
+    var global$5 = tinymce.util.Tools.resolve('tinymce.util.VK');
+
+    var internalMimeType = 'x-tinymce/html';
+    var internalMark = '<!-- ' + internalMimeType + ' -->';
+    var mark = function (html) {
+      return internalMark + html;
+    };
+    var unmark = function (html) {
+      return html.replace(internalMark, '');
+    };
+    var isMarked = function (html) {
+      return html.indexOf(internalMark) !== -1;
+    };
+    var InternalHtml = {
+      mark: mark,
+      unmark: unmark,
+      isMarked: isMarked,
+      internalHtmlMime: function () {
+        return internalMimeType;
+      }
+    };
+
+    var global$6 = tinymce.util.Tools.resolve('tinymce.html.Entities');
+
+    var isPlainText = function (text) {
+      return !/<(?:\/?(?!(?:div|p|br|span)>)\w+|(?:(?!(?:span style="white-space:\s?pre;?">)|br\s?\/>))\w+\s[^>]+)>/i.test(text);
+    };
+    var toBRs = function (text) {
+      return text.replace(/\r?\n/g, '<br>');
+    };
+    var openContainer = function (rootTag, rootAttrs) {
+      var key;
+      var attrs = [];
+      var tag = '<' + rootTag;
+      if (typeof rootAttrs === 'object') {
+        for (key in rootAttrs) {
+          if (rootAttrs.hasOwnProperty(key)) {
+            attrs.push(key + '="' + global$6.encodeAllRaw(rootAttrs[key]) + '"');
+          }
+        }
+        if (attrs.length) {
+          tag += ' ' + attrs.join(' ');
+        }
+      }
+      return tag + '>';
+    };
+    var toBlockElements = function (text, rootTag, rootAttrs) {
+      var blocks = text.split(/\n\n/);
+      var tagOpen = openContainer(rootTag, rootAttrs);
+      var tagClose = '</' + rootTag + '>';
+      var paragraphs = global$4.map(blocks, function (p) {
+        return p.split(/\n/).join('<br />');
+      });
+      var stitch = function (p) {
+        return tagOpen + p + tagClose;
+      };
+      return paragraphs.length === 1 ? paragraphs[0] : global$4.map(paragraphs, stitch).join('');
+    };
+    var convert = function (text, rootTag, rootAttrs) {
+      return rootTag ? toBlockElements(text, rootTag === true ? 'p' : rootTag, rootAttrs) : toBRs(text);
+    };
+    var Newlines = {
+      isPlainText: isPlainText,
+      convert: convert,
+      toBRs: toBRs,
+      toBlockElements: toBlockElements
+    };
+
+    var global$7 = tinymce.util.Tools.resolve('tinymce.html.DomParser');
+
+    var global$8 = tinymce.util.Tools.resolve('tinymce.html.Serializer');
+
+    var global$9 = tinymce.util.Tools.resolve('tinymce.html.Node');
+
+    var global$a = tinymce.util.Tools.resolve('tinymce.html.Schema');
 
     var shouldBlockDrop = function (editor) {
       return editor.getParam('paste_block_drop', false);
@@ -321,100 +1070,27 @@
     var shouldUseDefaultFilters = function (editor) {
       return editor.getParam('paste_enable_default_filters', true);
     };
-    var getValidate = function (editor) {
-      return editor.getParam('validate');
+    var Settings = {
+      shouldBlockDrop: shouldBlockDrop,
+      shouldPasteDataImages: shouldPasteDataImages,
+      shouldFilterDrop: shouldFilterDrop,
+      getPreProcess: getPreProcess,
+      getPostProcess: getPostProcess,
+      getWebkitStyles: getWebkitStyles,
+      shouldRemoveWebKitStyles: shouldRemoveWebKitStyles,
+      shouldMergeFormats: shouldMergeFormats,
+      isSmartPasteEnabled: isSmartPasteEnabled,
+      isPasteAsTextEnabled: isPasteAsTextEnabled,
+      getRetainStyleProps: getRetainStyleProps,
+      getWordValidElements: getWordValidElements,
+      shouldConvertWordFakeLists: shouldConvertWordFakeLists,
+      shouldUseDefaultFilters: shouldUseDefaultFilters
     };
-    var getAllowHtmlDataUrls = function (editor) {
-      return editor.getParam('allow_html_data_urls', false, 'boolean');
-    };
-    var getPasteDataImages = function (editor) {
-      return editor.getParam('paste_data_images', false, 'boolean');
-    };
-    var getImagesDataImgFilter = function (editor) {
-      return editor.getParam('images_dataimg_filter');
-    };
-    var getImagesReuseFilename = function (editor) {
-      return editor.getParam('images_reuse_filename');
-    };
-    var getForcedRootBlock = function (editor) {
-      return editor.getParam('forced_root_block');
-    };
-    var getForcedRootBlockAttrs = function (editor) {
-      return editor.getParam('forced_root_block_attrs');
-    };
-    var getTabSpaces = function (editor) {
-      return editor.getParam('paste_tab_spaces', 4, 'number');
-    };
-
-    var internalMimeType = 'x-tinymce/html';
-    var internalMark = '<!-- ' + internalMimeType + ' -->';
-    var mark = function (html) {
-      return internalMark + html;
-    };
-    var unmark = function (html) {
-      return html.replace(internalMark, '');
-    };
-    var isMarked = function (html) {
-      return html.indexOf(internalMark) !== -1;
-    };
-    var internalHtmlMime = function () {
-      return internalMimeType;
-    };
-
-    var global$5 = tinymce.util.Tools.resolve('tinymce.util.Tools');
-
-    var global$6 = tinymce.util.Tools.resolve('tinymce.html.Entities');
-
-    var isPlainText = function (text) {
-      return !/<(?:\/?(?!(?:div|p|br|span)>)\w+|(?:(?!(?:span style="white-space:\s?pre;?">)|br\s?\/>))\w+\s[^>]+)>/i.test(text);
-    };
-    var toBRs = function (text) {
-      return text.replace(/\r?\n/g, '<br>');
-    };
-    var openContainer = function (rootTag, rootAttrs) {
-      var key;
-      var attrs = [];
-      var tag = '<' + rootTag;
-      if (typeof rootAttrs === 'object') {
-        for (key in rootAttrs) {
-          if (rootAttrs.hasOwnProperty(key)) {
-            attrs.push(key + '="' + global$6.encodeAllRaw(rootAttrs[key]) + '"');
-          }
-        }
-        if (attrs.length) {
-          tag += ' ' + attrs.join(' ');
-        }
-      }
-      return tag + '>';
-    };
-    var toBlockElements = function (text, rootTag, rootAttrs) {
-      var blocks = text.split(/\n\n/);
-      var tagOpen = openContainer(rootTag, rootAttrs);
-      var tagClose = '</' + rootTag + '>';
-      var paragraphs = global$5.map(blocks, function (p) {
-        return p.split(/\n/).join('<br />');
-      });
-      var stitch = function (p) {
-        return tagOpen + p + tagClose;
-      };
-      return paragraphs.length === 1 ? paragraphs[0] : global$5.map(paragraphs, stitch).join('');
-    };
-    var convert = function (text, rootTag, rootAttrs) {
-      return rootTag ? toBlockElements(text, rootTag === true ? 'p' : rootTag, rootAttrs) : toBRs(text);
-    };
-
-    var global$7 = tinymce.util.Tools.resolve('tinymce.html.DomParser');
-
-    var global$8 = tinymce.util.Tools.resolve('tinymce.html.Serializer');
 
     var nbsp = '\xA0';
 
-    var global$9 = tinymce.util.Tools.resolve('tinymce.html.Node');
-
-    var global$a = tinymce.util.Tools.resolve('tinymce.html.Schema');
-
     function filter$1(content, items) {
-      global$5.each(items, function (v) {
+      global$4.each(items, function (v) {
         if (v.constructor === RegExp) {
           content = content.replace(v, '');
         } else {
@@ -428,7 +1104,7 @@
       var domParser = global$7({}, schema);
       var text = '';
       var shortEndedElements = schema.getShortEndedElements();
-      var ignoreElements = global$5.makeMap('script noscript style textarea video audio iframe object', ' ');
+      var ignoreElements = global$4.makeMap('script noscript style textarea video audio iframe object', ' ');
       var blockElements = schema.getBlockElements();
       function walk(node) {
         var name = node.name, currentNode = node;
@@ -492,13 +1168,23 @@
         return prefix + count++;
       };
     }
+    var isMsEdge = function () {
+      return domGlobals.navigator.userAgent.indexOf(' Edge/') !== -1;
+    };
+    var Utils = {
+      filter: filter$1,
+      innerText: innerText,
+      trimHtml: trimHtml,
+      createIdGenerator: createIdGenerator,
+      isMsEdge: isMsEdge
+    };
 
     function isWordContent(content) {
       return /<font face="Times New Roman"|class="?Mso|style="[^"]*\bmso-|style='[^'']*\bmso-|w:WordDocument/i.test(content) || /class="OutlineElement/.test(content) || /id="?docs\-internal\-guid\-/.test(content);
     }
     function isNumericList(text) {
-      var found;
-      var patterns = [
+      var found, patterns;
+      patterns = [
         /^[IVXLMCD]{1,2}\.[ \u00a0]/,
         /^[ivxlmcd]{1,2}\.[ \u00a0]/,
         /^[a-z]{1,2}[\.\)][ \u00a0]/,
@@ -508,7 +1194,7 @@
         /^[\u58f1\u5f10\u53c2\u56db\u4f0d\u516d\u4e03\u516b\u4e5d\u62fe]+\.[ \u00a0]/
       ];
       text = text.replace(/^[\u00a0 ]+/, '');
-      global$5.each(patterns, function (pattern) {
+      global$4.each(patterns, function (pattern) {
         if (pattern.test(text)) {
           found = true;
           return false;
@@ -634,7 +1320,7 @@
     function filterStyles(editor, validStyles, node, styleValue) {
       var outputStyles = {}, matches;
       var styles = editor.dom.parseStyle(styleValue);
-      global$5.each(styles, function (value, name) {
+      global$4.each(styles, function (value, name) {
         switch (name) {
         case 'mso-list':
           matches = /\w+ \w+([0-9]+)/i.exec(styleValue);
@@ -680,7 +1366,7 @@
         if (name.indexOf('mso-') === 0) {
           return;
         }
-        if (getRetainStyleProps(editor) === 'all' || validStyles && validStyles[name]) {
+        if (Settings.getRetainStyleProps(editor) === 'all' || validStyles && validStyles[name]) {
           outputStyles[name] = value;
         }
       });
@@ -699,12 +1385,12 @@
       return null;
     }
     var filterWordContent = function (editor, content) {
-      var validStyles;
-      var retainStyleProperties = getRetainStyleProps(editor);
+      var retainStyleProperties, validStyles;
+      retainStyleProperties = Settings.getRetainStyleProps(editor);
       if (retainStyleProperties) {
-        validStyles = global$5.makeMap(retainStyleProperties.split(/[, ]/));
+        validStyles = global$4.makeMap(retainStyleProperties.split(/[, ]/));
       }
-      content = filter$1(content, [
+      content = Utils.filter(content, [
         /<br class="?Apple-interchange-newline"?>/gi,
         /<b[^>]+id="?docs-internal-[^>]*>/gi,
         /<!--[\s\S]+?-->/gi,
@@ -724,12 +1410,12 @@
           }
         ]
       ]);
-      var validElements = getWordValidElements(editor);
+      var validElements = Settings.getWordValidElements(editor);
       var schema = global$a({
         valid_elements: validElements,
         valid_children: '-li[p]'
       });
-      global$5.each(schema.elements, function (rule) {
+      global$4.each(schema.elements, function (rule) {
         if (!rule.attributes.class) {
           rule.attributes.class = {};
           rule.attributesOrder.push('class');
@@ -798,20 +1484,24 @@
         }
       });
       var rootNode = domParser.parse(content);
-      if (shouldConvertWordFakeLists(editor)) {
+      if (Settings.shouldConvertWordFakeLists(editor)) {
         convertFakeListsToProperLists(rootNode);
       }
-      content = global$8({ validate: getValidate(editor) }, schema).serialize(rootNode);
+      content = global$8({ validate: editor.settings.validate }, schema).serialize(rootNode);
       return content;
     };
     var preProcess = function (editor, content) {
-      return shouldUseDefaultFilters(editor) ? filterWordContent(editor, content) : content;
+      return Settings.shouldUseDefaultFilters(editor) ? filterWordContent(editor, content) : content;
+    };
+    var WordFilter = {
+      preProcess: preProcess,
+      isWordContent: isWordContent
     };
 
     var preProcess$1 = function (editor, html) {
       var parser = global$7({}, editor.schema);
       parser.addNodeFilter('meta', function (nodes) {
-        global$5.each(nodes, function (node) {
+        global$4.each(nodes, function (node) {
           return node.remove();
         });
       });
@@ -819,7 +1509,7 @@
         forced_root_block: false,
         isRootContent: true
       });
-      return global$8({ validate: getValidate(editor) }, editor.schema).serialize(fragment);
+      return global$8({ validate: editor.settings.validate }, editor.schema).serialize(fragment);
     };
     var processResult = function (content, cancelled) {
       return {
@@ -829,11 +1519,11 @@
     };
     var postProcessFilter = function (editor, html, internal, isWordHtml) {
       var tempBody = editor.dom.create('div', { style: 'display:none' }, html);
-      var postProcessArgs = firePastePostProcess(editor, tempBody, internal, isWordHtml);
+      var postProcessArgs = Events.firePastePostProcess(editor, tempBody, internal, isWordHtml);
       return processResult(postProcessArgs.node.innerHTML, postProcessArgs.isDefaultPrevented());
     };
     var filterContent = function (editor, content, internal, isWordHtml) {
-      var preProcessArgs = firePastePreProcess(editor, content, internal, isWordHtml);
+      var preProcessArgs = Events.firePastePreProcess(editor, content, internal, isWordHtml);
       var filteredContent = preProcess$1(editor, preProcessArgs.content);
       if (editor.hasEventListeners('PastePostProcess') && !preProcessArgs.isDefaultPrevented()) {
         return postProcessFilter(editor, filteredContent, internal, isWordHtml);
@@ -842,14 +1532,15 @@
       }
     };
     var process = function (editor, html, internal) {
-      var isWordHtml = isWordContent(html);
-      var content = isWordHtml ? preProcess(editor, html) : html;
+      var isWordHtml = WordFilter.isWordContent(html);
+      var content = isWordHtml ? WordFilter.preProcess(editor, html) : html;
       return filterContent(editor, content, internal, isWordHtml);
     };
+    var ProcessFilters = { process: process };
 
     var pasteHtml = function (editor, html) {
       editor.insertContent(html, {
-        merge: shouldMergeFormats(editor),
+        merge: Settings.shouldMergeFormats(editor),
         paste: true
       });
       return true;
@@ -883,7 +1574,7 @@
       return isImageUrl(html) ? createImage(editor, html, pasteHtmlFn) : false;
     };
     var smartInsertContent = function (editor, html) {
-      global$5.each([
+      global$4.each([
         linkSelection,
         insertImage,
         pasteHtml
@@ -892,15 +1583,16 @@
       });
     };
     var insertContent = function (editor, html, pasteAsText) {
-      if (pasteAsText || isSmartPasteEnabled(editor) === false) {
+      if (pasteAsText || Settings.isSmartPasteEnabled(editor) === false) {
         pasteHtml(editor, html);
       } else {
         smartInsertContent(editor, html);
       }
     };
-
-    var repeat = function (s, count) {
-      return count <= 0 ? '' : new Array(count + 1).join(s);
+    var SmartPaste = {
+      isImageUrl: isImageUrl,
+      isAbsoluteUrl: isAbsoluteUrl,
+      insertContent: insertContent
     };
 
     var isCollapsibleWhitespace = function (c) {
@@ -912,12 +1604,10 @@
     var isNewline = function (text, idx) {
       return idx < text.length && idx >= 0 ? isNewLineChar(text[idx]) : false;
     };
-    var normalizeWhitespace = function (editor, text) {
-      var tabSpace = repeat(' ', getTabSpaces(editor));
-      var normalizedText = text.replace(/\t/g, tabSpace);
-      var result = foldl(normalizedText, function (acc, c) {
+    var normalizeWhitespace = function (text) {
+      var result = foldl(text, function (acc, c) {
         if (isCollapsibleWhitespace(c) || c === nbsp) {
-          if (acc.pcIsSpace || acc.str === '' || acc.str.length === normalizedText.length - 1 || isNewline(normalizedText, acc.str.length + 1)) {
+          if (acc.pcIsSpace || acc.str === '' || acc.str.length === text.length - 1 || isNewline(text, acc.str.length + 1)) {
             return {
               pcIsSpace: false,
               str: acc.str + nbsp
@@ -942,19 +1632,19 @@
     };
 
     var doPaste = function (editor, content, internal, pasteAsText) {
-      var args = process(editor, content, internal);
+      var args = ProcessFilters.process(editor, content, internal);
       if (args.cancelled === false) {
-        insertContent(editor, args.content, pasteAsText);
+        SmartPaste.insertContent(editor, args.content, pasteAsText);
       }
     };
     var pasteHtml$1 = function (editor, html, internalFlag) {
-      var internal = internalFlag ? internalFlag : isMarked(html);
-      doPaste(editor, unmark(html), internal, false);
+      var internal = internalFlag ? internalFlag : InternalHtml.isMarked(html);
+      doPaste(editor, InternalHtml.unmark(html), internal, false);
     };
     var pasteText = function (editor, text) {
       var encodedText = editor.dom.encode(text).replace(/\r\n/g, '\n');
-      var normalizedText = normalizeWhitespace(editor, encodedText);
-      var html = convert(normalizedText, getForcedRootBlock(editor), getForcedRootBlockAttrs(editor));
+      var normalizedText = normalizeWhitespace(encodedText);
+      var html = Newlines.convert(normalizedText, editor.settings.forced_root_block, editor.settings.forced_root_block_attrs);
       doPaste(editor, html, false, true);
     };
     var getDataTransferItems = function (dataTransfer) {
@@ -983,7 +1673,8 @@
       return items;
     };
     var getClipboardContent = function (editor, clipboardEvent) {
-      return getDataTransferItems(clipboardEvent.clipboardData || editor.getDoc().dataTransfer);
+      var content = getDataTransferItems(clipboardEvent.clipboardData || editor.getDoc().dataTransfer);
+      return Utils.isMsEdge() ? global$4.extend(content, { 'text/html': '' }) : content;
     };
     var hasContentType = function (clipboardContent, mimeType) {
       return mimeType in clipboardContent && clipboardContent[mimeType].length > 0;
@@ -991,39 +1682,34 @@
     var hasHtmlOrText = function (content) {
       return hasContentType(content, 'text/html') || hasContentType(content, 'text/plain');
     };
-    var parseDataUri = function (uri) {
-      var matches = /data:([^;]+);base64,([a-z0-9\+\/=]+)/i.exec(uri);
-      if (matches) {
-        return {
-          type: matches[1],
-          data: decodeURIComponent(matches[2])
-        };
-      } else {
-        return {
-          type: null,
-          data: null
-        };
+    var getBase64FromUri = function (uri) {
+      var idx;
+      idx = uri.indexOf(',');
+      if (idx !== -1) {
+        return uri.substr(idx + 1);
       }
+      return null;
     };
-    var isValidDataUriImage = function (editor, imgElm) {
-      var filter = getImagesDataImgFilter(editor);
-      return filter ? filter(imgElm) : true;
+    var isValidDataUriImage = function (settings, imgElm) {
+      return settings.images_dataimg_filter ? settings.images_dataimg_filter(imgElm) : true;
     };
     var extractFilename = function (editor, str) {
       var m = str.match(/([\s\S]+?)\.(?:jpeg|jpg|png|gif)$/i);
       return m ? editor.dom.encode(m[1]) : null;
     };
-    var uniqueId = createIdGenerator('mceclip');
+    var uniqueId = Utils.createIdGenerator('mceclip');
     var pasteImage = function (editor, imageItem) {
-      var _a = parseDataUri(imageItem.uri), base64 = _a.data, type = _a.type;
+      var base64 = getBase64FromUri(imageItem.uri);
       var id = uniqueId();
-      var name = getImagesReuseFilename(editor) && imageItem.blob.name ? extractFilename(editor, imageItem.blob.name) : id;
+      var name = editor.settings.images_reuse_filename && imageItem.blob.name ? extractFilename(editor, imageItem.blob.name) : id;
       var img = new domGlobals.Image();
       img.src = imageItem.uri;
-      if (isValidDataUriImage(editor, img)) {
+      if (isValidDataUriImage(editor.settings, img)) {
         var blobCache = editor.editorUpload.blobCache;
-        var blobInfo = void 0;
-        var existingBlobInfo = blobCache.getByData(base64, type);
+        var blobInfo = void 0, existingBlobInfo = void 0;
+        existingBlobInfo = blobCache.findFirst(function (cachedBlobInfo) {
+          return cachedBlobInfo.base64() === base64;
+        });
         if (!existingBlobInfo) {
           blobInfo = blobCache.create(id, imageItem.blob, base64, name);
           blobCache.add(blobInfo);
@@ -1039,8 +1725,8 @@
       return event.type === 'paste';
     };
     var readBlobsAsDataUris = function (items) {
-      return global$3.all(map(items, function (item) {
-        return new global$3(function (resolve) {
+      return traverse(items, function (item) {
+        return Future.nu(function (resolve) {
           var blob = item.getAsFile ? item.getAsFile() : item;
           var reader = new window.FileReader();
           reader.onload = function () {
@@ -1051,7 +1737,7 @@
           };
           reader.readAsDataURL(blob);
         });
-      }));
+      });
     };
     var getImagesFromDataTransfer = function (dataTransfer) {
       var items = dataTransfer.items ? map(from$1(dataTransfer.items), function (item) {
@@ -1065,11 +1751,11 @@
     };
     var pasteImageData = function (editor, e, rng) {
       var dataTransfer = isClipboardEvent(e) ? e.clipboardData : e.dataTransfer;
-      if (getPasteDataImages(editor) && dataTransfer) {
+      if (editor.settings.paste_data_images && dataTransfer) {
         var images = getImagesFromDataTransfer(dataTransfer);
         if (images.length > 0) {
           e.preventDefault();
-          readBlobsAsDataUris(images).then(function (blobResults) {
+          readBlobsAsDataUris(images).get(function (blobResults) {
             if (rng) {
               editor.selection.setRng(rng);
             }
@@ -1087,7 +1773,7 @@
       return domGlobals.navigator.userAgent.indexOf('Android') !== -1 && clipboardData && clipboardData.items && clipboardData.items.length === 0;
     };
     var isKeyboardPasteEvent = function (e) {
-      return global$4.metaKeyPressed(e) && e.keyCode === 86 || e.shiftKey && e.keyCode === 45;
+      return global$5.metaKeyPressed(e) && e.keyCode === 86 || e.shiftKey && e.keyCode === 45;
     };
     var registerEventHandlers = function (editor, pasteBin, pasteFormat) {
       var keyboardPasteEvent = value();
@@ -1100,7 +1786,7 @@
         }
         if (isKeyboardPasteEvent(e) && !e.isDefaultPrevented()) {
           keyboardPastePlainTextState = e.shiftKey && e.keyCode === 86;
-          if (keyboardPastePlainTextState && global$1.webkit && domGlobals.navigator.userAgent.indexOf('Version/') !== -1) {
+          if (keyboardPastePlainTextState && global$2.webkit && domGlobals.navigator.userAgent.indexOf('Version/') !== -1) {
             return;
           }
           e.stopImmediatePropagation();
@@ -1108,9 +1794,9 @@
           window.setTimeout(function () {
             keyboardPasteEvent.clear();
           }, 100);
-          if (global$1.ie && keyboardPastePlainTextState) {
+          if (global$2.ie && keyboardPastePlainTextState) {
             e.preventDefault();
-            firePaste(editor, true);
+            Events.firePaste(editor, true);
             return;
           }
           pasteBin.remove();
@@ -1122,20 +1808,20 @@
         }
       });
       function insertClipboardContent(clipboardContent, isKeyBoardPaste, plainTextMode, internal) {
-        var content;
+        var content, isPlainTextHtml, isImage;
         if (hasContentType(clipboardContent, 'text/html')) {
           content = clipboardContent['text/html'];
         } else {
           content = pasteBin.getHtml();
-          internal = internal ? internal : isMarked(content);
+          internal = internal ? internal : InternalHtml.isMarked(content);
           if (pasteBin.isDefaultContent(content)) {
             plainTextMode = true;
           }
         }
-        content = trimHtml(content);
+        content = Utils.trimHtml(content);
         pasteBin.remove();
-        var isPlainTextHtml = internal === false && isPlainText(content);
-        var isImage = isImageUrl(content);
+        isPlainTextHtml = internal === false && Newlines.isPlainText(content);
+        isImage = SmartPaste.isImageUrl(content);
         if (!content.length || isPlainTextHtml && !isImage) {
           plainTextMode = true;
         }
@@ -1143,7 +1829,7 @@
           if (hasContentType(clipboardContent, 'text/plain') && isPlainTextHtml) {
             content = clipboardContent['text/plain'];
           } else {
-            content = innerText(content);
+            content = Utils.innerText(content);
           }
         }
         if (pasteBin.isDefaultContent(content)) {
@@ -1165,7 +1851,7 @@
         var isKeyBoardPaste = keyboardPasteEvent.isSet();
         var clipboardContent = getClipboardContent(editor, e);
         var plainTextMode = pasteFormat.get() === 'text' || keyboardPastePlainTextState;
-        var internal = hasContentType(clipboardContent, internalHtmlMime());
+        var internal = hasContentType(clipboardContent, InternalHtml.internalHtmlMime());
         keyboardPastePlainTextState = false;
         if (e.isDefaultPrevented() || isBrokenAndroidClipboardEvent(e)) {
           pasteBin.remove();
@@ -1178,7 +1864,7 @@
         if (!isKeyBoardPaste) {
           e.preventDefault();
         }
-        if (global$1.ie && (!isKeyBoardPaste || e.ieFake) && !hasContentType(clipboardContent, 'text/html')) {
+        if (global$2.ie && (!isKeyBoardPaste || e.ieFake) && !hasContentType(clipboardContent, 'text/html')) {
           pasteBin.create();
           editor.dom.bind(pasteBin.getEl(), 'paste', function (e) {
             e.stopPropagation();
@@ -1189,11 +1875,11 @@
         if (hasContentType(clipboardContent, 'text/html')) {
           e.preventDefault();
           if (!internal) {
-            internal = isMarked(clipboardContent['text/html']);
+            internal = InternalHtml.isMarked(clipboardContent['text/html']);
           }
           insertClipboardContent(clipboardContent, isKeyBoardPaste, plainTextMode, internal);
         } else {
-          global$2.setEditorTimeout(editor, function () {
+          global$3.setEditorTimeout(editor, function () {
             insertClipboardContent(clipboardContent, isKeyBoardPaste, plainTextMode, internal);
           }, 0);
         }
@@ -1207,7 +1893,7 @@
           return args.data && args.data.paste === true;
         };
         var remove = function (node) {
-          if (!node.attr('data-mce-object') && src !== global$1.transparentSrc) {
+          if (!node.attr('data-mce-object') && src !== global$2.transparentSrc) {
             node.remove();
           }
         };
@@ -1217,7 +1903,7 @@
         var isDataUri = function (src) {
           return src.indexOf('data:') === 0;
         };
-        if (!getPasteDataImages(editor) && isPasteInsert(args)) {
+        if (!editor.settings.paste_data_images && isPasteInsert(args)) {
           var i = nodes.length;
           while (i--) {
             src = nodes[i].attr('src');
@@ -1226,7 +1912,7 @@
             }
             if (isWebKitFakeUrl(src)) {
               remove(nodes[i]);
-            } else if (!getAllowHtmlDataUrls(editor) && isDataUri(src)) {
+            } else if (!editor.settings.allow_html_data_urls && isDataUri(src)) {
               remove(nodes[i]);
             }
           }
@@ -1235,14 +1921,14 @@
     };
 
     var getPasteBinParent = function (editor) {
-      return global$1.ie && editor.inline ? domGlobals.document.body : editor.getBody();
+      return global$2.ie && editor.inline ? domGlobals.document.body : editor.getBody();
     };
     var isExternalPasteBin = function (editor) {
       return getPasteBinParent(editor) !== editor.getBody();
     };
     var delegatePasteEvents = function (editor, pasteBinElm, pasteBinDefaultContent) {
       if (isExternalPasteBin(editor)) {
-        editor.dom.bind(pasteBinElm, 'paste keyup', function (_e) {
+        editor.dom.bind(pasteBinElm, 'paste keyup', function (e) {
           if (!isDefault(editor, pasteBinDefaultContent)) {
             editor.fire('paste');
           }
@@ -1251,15 +1937,16 @@
     };
     var create = function (editor, lastRngCell, pasteBinDefaultContent) {
       var dom = editor.dom, body = editor.getBody();
+      var pasteBinElm;
       lastRngCell.set(editor.selection.getRng());
-      var pasteBinElm = editor.dom.add(getPasteBinParent(editor), 'div', {
+      pasteBinElm = editor.dom.add(getPasteBinParent(editor), 'div', {
         'id': 'mcepastebin',
         'class': 'mce-pastebin',
         'contentEditable': true,
         'data-mce-bogus': 'all',
         'style': 'position: fixed; top: 50%; width: 10px; height: 10px; overflow: hidden; opacity: 0'
       }, pasteBinDefaultContent);
-      if (global$1.ie || global$1.gecko) {
+      if (global$2.ie || global$2.gecko) {
         dom.setStyle(pasteBinElm, 'left', dom.getStyle(body, 'direction', true) === 'rtl' ? 65535 : -65535);
       }
       dom.bind(pasteBinElm, 'beforedeactivate focusin focusout', function (e) {
@@ -1287,20 +1974,21 @@
       return editor.dom.get('mcepastebin');
     };
     var getHtml = function (editor) {
+      var pasteBinElm, pasteBinClones, i, dirtyWrappers, cleanWrapper;
       var copyAndRemove = function (toElm, fromElm) {
         toElm.appendChild(fromElm);
         editor.dom.remove(fromElm, true);
       };
-      var pasteBinClones = global$5.grep(getPasteBinParent(editor).childNodes, function (elm) {
+      pasteBinClones = global$4.grep(getPasteBinParent(editor).childNodes, function (elm) {
         return elm.id === 'mcepastebin';
       });
-      var pasteBinElm = pasteBinClones.shift();
-      global$5.each(pasteBinClones, function (pasteBinClone) {
+      pasteBinElm = pasteBinClones.shift();
+      global$4.each(pasteBinClones, function (pasteBinClone) {
         copyAndRemove(pasteBinElm, pasteBinClone);
       });
-      var dirtyWrappers = editor.dom.select('div[id=mcepastebin]', pasteBinElm);
-      for (var i = dirtyWrappers.length - 1; i >= 0; i--) {
-        var cleanWrapper = editor.dom.create('div');
+      dirtyWrappers = editor.dom.select('div[id=mcepastebin]', pasteBinElm);
+      for (i = dirtyWrappers.length - 1; i >= 0; i--) {
+        cleanWrapper = editor.dom.create('div');
         pasteBinElm.insertBefore(cleanWrapper, dirtyWrappers[i]);
         copyAndRemove(cleanWrapper, dirtyWrappers[i]);
       }
@@ -1370,7 +2058,7 @@
     };
 
     var hasWorkingClipboardApi = function (clipboardData) {
-      return global$1.iOS === false && typeof (clipboardData === null || clipboardData === void 0 ? void 0 : clipboardData.setData) === 'function';
+      return global$2.iOS === false && clipboardData !== undefined && typeof clipboardData.setData === 'function' && Utils.isMsEdge() !== true;
     };
     var setHtml5Clipboard = function (clipboardData, html, text) {
       if (hasWorkingClipboardApi(clipboardData)) {
@@ -1378,7 +2066,7 @@
           clipboardData.clearData();
           clipboardData.setData('text/html', html);
           clipboardData.setData('text/plain', text);
-          clipboardData.setData(internalHtmlMime(), html);
+          clipboardData.setData(InternalHtml.internalHtmlMime(), html);
           return true;
         } catch (e) {
           return false;
@@ -1397,7 +2085,7 @@
     };
     var fallback = function (editor) {
       return function (html, done) {
-        var markedHtml = mark(html);
+        var markedHtml = InternalHtml.mark(html);
         var outer = editor.dom.create('div', {
           'contenteditable': 'false',
           'data-mce-bogus': 'all'
@@ -1417,7 +2105,7 @@
         var offscreenRange = editor.dom.createRng();
         offscreenRange.selectNodeContents(inner);
         editor.selection.setRng(offscreenRange);
-        global$2.setTimeout(function () {
+        global$3.setTimeout(function () {
           editor.selection.setRng(range);
           outer.parentNode.removeChild(outer);
           done();
@@ -1440,9 +2128,9 @@
       return function (evt) {
         if (hasSelectedContent(editor)) {
           setClipboardData(evt, getData(editor), fallback(editor), function () {
-            if (global$1.browser.isChrome()) {
+            if (global$2.browser.isChrome()) {
               var rng_1 = editor.selection.getRng();
-              global$2.setEditorTimeout(editor, function () {
+              global$3.setEditorTimeout(editor, function () {
                 editor.selection.setRng(rng_1);
                 editor.execCommand('Delete');
               }, 0);
@@ -1465,6 +2153,7 @@
       editor.on('cut', cut(editor));
       editor.on('copy', copy(editor));
     };
+    var CutCopy = { register: register$1 };
 
     var global$b = tinymce.util.Tools.resolve('tinymce.dom.RangeUtils');
 
@@ -1480,13 +2169,13 @@
       editor.selection.setRng(rng);
     };
     var setup = function (editor, clipboard, draggingInternallyState) {
-      if (shouldBlockDrop(editor)) {
+      if (Settings.shouldBlockDrop(editor)) {
         editor.on('dragend dragover draggesture dragdrop drop drag', function (e) {
           e.preventDefault();
           e.stopPropagation();
         });
       }
-      if (!shouldPasteDataImages(editor)) {
+      if (!Settings.shouldPasteDataImages(editor)) {
         editor.on('drop', function (e) {
           var dataTransfer = e.dataTransfer;
           if (dataTransfer && dataTransfer.files && dataTransfer.files.length > 0) {
@@ -1495,26 +2184,27 @@
         });
       }
       editor.on('drop', function (e) {
-        var rng = getCaretRangeFromEvent(editor, e);
+        var dropContent, rng;
+        rng = getCaretRangeFromEvent(editor, e);
         if (e.isDefaultPrevented() || draggingInternallyState.get()) {
           return;
         }
-        var dropContent = clipboard.getDataTransferItems(e.dataTransfer);
-        var internal = clipboard.hasContentType(dropContent, internalHtmlMime());
+        dropContent = clipboard.getDataTransferItems(e.dataTransfer);
+        var internal = clipboard.hasContentType(dropContent, InternalHtml.internalHtmlMime());
         if ((!clipboard.hasHtmlOrText(dropContent) || isPlainTextFileUrl(dropContent)) && clipboard.pasteImageData(e, rng)) {
           return;
         }
-        if (rng && shouldFilterDrop(editor)) {
+        if (rng && Settings.shouldFilterDrop(editor)) {
           var content_1 = dropContent['mce-internal'] || dropContent['text/html'] || dropContent['text/plain'];
           if (content_1) {
             e.preventDefault();
-            global$2.setEditorTimeout(editor, function () {
+            global$3.setEditorTimeout(editor, function () {
               editor.undoManager.transact(function () {
                 if (dropContent['mce-internal']) {
                   editor.execCommand('Delete');
                 }
                 setFocusedRange(editor, rng);
-                content_1 = trimHtml(content_1);
+                content_1 = Utils.trimHtml(content_1);
                 if (!dropContent['text/html']) {
                   clipboard.pasteText(content_1);
                 } else {
@@ -1525,11 +2215,11 @@
           }
         }
       });
-      editor.on('dragstart', function (_e) {
+      editor.on('dragstart', function (e) {
         draggingInternallyState.set(true);
       });
       editor.on('dragover dragend', function (e) {
-        if (shouldPasteDataImages(editor) && draggingInternallyState.get() === false) {
+        if (Settings.shouldPasteDataImages(editor) && draggingInternallyState.get() === false) {
           e.preventDefault();
           setFocusedRange(editor, getCaretRangeFromEvent(editor, e));
         }
@@ -1538,22 +2228,24 @@
         }
       });
     };
+    var DragDrop = { setup: setup };
 
     var setup$1 = function (editor) {
       var plugin = editor.plugins.paste;
-      var preProcess = getPreProcess(editor);
+      var preProcess = Settings.getPreProcess(editor);
       if (preProcess) {
         editor.on('PastePreProcess', function (e) {
           preProcess.call(plugin, plugin, e);
         });
       }
-      var postProcess = getPostProcess(editor);
+      var postProcess = Settings.getPostProcess(editor);
       if (postProcess) {
         editor.on('PastePostProcess', function (e) {
           postProcess.call(plugin, plugin, e);
         });
       }
     };
+    var PrePostProcess = { setup: setup$1 };
 
     function addPreProcessFilter(editor, filterFunc) {
       editor.on('PastePreProcess', function (e) {
@@ -1566,19 +2258,19 @@
       });
     }
     function removeExplorerBrElementsAfterBlocks(editor, html) {
-      if (!isWordContent(html)) {
+      if (!WordFilter.isWordContent(html)) {
         return html;
       }
       var blockElements = [];
-      global$5.each(editor.schema.getBlockElements(), function (block, blockName) {
+      global$4.each(editor.schema.getBlockElements(), function (block, blockName) {
         blockElements.push(blockName);
       });
       var explorerBlocksRegExp = new RegExp('(?:<br>&nbsp;[\\s\\r\\n]+|<br>)*(<\\/?(' + blockElements.join('|') + ')[^>]*>)(?:<br>&nbsp;[\\s\\r\\n]+|<br>)*', 'g');
-      html = filter$1(html, [[
+      html = Utils.filter(html, [[
           explorerBlocksRegExp,
           '$1'
         ]]);
-      html = filter$1(html, [
+      html = Utils.filter(html, [
         [
           /<br><br>/g,
           '<BR><BR>'
@@ -1598,9 +2290,9 @@
       if (isWordHtml || internal) {
         return content;
       }
-      var webKitStylesSetting = getWebkitStyles(editor);
+      var webKitStylesSetting = Settings.getWebkitStyles(editor);
       var webKitStyles;
-      if (shouldRemoveWebKitStyles(editor) === false || webKitStylesSetting === 'all') {
+      if (Settings.shouldRemoveWebKitStyles(editor) === false || webKitStylesSetting === 'all') {
         return content;
       }
       if (webKitStylesSetting) {
@@ -1644,14 +2336,15 @@
       });
     }
     var setup$2 = function (editor) {
-      if (global$1.webkit) {
+      if (global$2.webkit) {
         addPreProcessFilter(editor, removeWebKitStyles);
       }
-      if (global$1.ie) {
+      if (global$2.ie) {
         addPreProcessFilter(editor, removeExplorerBrElementsAfterBlocks);
         addPostProcessFilter(editor, removeUnderlineAndFontInAnchor);
       }
     };
+    var Quirks = { setup: setup$2 };
 
     var makeSetupHandler = function (editor, clipboard) {
       return function (api) {
@@ -1677,27 +2370,27 @@
       });
       editor.ui.registry.addToggleMenuItem('pastetext', {
         text: 'Paste as text',
-        icon: 'paste-text',
         onAction: function () {
           return editor.execCommand('mceTogglePlainTextPaste');
         },
         onSetup: makeSetupHandler(editor, clipboard)
       });
     };
+    var Buttons = { register: register$2 };
 
     function Plugin () {
-      global.add('paste', function (editor) {
-        if (hasProPlugin(editor) === false) {
+      global$1.add('paste', function (editor) {
+        if (DetectProPlugin.hasProPlugin(editor) === false) {
           var draggingInternallyState = Cell(false);
-          var pasteFormat = Cell(isPasteAsTextEnabled(editor) ? 'text' : 'html');
+          var pasteFormat = Cell(Settings.isPasteAsTextEnabled(editor) ? 'text' : 'html');
           var clipboard = Clipboard(editor, pasteFormat);
-          var quirks = setup$2(editor);
-          register$2(editor, clipboard);
-          register(editor, clipboard);
-          setup$1(editor);
-          register$1(editor);
-          setup(editor, clipboard, draggingInternallyState);
-          return get(clipboard, quirks);
+          var quirks = Quirks.setup(editor);
+          Buttons.register(editor, clipboard);
+          Commands.register(editor, clipboard);
+          PrePostProcess.setup(editor);
+          CutCopy.register(editor);
+          DragDrop.setup(editor, clipboard, draggingInternallyState);
+          return Api.get(clipboard, quirks);
         }
       });
     }

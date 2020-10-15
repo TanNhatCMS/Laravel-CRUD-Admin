@@ -26,6 +26,12 @@ trait UpdateOperation
             'uses'      => $controller.'@update',
             'operation' => 'update',
         ]);
+
+        Route::get($segment.'/{id}/translate/{lang}', [
+            'as'        => $routeName.'.translateItem',
+            'uses'      => $controller.'@translateItem',
+            'operation' => 'update',
+        ]);
     }
 
     /**

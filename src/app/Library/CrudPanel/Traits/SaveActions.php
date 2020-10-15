@@ -24,19 +24,18 @@ trait SaveActions
      */
     public function getFallBackSaveAction()
     {
-        //we get the higher order in save actions array. By default it would be `save_and_back`
+        //we get the higher order in save actions array. It will return something only when explicit by developer
         $higherAction = $this->getSaveActionByOrder(1);
 
-        //if there is an higher action and that action is not the backpack default higher one `save_and_back` we return it.
-        if (! empty($higherAction) && key($higherAction) !== 'save_and_back') {
-            return key($higherAction);
+        if (empty($higherAction)) {
+            if ($this->hasOperationSetting('defaultSaveAction')) {
+                return $this->getOperationSetting('defaultSaveAction');
+            }
+
+            return $this->getSaveActionDefaultForCurrentOperation();
         }
 
-        if ($this->hasOperationSetting('defaultSaveAction')) {
-            return $this->getOperationSetting('defaultSaveAction');
-        }
-
-        return $this->getSaveActionDefaultForCurrentOperation();
+        return key($higherAction);
     }
 
     /**
@@ -189,7 +188,7 @@ trait SaveActions
      */
     public function removeAllSaveActions()
     {
-        $this->setOperationSetting('save_actions', []);
+        $this->setOperationSettings('save_actions', []);
     }
 
     /**

@@ -10,26 +10,29 @@
 @endphp
 
 <span>
+
     @if($value && count($value))
+        @php
+            $lastKey = array_key_last($value);
+        @endphp
+
         @foreach($value as $key => $text)
             @php
                 $column['text'] = $text;
                 $related_key = $key;
             @endphp
+            @includeWhen(!empty($column['wrapper']), 'crud::columns.inc.wrapper_start')
+                @if($column['escaped'])
+                    {{ $column['text'] }}
+                @else
+                    {!! $column['text'] !!}
+                @endif
+            @includeWhen(!empty($column['wrapper']), 'crud::columns.inc.wrapper_end')
 
-            <span class="d-inline-flex">
-                @includeWhen(!empty($column['wrapper']), 'crud::columns.inc.wrapper_start')
-                    @if($column['escaped'])
-                        {{ $column['text'] }}
-                    @else
-                        {!! $column['text'] !!}
-                    @endif
-                @includeWhen(!empty($column['wrapper']), 'crud::columns.inc.wrapper_end')
-
-                @if(!$loop->last), @endif
-            </span>
+            @if($key != $lastKey), @endif
         @endforeach
     @else
         -
     @endif
+
 </span>

@@ -54,8 +54,7 @@
 	}
 
   /*  DataTables Loading State Visual Improvements  */
-	table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td.dtr-control:before, 
-	table.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>th.dtr-control:before,
+
 	#crudTable.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>td:first-child:before,
 	#crudTable.dataTable.dtr-inline.collapsed>tbody>tr[role="row"]>th:first-child:before {
 		background-color: transparent;
@@ -184,6 +183,7 @@
 	}
 
 	.dataTables_filter input {
+		margin-left: 0.5em;
 	    display: inline-block;
 	    width: auto;
 	    border-radius: 25px;
@@ -204,21 +204,11 @@
 		min-height: calc(100% - 98px);
 	}
 
-	@media(max-width: 576px) {
-		#datatable_search_stack {
-			margin-top: .5rem;
-		}
-
-		#datatable_search_stack label {
-			width: 100%;
-		}
-	
-		#datatable_search_stack input[type="search"] {
-			width: 100%;
-		}
+	#datatable_search_stack {
+		min-height: 35px;
 	}
 
-	#crudTable thead>tr>th, table.dataTable thead>tr>th {
+	#crudTable thead>tr>th, table.dataTable thead>tr>td {
 		padding-right: 30px;
 	}
 

@@ -13,18 +13,6 @@ namespace Backpack\CRUD\app\Library\CrudPanel;
  *
  * And if the developer uses CrudField as Field in their CrudController:
  * - Field::name('price')->type('number');
- *
- * @method self type(string $value)
- * @method self label(string $value)
- * @method self tab(string $value)
- * @method self prefix(string $value)
- * @method self suffix(string $value)
- * @method self default(mixed $value)
- * @method self hint(string $value)
- * @method self attributes(array $value)
- * @method self wrapper(array $value)
- * @method self fake(bool $value)
- * @method self store_in(string $value)
  */
 class CrudField
 {
@@ -44,7 +32,7 @@ class CrudField
             $this->setAttributeValue('name', $name);
         }
 
-        $this->save();
+        return $this->save();
     }
 
     public function crud()
@@ -56,7 +44,7 @@ class CrudField
      * Create a CrudField object with the parameter as its name.
      *
      * @param  string $name Name of the column in the db, or model attribute.
-     * @return CrudField
+     * @return CrudPanel
      */
     public static function name($name)
     {
@@ -117,7 +105,7 @@ class CrudField
     /**
      * Make the current field the first one in the fields list.
      *
-     * @return CrudField
+     * @return CrudPanel
      */
     public function makeFirst()
     {
@@ -130,7 +118,7 @@ class CrudField
     /**
      * Make the current field the last one in the fields list.
      *
-     * @return CrudField
+     * @return CrudPanel
      */
     public function makeLast()
     {
@@ -170,7 +158,7 @@ class CrudField
      * Set the value for a certain attribute on the CrudField object.
      *
      * @param string $attribute Name of the attribute.
-     * @param mixed $value     Value of that attribute.
+     * @param string $value     Value of that attribute.
      */
     private function setAttributeValue($attribute, $value)
     {

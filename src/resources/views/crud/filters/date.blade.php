@@ -1,7 +1,7 @@
 {{-- Date Range Backpack CRUD filter --}}
+
 <li filter-name="{{ $filter->name }}"
-    filter-type="{{ $filter->type }}"
-    filter-key="{{ $filter->key }}"
+	filter-type="{{ $filter->type }}"
 	class="nav-item dropdown {{ Request::get($filter->name)?'active':'' }}">
 	<a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ $filter->label }} <span class="caret"></span></a>
 	<div class="dropdown-menu p-0">
@@ -11,13 +11,13 @@
 		          <span class="input-group-text"><i class="la la-calendar"></i></span>
 		        </div>
 		        <input class="form-control pull-right"
-		        		id="datepicker-{{ $filter->key }}"
+		        		id="datepicker-{{ Str::slug($filter->name) }}"
 		        		type="text"
 						@if ($filter->currentValue)
 							value="{{ $filter->currentValue }}"
 						@endif
 		        		>
-		        <div class="input-group-append datepicker-{{ $filter->key }}-clear-button">
+		        <div class="input-group-append datepicker-{{ Str::slug($filter->name) }}-clear-button">
 		          <a class="input-group-text" href=""><i class="la la-times"></i></a>
 		        </div>
 		    </div>
@@ -50,7 +50,7 @@
 	<script src="{{ asset('packages/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
   <script>
 		jQuery(document).ready(function($) {
-			var dateInput = $('#datepicker-{{ $filter->key }}').datepicker({
+			var dateInput = $('#datepicker-{{ Str::slug($filter->name) }}').datepicker({
 				autoclose: true,
 				format: 'yyyy-mm-dd',
 				todayHighlight: true
@@ -64,6 +64,8 @@
 				} else {
 					var value = d.getFullYear() + "-" + ("0"+(d.getMonth()+1)).slice(-2) + "-" + ("0" + d.getDate()).slice(-2);
 				}
+
+				// console.log(value);
 
 				var parameter = '{{ $filter->name }}';
 
@@ -81,22 +83,22 @@
 
 				// mark this filter as active in the navbar-filters
 				if (URI(new_url).hasQuery('{{ $filter->name }}', true)) {
-					$('li[filter-key={{ $filter->key }}]').removeClass('active').addClass('active');
+					$('li[filter-name={{ $filter->name }}]').removeClass('active').addClass('active');
 				}
 			});
 
-			$('li[filter-key={{ $filter->key }}]').on('filter:clear', function(e) {
+			$('li[filter-name={{ Str::slug($filter->name) }}]').on('filter:clear', function(e) {
 				// console.log('date filter cleared');
-				$('li[filter-key={{ $filter->key }}]').removeClass('active');
-				$('#datepicker-{{ $filter->key }}').datepicker('update', '');
-				$('#datepicker-{{ $filter->key }}').trigger('changeDate');
+				$('li[filter-name={{ $filter->name }}]').removeClass('active');
+				$('#datepicker-{{ Str::slug($filter->name) }}').datepicker('update', '');
+				$('#datepicker-{{ Str::slug($filter->name) }}').trigger('changeDate');
 			});
 
 			// datepicker clear button
-			$(".datepicker-{{ $filter->key }}-clear-button").click(function(e) {
+			$(".datepicker-{{ Str::slug($filter->name) }}-clear-button").click(function(e) {
 				e.preventDefault();
 
-				$('li[filter-key={{ $filter->key }}]').trigger('filter:clear');
+				$('li[filter-name={{ Str::slug($filter->name) }}]').trigger('filter:clear');
 			})
 		});
   </script>

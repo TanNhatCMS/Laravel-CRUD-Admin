@@ -12,22 +12,23 @@
 
 <span>
     @if(count($attributes))
+        @php
+            $lastKey = array_key_last($attributes)
+        @endphp
+
         @foreach($attributes as $key => $text)
             @php
                 $related_key = $key;
             @endphp
 
-            <span class="d-inline-flex">
-                @includeWhen(!empty($column['wrapper']), 'crud::columns.inc.wrapper_start')
-                    @if($column['escaped'])
-                        {{ $text }}
-                    @else
-                        {!! $text !!}
-                    @endif
-                @includeWhen(!empty($column['wrapper']), 'crud::columns.inc.wrapper_end')
-
-                @if(!$loop->last), @endif
-            </span>
+            @includeWhen(!empty($column['wrapper']), 'crud::columns.inc.wrapper_start')
+                @if($column['escaped'])
+                    {{ $text }}
+                @else
+                    {!! $text !!}
+                @endif
+            @includeWhen(!empty($column['wrapper']), 'crud::columns.inc.wrapper_end')
+                @if($lastKey != $key), @endif
         @endforeach
     @else
         -

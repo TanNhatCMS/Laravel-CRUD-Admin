@@ -1,12 +1,11 @@
 name: Release Drafter
-uses: release-drafter/release-drafter@v5.11.0
 
 on:
   push:
     # branches to consider in the event; optional, defaults to all
     branches:
       - master
-      - 4.0
+      - 4.1
 
 jobs:
   update_release_draft:
@@ -37,7 +36,7 @@ categories:
       - 'dependencies'
   - title: '🧰 Removed'
     label: 'removed'
-change-template: '- $TITLE (#$NUMBER - thanks to @$AUTHOR)'
+change-template: '- $TITLE @$AUTHOR (#$NUMBER)'
 template: |
   ## Changes
 

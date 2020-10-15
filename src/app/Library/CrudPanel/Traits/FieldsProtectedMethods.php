@@ -177,7 +177,7 @@ trait FieldsProtectedMethods
         }
 
         // only 1-1 relationships are supported, if it's anything else, abort
-        if ($field['relation_type'] != 'HasOne') {
+        if ($field['relation_type'] != 'BelongsTo') {
             return $field;
         }
 

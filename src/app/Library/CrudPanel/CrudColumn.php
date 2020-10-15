@@ -13,18 +13,6 @@ namespace Backpack\CRUD\app\Library\CrudPanel;
  *
  * And if the developer uses CrudColumn as Column in their CrudController:
  * - Column::name('price')->type('number');
- *
- * @method self type(string $value)
- * @method self label(string $value)
- * @method self searchLogic(mixed $value)
- * @method self orderLogic(callable $value)
- * @method self orderable(bool $value)
- * @method self wrapper(array $value)
- * @method self visibleInTable(bool $value)
- * @method self visibleInModal(bool $value)
- * @method self visibleInExport(bool $value)
- * @method self visibleInShow(bool $value)
- * @method self priority(int $value)
  */
 class CrudColumn
 {
@@ -47,7 +35,7 @@ class CrudColumn
         // guess all attributes that weren't explicitly defined
         $this->attributes = $this->crud()->makeSureColumnHasNeededAttributes($this->attributes);
 
-        $this->save();
+        return $this->save();
     }
 
     public function crud()
@@ -74,6 +62,8 @@ class CrudColumn
     public function remove()
     {
         $this->crud()->removeColumn($this->attributes['name']);
+
+        return $this;
     }
 
     /**
@@ -182,7 +172,7 @@ class CrudColumn
      * Set the value for a certain attribute on the CrudColumn object.
      *
      * @param string $attribute Name of the attribute.
-     * @param mixed $value     Value of that attribute.
+     * @param string $value     Value of that attribute.
      */
     private function setAttributeValue($attribute, $value)
     {

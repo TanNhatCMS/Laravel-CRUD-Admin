@@ -5,9 +5,7 @@
 
     $column['escaped'] = $column['escaped'] ?? true;
     $column['limit'] = $column['limit'] ?? 40;
-    $column['prefix'] = $column['prefix'] ?? '';
-    $column['suffix'] = $column['suffix'] ?? '';
-    $column['text'] = $column['prefix'].Str::limit($value, $column['limit'], '[...]').$column['suffix'];
+    $column['text'] = Str::limit($value, $column['limit'], '[...]');
 @endphp
 
 <span>

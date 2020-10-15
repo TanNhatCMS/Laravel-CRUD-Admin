@@ -96,7 +96,7 @@
             extend: 'colvis',
             text: '<i class="la la-eye-slash"></i> {{ trans('backpack::crud.export.column_visibility') }}',
             columns: function ( idx, data, node ) {
-                return $(node).attr('data-visible-in-table') == 'false' && $(node).attr('data-can-be-visible-in-table') == 'true';
+                return  $(node).attr('data-visible-in-table') == 'false';
             },
             dropup: true
         }
@@ -111,10 +111,7 @@
         }
       })
       $(".dt-buttons").appendTo($('#datatable_button_stack' ));
-      $('.dt-buttons').addClass('d-xs-block')
-                      .addClass('d-sm-inline-block')
-                      .addClass('d-md-inline-block')
-                      .addClass('d-lg-inline-block');
+      $('.dt-buttons').css('display', 'inline-block');
     }
 
     crud.addFunctionToDataTablesDrawEventQueue('moveExportButtonsToTopRight');
