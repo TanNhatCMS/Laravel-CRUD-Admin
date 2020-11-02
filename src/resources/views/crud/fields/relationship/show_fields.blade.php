@@ -16,6 +16,8 @@
         this is the only available when rendering the modal html.
     -->
 @stack('crud_fields_scripts')
+@stack('before_scripts')
 
 @stack('crud_fields_styles')
+@stack('before_styles')
 

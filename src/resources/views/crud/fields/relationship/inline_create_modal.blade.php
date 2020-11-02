@@ -42,7 +42,7 @@
         </div>
         <div class="modal-footer">
         <button type="button" class="btn btn-secondary" id="cancelButton">{{trans('backpack::crud.cancel')}}</button>
-          <button type="button" class="btn btn-primary" id="saveButton">{{trans('backpack::crud.save')}}</button>
+          <button type="button" class="btn btn-primary save-block" id="saveButton">{{trans('backpack::crud.save')}}</button>
         </div>
       </div>
     </div>
