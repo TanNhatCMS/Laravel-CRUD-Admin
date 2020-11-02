@@ -139,7 +139,6 @@
             // this way we have a clean element we can clone when the user
             // wants to add a new group of inputs
             var field_group_clone = container.clone();
-            console.log(container);
             container.remove();
             element.parent().find('.add-repeatable-element-button').click(function(){
                 newRepeatableElement(container, field_group_clone);
