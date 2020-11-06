@@ -43,22 +43,21 @@
             </select>
         </div>
         <div class="col-sm-9">
-            {{-- external link input --}}
-            <div class="page_or_link_value external_link {{ $entryType === 'external_link' || (!$entry && !$field['allows_null']) ? '' : 'd-none' }}">
-                <input
-                    type="url"
+            {{-- page slug input --}}
+            <div class="page_or_link_value page_link {{ $entryType === 'page_link' || (!$entryType && !$field['allows_null']) ? '' : 'd-none' }}">
+                <select
                     class="form-control"
                     name="{!! $field['name'] !!}[link]"
-                    placeholder="{{ trans('backpack::crud.page_link_placeholder') }}"
-
-                    @if ($entryType !== 'external_link')
-                        disabled="disabled"
-                    @endif
-
-                    @if ($entryType === 'external_link' && $entryLink)
-                        value="{{ $entryLink }}"
-                    @endif
+                    required
                     >
+                    @foreach ($pages as $page)
+                        <option value="{{ $page->slug }}"
+                            @if ($page->slug === $entryLink)
+                                    selected
+                            @endif
+                        >{{ $page->name }}</option>
+                    @endforeach
+                </select>
             </div>
 
             {{-- internal link input --}}
@@ -68,6 +67,7 @@
                     class="form-control"
                     name="{!! $field['name'] !!}[link]"
                     placeholder="{{ trans('backpack::crud.internal_link_placeholder', ['url', url(config('backpack.base.route_prefix').'/page')]) }}"
+                    required
 
                     @if ($entryType !== 'internal_link')
                         disabled="disabled"
@@ -79,24 +79,23 @@
                     >
             </div>
 
-            {{-- page slug input --}}
-            <div class="page_or_link_value page_link {{ $entryType === 'page_link' ? '' : 'd-none' }}">
-                <select
+            {{-- external link input --}}
+            <div class="page_or_link_value external_link {{ $entryType === 'external_link' ? '' : 'd-none' }}">
+                <input
+                    type="url"
                     class="form-control"
                     name="{!! $field['name'] !!}[link]"
-                    >
-                    @if (!$pages)
-                        <option value="">-</option>
-                    @else
-                        @foreach ($pages as $page)
-                            <option value="{{ $page->slug }}"
-                                @if ($page->slug === $entryLink)
-                                     selected
-                                @endif
-                            >{{ $page->name }}</option>
-                        @endforeach
+                    placeholder="{{ trans('backpack::crud.page_link_placeholder') }}"
+                    required
+
+                    @if ($entryType !== 'external_link')
+                        disabled="disabled"
                     @endif
-                </select>
+
+                    @if ($entryType === 'external_link' && $entryLink)
+                        value="{{ $entryLink }}"
+                    @endif
+                    >
             </div>
         </div>
     </div>
