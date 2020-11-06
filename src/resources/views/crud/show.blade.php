@@ -121,25 +121,6 @@
     <script src="{{ asset('packages/backpack/crud/js/crud.js') }}"></script>
     <script src="{{ asset('packages/backpack/crud/js/show.js') }}"></script>
     <script>
-        function initializeFieldsWithJavascript(container) {
-            var selector;
-            if (container instanceof jQuery) {
-                selector = container;
-            } else {
-                selector = $(container);
-            }
-            selector.find("[data-init-function]").not("[data-initialized=true]").each(function () {
-                var element = $(this);
-                var functionName = element.data('init-function');
-
-                if (typeof window[functionName] === "function") {
-                    window[functionName](element);
-
-                    // mark the element as initialized, so that its function is never called again
-                    element.attr('data-initialized', 'true');
-                }
-            });
-        }
 
         jQuery('document').ready(function ($) {
 
