@@ -2,6 +2,7 @@
 
 namespace Backpack\CRUD\app\Library\CrudPanel\Traits;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Arr;
@@ -28,7 +29,13 @@ trait Create
 
         // omit the n-n relationships when updating the eloquent item
         $nn_relationships = Arr::pluck($this->getRelationFieldsWithPivot(), 'name');
-        $item = $this->model->create(Arr::except($data, $nn_relationships));
+
+        // init and fill model
+        $item = $this->model->make(Arr::except($data, $nn_relationships));
+
+        // handle BelongsTo 1:1 relations
+        $item = $this->handleBelongsToRelations($item, $data);
+        $item->save();
 
         // if there are any relationships available, also sync those
         $this->createRelations($item, $data);
@@ -71,6 +78,36 @@ trait Create
         }
 
         return $relationFields;
+    }
+
+    /**
+     * Associate and dissociate.
+     *
+     * @param  Model
+     * @param  array The form data.
+     * @return Model Model with relationships set up.
+     */
+    public function handleBelongsToRelations($item, array $data)
+    {
+        foreach ($this->getBelongsToRelationFields() as $relationField) {
+            $item->{$this->getOnlyRelationEntity($relationField)}()
+                ->associate($relationField['model']::find(Arr::get($data, $relationField['name'])));
+        }
+
+        return $item;
+    }
+
+    /**
+     * Get all BelongsTo relationship fields.
+     *
+     * @return array The fields with 1:1 BelongsTo relationships and with model set.
+     */
+    public function getBelongsToRelationFields(): array
+    {
+        return collect($this->fields())
+            ->where('model')
+            ->where('relation_type', 'BelongsTo')
+            ->toArray();
     }
 
     /**
@@ -171,14 +208,7 @@ trait Create
             $model = $relationData['model'];
             $relation = $item->{$relationMethod}();
 
-            if ($relation instanceof BelongsTo) {
-                $modelInstance = $model::find($relationData['values'])->first();
-                if ($modelInstance != null) {
-                    $relation->associate($modelInstance)->save();
-                } else {
-                    $relation->dissociate()->save();
-                }
-            } elseif ($relation instanceof HasOne) {
+            if ($relation instanceof HasOne) {
                 if ($item->{$relationMethod} != null) {
                     $item->{$relationMethod}->update($relationData['values']);
                     $modelInstance = $item->{$relationMethod};
