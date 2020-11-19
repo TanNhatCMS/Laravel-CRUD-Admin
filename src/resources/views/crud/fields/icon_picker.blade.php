@@ -25,6 +25,9 @@
         case 'meterialdesign':
             $fontIconFilePath = asset('packages/bootstrap-iconpicker/icon-fonts/material-design-1.1.1/css)/material-design-iconic-font.min.css');
             break;
+        case 'lineawesome':
+            $fontIconFilePath = asset('packages/line-awesome/dist/font-awesome-line-awesome/css/all.min.css');
+            break;
         default:
             $fontIconFilePath = asset('packages/bootstrap-iconpicker/icon-fonts/font-awesome-5.12.0-1/css/all.min.css');
             break;
