@@ -35,6 +35,12 @@
 
     $field['font_icon_file_path'] = $field['font_icon_file_path'] ?? $fontIconFilePath;
 
+    $value = old(square_brackets_to_dots($field['name'])) ?? $field['value'] ?? $field['default'] ?? '';
+
+    if($field['iconset'] === 'lineawesome') {
+        $value = preg_replace("/^la(.) la/", 'fa$1 fa', $value);
+    }
+
 @endphp
 
 @include('crud::fields.inc.wrapper_start')
@@ -48,7 +54,7 @@
             name="{{ $field['name'] }}"
             data-iconset="{{ $field['iconset'] }}"
             data-init-function="bpFieldInitIconPickerElement"
-            value="{{ old(square_brackets_to_dots($field['name'])) ?? $field['value'] ?? $field['default'] ?? '' }}"
+            value="{{ $value }}"
             @include('crud::fields.inc.attributes')
         >
     </div>
@@ -97,6 +103,13 @@
                     $($iconButton).iconpicker({
                         iconset: $iconset,
                         icon: $icon
+                    })
+                    .on('change', function(e){
+                        if($iconset === 'lineawesome') {
+                            let lineicon = e.icon.replace(/^fa(.) fa/g, 'la$1 la');
+                            // Icon picker stops the propagation of the on change event, and dispatch it's own before changing the value --}}
+                            setTimeout(() => element.val(lineicon), 100);
+                        }
                     });
 
                     element.siblings('button[role=icon-selector]').on('change', function(e) {
