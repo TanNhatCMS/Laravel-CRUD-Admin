@@ -174,9 +174,9 @@ trait Create
             if ($relation instanceof BelongsTo) {
                 $modelInstance = $model::find($relationData['values'])->first();
                 if ($modelInstance != null) {
-                    $relation->associate($modelInstance)->save();
+                    $relation->associate($modelInstance)->saveQuietly();
                 } else {
-                    $relation->dissociate()->save();
+                    $relation->dissociate()->saveQuietly();
                 }
             } elseif ($relation instanceof HasOne) {
                 if ($item->{$relationMethod} != null) {
@@ -184,7 +184,7 @@ trait Create
                     $modelInstance = $item->{$relationMethod};
                 } else {
                     $modelInstance = new $model($relationData['values']);
-                    $relation->save($modelInstance);
+                    $relation->saveQuietly($modelInstance);
                 }
             }
 
