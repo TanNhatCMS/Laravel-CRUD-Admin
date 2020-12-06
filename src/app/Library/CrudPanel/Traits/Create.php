@@ -180,7 +180,7 @@ trait Create
                 }
             } elseif ($relation instanceof HasOne) {
                 if ($item->{$relationMethod} != null) {
-                    $item->{$relationMethod}->update($relationData['values']);
+                    $item->{$relationMethod}->fill($relationData['values'])->saveQuietly();
                     $modelInstance = $item->{$relationMethod};
                 } else {
                     $modelInstance = new $model($relationData['values']);
