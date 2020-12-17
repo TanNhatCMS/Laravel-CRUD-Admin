@@ -67,7 +67,6 @@
 {{-- push things in the after_styles section --}}
 
 @push('crud_list_styles')
-    <!-- include select2 css-->
 	<link rel="stylesheet" type="text/css" href="{{ asset('packages/bootstrap-daterangepicker/daterangepicker.css') }}" />
 	<style>
 		.input-group.date {

@@ -3,6 +3,8 @@
 namespace Backpack\CRUD;
 
 use Backpack\CRUD\app\Library\CrudPanel\CrudPanel;
+use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Blade;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
@@ -43,6 +45,7 @@ class BackpackServiceProvider extends ServiceProvider
         $this->registerMiddlewareGroup($this->app->router);
         $this->setupRoutes($this->app->router);
         $this->setupCustomRoutes($this->app->router);
+        $this->registerBladeDirectives();
         $this->publishFiles();
         $this->checkLicenseCodeExists();
         $this->sendUsageStats();
@@ -281,6 +284,18 @@ class BackpackServiceProvider extends ServiceProvider
                 'provider' => 'backpack',
             ],
         ];
+    }
+
+    public function registerBladeDirectives()
+    {
+        // CRUD Load Once
+        Blade::directive('crudLoadOnce', function ($tag) {
+            return "<?php if (CRUD::addLoadedFieldType($tag)) { ?>";
+        });
+
+        Blade::directive('endCrudLoadOnce', function () {
+            return '<?php } ?>';
+        });
     }
 
     /**

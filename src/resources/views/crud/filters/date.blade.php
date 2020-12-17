@@ -46,7 +46,6 @@
 {{-- push things in the after_scripts section --}}
 
 @push('crud_list_scripts')
-	<!-- include select2 js-->
 	<script src="{{ asset('packages/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js') }}"></script>
   <script>
 		jQuery(document).ready(function($) {

@@ -31,7 +31,6 @@
 {{-- push things in the after_scripts section --}}
 
 @push('crud_list_scripts')
-	<!-- include select2 js-->
   <script>
 		jQuery(document).ready(function($) {
 			$('#text-filter-{{ $filter->key }}').on('change', function(e) {

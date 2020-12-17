@@ -31,6 +31,7 @@
 {{-- push things in the after_styles section --}}
 
 @push('crud_list_styles')
+	@crudLoadOnce("select2.css")
     <!-- include select2 css-->
     <link href="{{ asset('packages/select2/dist/css/select2.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('packages/select2-bootstrap-theme/dist/select2-bootstrap.min.css') }}" rel="stylesheet" type="text/css" />
@@ -57,6 +58,7 @@
 	  	top: 0px!important;
 	  }
     </style>
+	@endCrudLoadOnce
 @endpush
 
 
@@ -64,11 +66,13 @@
 {{-- push things in the after_scripts section --}}
 
 @push('crud_list_scripts')
+	@crudLoadOnce("select2.js")
 	<!-- include select2 js-->
     <script src="{{ asset('packages/select2/dist/js/select2.full.min.js') }}"></script>
     @if (app()->getLocale() !== 'en')
     <script src="{{ asset('packages/select2/dist/js/i18n/' . app()->getLocale() . '.js') }}"></script>
     @endif
+	@endCrudLoadOnce
 
     <script>
         jQuery(document).ready(function($) {
