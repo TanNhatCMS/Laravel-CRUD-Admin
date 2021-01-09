@@ -50,6 +50,7 @@ class AddSidebarContent extends Command
 
             if ($this->getLastLineNumberThatContains($code, $file_lines)) {
                 $this->error('Sidebar item already exists!');
+
                 return;
             }
 

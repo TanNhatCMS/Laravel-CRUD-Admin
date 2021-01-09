@@ -55,6 +55,7 @@ class AddCustomRouteContent extends Command
             // if the code already exists in the file, abort
             if ($this->getLastLineNumberThatContains($code, $file_lines)) {
                 $this->error('Route already exists!');
+
                 return;
             }
 
