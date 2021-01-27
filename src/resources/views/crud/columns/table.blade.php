@@ -1,5 +1,12 @@
 @php
-	$value = data_get($entry, $column['name']);
+	if(!isset($column['value']))
+    {
+        $value = data_get($entry, $column['name']);
+    }
+    else
+    {
+        $value = $column['value'];
+    }
 
     // make sure columns are defined
     if (!isset($column['columns'])) {
