@@ -6,6 +6,7 @@ use Backpack\CRUD\app\Library\CrudPanel\CrudPanel;
 use Illuminate\Routing\Router;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
@@ -46,6 +47,7 @@ class BackpackServiceProvider extends ServiceProvider
         $this->publishFiles();
         $this->checkLicenseCodeExists();
         $this->sendUsageStats();
+        $this->maybeApplySkin();
     }
 
     /**
@@ -289,6 +291,16 @@ class BackpackServiceProvider extends ServiceProvider
     public function loadHelpers()
     {
         require_once __DIR__.'/helpers.php';
+    }
+    /**
+     * Listens to Illuminate\Routing\Events\RouteMatched event and loads any skin into the config.
+     * @return void
+     */
+    public function maybeApplySkin()
+    {
+        if($skin = config('backpack.base.skin')){
+            backpack_apply_skin($skin);
+        }
     }
 
     /**
