@@ -153,13 +153,14 @@ $field['wrapper']['data-video'] = '';
 
         var fetchYouTube = function( videoId, callback, apiKey ){
 
-            var api = 'https://www.googleapis.com/youtube/v3/videos?id='+videoId+'&key='+apiKey+'&part=snippet';
+            var api = 'https://www.googleapis.com/youtube/v3/videos?id='+videoId+'&key='+apiKey+'&part=snippet,contentDetails';
 
             var video = {
                 provider: 'youtube',
                 id: null,
                 title: null,
                 image: null,
+                duration: null,
                 url: null
             };
 
@@ -169,15 +170,26 @@ $field['wrapper']['data-video'] = '';
                 crossDomain: true,
                 success: function (data) {
                     if (typeof(data.items[0]) != "undefined") {
-                                    var v = data.items[0].snippet;
+                        var v = data.items[0].snippet;
+                        var c = data.items[0].contentDetails;
 
-                                    video.id = videoId;
-                                    video.title = v.title;
-                                    video.image = v.thumbnails.maxres ? v.thumbnails.maxres.url : v.thumbnails.default.url;
-                                    video.url = 'https://www.youtube.com/watch?v=' + video.id;
+                        video.id = videoId;
+                        video.title = v.title;
+                        video.image = v.thumbnails.maxres ? v.thumbnails.maxres.url : v.thumbnails.default.url;
+                        video.url = 'https://www.youtube.com/watch?v=' + video.id;
 
-                                    callback(video);
-                                }
+                        var regExp = /PT(\d+)[HMS](\d+)*[MS]*(\d+)*S*/;
+                        var match = c.duration.match(regExp);
+                        if (match[3] !== undefined) {
+                            video.duration = parseInt(match[3]) + (parseInt(match[2]) * 60) + (parseInt(match[1]) * 3600);
+                        } else if (match[2] !== undefined) {
+                            video.duration = parseInt(match[2]) + (parseInt(match[1]) * 60);
+                        } else if (match[1] !== undefined) {
+                            video.duration = parseInt(match[1]);
+                        }
+
+                        callback(video);
+                    }
                 }
             });
         };
@@ -191,6 +203,7 @@ $field['wrapper']['data-video'] = '';
                 id: null,
                 title: null,
                 image: null,
+                duration: null,
                 url: null
             };
 
@@ -202,6 +215,7 @@ $field['wrapper']['data-video'] = '';
                     video.id = v.id;
                     video.title = v.title;
                     video.image = v.thumbnail_large || v.thumbnail_small;
+                    video.duration = v.duration;
                     video.url = v.url;
 
                     callback(video);
