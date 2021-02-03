@@ -153,11 +153,11 @@ $field['wrapper']['data-video'] = '';
 
         var fetchYouTube = function( videoId, callback, apiKey ){
 
-            var api = 'https://www.googleapis.com/youtube/v3/videos?id='+videoId+'&key='+apiKey+'&part=snippet,contentDetails';
+            var api = `https://www.googleapis.com/youtube/v3/videos?id=${videoId}&key=${apiKey}&part=snippet,contentDetails`;
 
             var video = {
                 provider: 'youtube',
-                id: null,
+                id: videoId,
                 title: null,
                 image: null,
                 duration: null,
@@ -170,15 +170,14 @@ $field['wrapper']['data-video'] = '';
                 crossDomain: true,
                 success: function (data) {
                     if (typeof(data.items[0]) != "undefined") {
-                        var v = data.items[0].snippet;
+                        var s = data.items[0].snippet;
                         var c = data.items[0].contentDetails;
 
-                        video.id = videoId;
-                        video.title = v.title;
-                        video.image = v.thumbnails.maxres ? v.thumbnails.maxres.url : v.thumbnails.default.url;
-                        video.url = 'https://www.youtube.com/watch?v=' + video.id;
+                        video.title = s.title;
+                        video.image = s.thumbnails.maxres ? s.thumbnails.maxres.url : s.thumbnails.default.url;
+                        video.url = `https://www.youtube.com/watch?v=${video.id}`;
 
-                        var regExp = /PT(\d+)[HMS](\d+)*[MS]*(\d+)*S*/;
+                        var regExp = /PT(\d+)(?:H|M|S)(\d+)*(?:M|S)*(\d+)*(?:S)*/;
                         var match = c.duration.match(regExp);
                         if (match[3] !== undefined) {
                             video.duration = parseInt(match[3]) + (parseInt(match[2]) * 60) + (parseInt(match[1]) * 3600);
@@ -196,29 +195,32 @@ $field['wrapper']['data-video'] = '';
 
         var fetchVimeo = function( videoId, callback ){
 
-            var api = 'https://vimeo.com/api/v2/video/' + videoId + '.json?callback=?';
+            var videoUrl = `https://vimeo.com/${videoId}`;
+            var api = `https://vimeo.com/api/oembed.json?url=${videoUrl}`;
 
             var video = {
                 provider: 'vimeo',
-                id: null,
+                id: videoId,
                 title: null,
                 image: null,
                 duration: null,
-                url: null
+                url: videoUrl
             };
 
-            $.getJSON(api, function( data ){
+            $.ajax({
+                dataType: "jsonp",
+                url: api,
+                crossDomain: true,
+                success: function (data) {
+                    if (data) {
+                        var v = data;
 
-                if (typeof(data[0]) != "undefined") {
-                    var v = data[0];
+                        video.title = v.title;
+                        video.image = v.thumbnail_url;
+                        video.duration = v.duration;
 
-                    video.id = v.id;
-                    video.title = v.title;
-                    video.image = v.thumbnail_large || v.thumbnail_small;
-                    video.duration = v.duration;
-                    video.url = v.url;
-
-                    callback(video);
+                        callback(video);
+                    }
                 }
             });
         };
