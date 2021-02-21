@@ -10,9 +10,7 @@
     @endforeach
 @endif
 
-@include('backpack::inc.alerts')
-
-<!-- page script -->
+{{-- page script --}}
 <script type="text/javascript">
     // To make Pace works on Ajax calls
     $(document).ajaxStart(function() { Pace.restart(); });
@@ -30,4 +28,15 @@
     $('.nav-tabs a').on('shown.bs.tab', function (e) {
         location.hash = e.target.hash.replace("#tab_", "#");
     });
+
+    // On DOM Ready promise helper
+    function onDomReady() {
+        return new Promise(resolve => {
+            document.readyState === 'loading'
+                ? document.addEventListener('DOMContentLoaded', resolve)
+                : resolve();
+        });
+    }
 </script>
+
+@include('backpack::inc.alerts')
