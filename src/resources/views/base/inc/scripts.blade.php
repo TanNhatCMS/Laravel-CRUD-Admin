@@ -22,14 +22,15 @@
         }
     });
 
-    {{-- Enable deep link to tab --}}
+    // Enable deep link to tab
     var activeTab = $('[href="' + location.hash.replace("#", "#tab_") + '"]');
     location.hash && activeTab && activeTab.tab('show');
     $('.nav-tabs a').on('shown.bs.tab', function (e) {
         location.hash = e.target.hash.replace("#tab_", "#");
     });
 
-    // On DOM Ready promise helper
+    // On DOM Ready promise helper, used to to avoid conflicts when DOMContentLoad is needed and some page optimizers
+    // like Cloudflare Rocket Load defers the initialization of Javascript to after the content load.
     function onDomReady() {
         return new Promise(resolve => {
             document.readyState === 'loading'
