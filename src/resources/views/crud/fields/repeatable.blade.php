@@ -12,6 +12,11 @@
 
 @include('crud::fields.inc.wrapper_start')
   <label>{!! $field['label'] !!}</label>
+    {{-- HINT --}}
+  @if (isset($field['hint']))
+      <p class="help-block text-muted text-sm">{!! $field['hint'] !!}</p>
+  @endif
+
   @include('crud::fields.inc.translatable_icon')
   <input
       type="hidden"
@@ -21,10 +26,6 @@
       @include('crud::fields.inc.attributes')
   >
 
-  {{-- HINT --}}
-  @if (isset($field['hint']))
-      <p class="help-block text-muted text-sm">{!! $field['hint'] !!}</p>
-  @endif
 
 
 
