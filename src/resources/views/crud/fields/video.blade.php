@@ -177,15 +177,11 @@ $field['wrapper']['data-video'] = '';
                         video.image = s.thumbnails.maxres ? s.thumbnails.maxres.url : s.thumbnails.default.url;
                         video.url = `https://www.youtube.com/watch?v=${video.id}`;
 
-                        var regExp = /PT(\d+)(?:H|M|S)(\d+)*(?:M|S)*(\d+)*(?:S)*/;
-                        var match = c.duration.match(regExp);
-                        if (match[3] !== undefined) {
-                            video.duration = parseInt(match[3]) + (parseInt(match[2]) * 60) + (parseInt(match[1]) * 3600);
-                        } else if (match[2] !== undefined) {
-                            video.duration = parseInt(match[2]) + (parseInt(match[1]) * 60);
-                        } else if (match[1] !== undefined) {
-                            video.duration = parseInt(match[1]);
-                        }
+                        video.duration = c.duration
+                            .match(/PT(\d+H)?(\d+M)?(\d+S)?/)
+                            .reverse()
+                            .map((e, i) => parseInt(e) * 60 ** i || 0)
+                            .reduce((a, b) => a + b);
 
                         callback(video);
                     }
