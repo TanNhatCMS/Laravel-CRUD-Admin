@@ -45,7 +45,7 @@
     }
 
     // if value isn't a base 64 image, generate URL
-    if($value && !preg_match('/^data\:image\//', $value)) {
+    if($value && !preg_match('/^data\:image\//', $value) && !$errors->any()) {
         // make sure to append prefix once to value
         $value = Str::start($value, $field['prefix']);
 
