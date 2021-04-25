@@ -7,7 +7,7 @@
         'autoUpdateInput' => true,
         'startDate' => \Carbon\Carbon::now()->toDateTimeString(),
         'endDate' => \Carbon\Carbon::now()->toDateTimeString(),
-        'ranges' => [
+        'ranges' => $filter->options['date_range_options']['ranges'] ?? [
             trans('backpack::crud.today') =>  [\Carbon\Carbon::now()->startOfDay()->toDateTimeString(), \Carbon\Carbon::now()->endOfDay()->toDateTimeString()],
             trans('backpack::crud.yesterday') => [\Carbon\Carbon::now()->subDay()->startOfDay()->toDateTimeString(), \Carbon\Carbon::now()->subDay()->endOfDay()->toDateTimeString()],
             trans('backpack::crud.last_7_days') => [\Carbon\Carbon::now()->subDays(6)->startOfDay()->toDateTimeString(), \Carbon\Carbon::now()->toDateTimeString()],
