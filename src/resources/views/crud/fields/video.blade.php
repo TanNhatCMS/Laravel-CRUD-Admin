@@ -203,20 +203,17 @@ $field['wrapper']['data-video'] = '';
                 url: videoUrl
             };
 
-            $.ajax({
-                dataType: "jsonp",
-                url: api,
-                crossDomain: true,
-                success: function (data) {
-                    if (data) {
-                        var v = data;
-
+            fetch(api).then(response => {
+                if(response.ok) {
+                    response.json().then(v => {
+                        video.id = v.video_id;
                         video.title = v.title;
                         video.image = v.thumbnail_url;
+                        video.url = v.provider_url + v.video_id;
                         video.duration = v.duration;
 
                         callback(video);
-                    }
+                    });
                 }
             });
         };
