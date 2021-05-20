@@ -98,56 +98,12 @@ $field['wrapper']['data-video'] = '';
         <script>
 
         var tryYouTube = function( link ){
-
-            var id = null;
-
-            // RegExps for YouTube link forms
-            var youtubeStandardExpr = /^https?:\/\/(www\.)?youtube.com\/watch\?v=([^?&]+)/i; // Group 2 is video ID
-            var youtubeAlternateExpr = /^https?:\/\/(www\.)?youtube.com\/v\/([^\/\?]+)/i; // Group 2 is video ID
-            var youtubeShortExpr = /^https?:\/\/youtu.be\/([^\/]+)/i; // Group 1 is video ID
-            var youtubeEmbedExpr = /^https?:\/\/(www\.)?youtube.com\/embed\/([^\/]+)/i; // Group 2 is video ID
-
-            var match = link.match(youtubeStandardExpr);
-
-            if (match != null){
-                id = match[2];
-            }
-            else {
-                match = link.match(youtubeAlternateExpr);
-
-                if (match != null) {
-                    id = match[2];
-                }
-                else {
-                    match = link.match(youtubeShortExpr);
-
-                    if (match != null){
-                        id = match[1];
-                    }
-                    else {
-                        match = link.match(youtubeEmbedExpr);
-
-                        if (match != null){
-                            id = match[2];
-                        }
-                    }
-                }
-            }
-
+            let [, id] = link.match(/^(?:https?:)?(?:\/\/)?(?:www\.)?(?:youtu\.be\/|youtube(?:\-nocookie)?\.(?:[A-Za-z]{2,4}|[A-Za-z]{2,3}\.[A-Za-z]{2})\/)(?:watch|embed\/|vi?\/)*(?:\?[\w=&]*vi?=)?([^#&\?\/]{11}).*$/) || [];
             return id;
         };
 
         var tryVimeo = function( link ){
-
-            var id = null;
-            var regExp = /(http|https):\/\/(www\.)?vimeo.com\/(\d+)($|\/)/;
-
-            var match = link.match(regExp);
-
-            if (match){
-                id = match[3];
-            }
-
+            let [, id] = link.match(/(?:http|https):\/\/(?:www\.)?vimeo.com\/(\d+)($|\/)/) || [];
             return id;
         };
 
@@ -157,22 +113,20 @@ $field['wrapper']['data-video'] = '';
 
             var video = {
                 provider: 'youtube',
-                id: videoId,
+                id: null,
                 title: null,
                 image: null,
                 duration: null,
                 url: null
             };
 
-            $.ajax({
-                dataType: "jsonp",
-                url: api,
-                crossDomain: true,
-                success: function (data) {
-                    if (typeof(data.items[0]) != "undefined") {
+            fetch(api).then(response => {
+                if(response.ok) {
+                    response.json().then(data => {
                         var s = data.items[0].snippet;
                         var c = data.items[0].contentDetails;
 
+                        video.id = videoId;
                         video.title = s.title;
                         video.image = s.thumbnails.maxres ? s.thumbnails.maxres.url : s.thumbnails.default.url;
                         video.url = `https://www.youtube.com/watch?v=${video.id}`;
@@ -184,7 +138,7 @@ $field['wrapper']['data-video'] = '';
                             .reduce((a, b) => a + b);
 
                         callback(video);
-                    }
+                    });
                 }
             });
         };
@@ -196,11 +150,11 @@ $field['wrapper']['data-video'] = '';
 
             var video = {
                 provider: 'vimeo',
-                id: videoId,
+                id: null,
                 title: null,
                 image: null,
                 duration: null,
-                url: videoUrl
+                url: null
             };
 
             fetch(api).then(response => {
