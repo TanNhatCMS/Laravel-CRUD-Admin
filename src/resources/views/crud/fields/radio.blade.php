@@ -33,7 +33,7 @@
             <div class="form-check {{ isset($field['inline']) && $field['inline'] ? 'form-check-inline' : '' }}">
                 <input  type="radio"
                         class="form-check-input"
-                        @if ($field['toggle'])
+                        @if ($field['toggle'] ?? false)
                         data-field-name="{{$field['name']}}"
                         data-field-toggle="{{ json_encode($field['hide_when'][$value] ?? []) }}"
                         @endif
