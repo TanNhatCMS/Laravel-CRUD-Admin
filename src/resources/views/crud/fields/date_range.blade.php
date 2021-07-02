@@ -105,6 +105,8 @@
                 if ($endInput.val() != '') {
                     $configuration.endDate = moment($endInput.val());
                 }
+                
+                $configuration.drops = 'auto';
 
                 $visibleInput.daterangepicker($configuration);
 
