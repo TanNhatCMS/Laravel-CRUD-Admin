@@ -3,6 +3,7 @@
 namespace Backpack\CRUD\app\Library\CrudPanel\Traits;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 trait Relationships
 {
@@ -16,32 +17,28 @@ trait Relationships
     {
         $entity = $this->getOnlyRelationEntity($field);
         $entity_array = explode('.', $entity);
-        $relation_model = $this->getRelationModel($entity);
-
         $related_method = Arr::last($entity_array);
-        if (count(explode('.', $entity)) == count(explode('.', $field['entity']))) {
-            $relation_model = $this->getRelationModel($entity, -1);
-        }
-        $relation_model = new $relation_model();
 
-        //if counts are diferent means that last element of entity is the field in relation.
-        if (count(explode('.', $entity)) != count(explode('.', $field['entity']))) {
-            if (in_array($related_method, $relation_model->getFillable())) {
-                if (count($entity_array) > 1) {
-                    $related_method = $entity_array[(count($entity_array) - 2)];
-                    $relation_model = $this->getRelationModel($entity, -2);
-                } else {
-                    $relation_model = $this->model;
-                }
-            }
-        }
-        if (count($entity_array) == 1) {
-            if (method_exists($this->model, $related_method)) {
-                return $this->model->{$related_method}();
-            }
-        }
+        $relation_model = $this->getRelationModel($entity);
+        
+        return (new $relation_model())->{$related_method}();
 
-        return $relation_model->{$related_method}();
+    }
+
+    /**
+     * Check if field is a nested relation
+     *
+     * @param array $field
+     * @return bool
+     */
+    protected function isNestedRelation($field): bool
+    {
+        $related_method = Str::afterLast($field['entity'], '.');
+
+        if (! method_exists($field['model'], $related_method) && Str::contains($field['entity'], '.')) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -159,5 +156,28 @@ trait Relationships
             default:
                 return false;
         }
+    }
+
+    /**
+     * Get the fields for relationships, according to the relation type. It looks only for direct
+     * relations - it will NOT look through relationships of relationships.
+     *
+     * @param string|array $relation_types Eloquent relation class or array of Eloquent relation classes. Eg: BelongsTo
+     *
+     * @return array The fields with corresponding relation types.
+     */
+    public function getFieldsWithRelationType($relation_types): array
+    {
+        $relation_types = (array) $relation_types;
+
+        return collect($this->fields())
+            ->where('model')
+            ->whereIn('relation_type', $relation_types)
+            ->filter(function ($item) {
+                $related_model = get_class($this->model->{Str::before($item['entity'], '.')}()->getRelated());
+
+                return Str::contains($item['entity'], '.') && $item['model'] !== $related_model ? false : true;
+            })
+            ->toArray();
     }
 }

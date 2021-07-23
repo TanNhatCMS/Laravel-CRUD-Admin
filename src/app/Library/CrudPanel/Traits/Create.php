@@ -5,6 +5,7 @@ namespace Backpack\CRUD\app\Library\CrudPanel\Traits;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 trait Create
 {
@@ -26,11 +27,17 @@ trait Create
         $data = $this->decodeJsonCastedAttributes($data);
         $data = $this->compactFakeFields($data);
 
-        // omit the n-n relationships when updating the eloquent item
-        $nn_relationships = Arr::pluck($this->getRelationFieldsWithPivot(), 'name');
-        $item = $this->model->create(Arr::except($data, $nn_relationships));
+        // omit the relationships when initing the model
+        $relationships = Arr::pluck($this->getRelationFields(), 'name');
 
-        // if there are any relationships available, also sync those
+        // init and fill model
+        $item = $this->model->make(Arr::except($data, $relationships));
+
+        // handle BelongsTo 1:1 relations
+        $item = $this->associateOrDissociateBelongsToRelations($item, $data);
+        $item->save();
+
+        // if there are any other relations create them.
         $this->createRelations($item, $data);
 
         return $item;
@@ -44,6 +51,33 @@ trait Create
     public function getCreateFields()
     {
         return $this->fields();
+    }
+
+    /**
+     * Associate and dissociate BelongsTo relations in the model.
+     *
+     * @param  Model $item
+     * @param  array $data The form data.
+     * @return Model Model with relationships set up.
+     */
+    protected function associateOrDissociateBelongsToRelations($item, array $data)
+    {
+        $belongsToFields = $this->getFieldsWithRelationType('BelongsTo');
+
+        foreach ($belongsToFields as $relationField) {
+            if (method_exists($item, $this->getOnlyRelationEntity($relationField))) {
+                $relatedId = Arr::get($data, $relationField['name']);
+                if (isset($relatedId) && $relatedId !== null) {
+                    $related = $relationField['model']::find($relatedId);
+
+                    $item->{$this->getOnlyRelationEntity($relationField)}()->associate($related);
+                } else {
+                    $item->{$this->getOnlyRelationEntity($relationField)}()->dissociate();
+                }
+            }
+        }
+
+        return $item;
     }
 
     /**
@@ -171,14 +205,7 @@ trait Create
             $model = $relationData['model'];
             $relation = $item->{$relationMethod}();
 
-            if ($relation instanceof BelongsTo) {
-                $modelInstance = $model::find($relationData['values'])->first();
-                if ($modelInstance != null) {
-                    $relation->associate($modelInstance)->save();
-                } else {
-                    $relation->dissociate()->save();
-                }
-            } elseif ($relation instanceof HasOne) {
+            if ($relation instanceof HasOne) {
                 if ($item->{$relationMethod} != null) {
                     $item->{$relationMethod}->update($relationData['values']);
                     $modelInstance = $item->{$relationMethod};
@@ -240,20 +267,11 @@ trait Create
 
     public function getOnlyRelationEntity($relation_field)
     {
-        $entity_array = explode('.', $relation_field['entity']);
-
         $relation_model = $this->getRelationModel($relation_field['entity'], -1);
+        $related_method = Str::afterLast($relation_field['entity'], '.');
 
-        $related_method = Arr::last($entity_array);
-
-        if (! method_exists($relation_model, $related_method)) {
-            if (count($entity_array) <= 1) {
-                return $relation_field['entity'];
-            } else {
-                array_pop($entity_array);
-            }
-
-            return implode('.', $entity_array);
+        if (! method_exists($relation_model, $related_method) && $this->isNestedRelation($relation_field)) {
+            return Str::beforeLast($relation_field['entity'], '.');
         }
 
         return $relation_field['entity'];
