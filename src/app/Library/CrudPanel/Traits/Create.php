@@ -204,7 +204,7 @@ trait Create
                 if (isset($relationData['relations'])) {
                     // if there are nested relations, we first add the BelongsTo like in main entry
                     $belongsToRelations = Arr::where($relationData['relations'], function ($relation_data) {
-                        return $relation_data['relation_type'] == 'BelongsTo';
+                        return isset($relation_data['relation_type']) && $relation_data['relation_type'] == 'BelongsTo';
                     });
 
                     // adds the values of the BelongsTo relations of this entity to the array of values that will
@@ -213,7 +213,7 @@ trait Create
 
                     // remove previously added BelongsTo relations from relation data.
                     $relationData['relations'] = Arr::where($relationData['relations'], function ($item) {
-                        return $item['relation_type'] != 'BelongsTo';
+                        return isset($item['relation_type']) && $item['relation_type'] != 'BelongsTo';
                     });
 
                     $modelInstance = $relation->updateOrCreate([], $valuesWithRelations);
