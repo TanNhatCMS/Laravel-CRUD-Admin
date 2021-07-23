@@ -199,19 +199,27 @@ trait Create
             return false;
         }
         foreach ($formattedData['relations'] as $relationMethod => $relationData) {
-            if (! isset($relationData['model'])) {
-                continue;
-            }
-            $model = $relationData['model'];
             $relation = $item->{$relationMethod}();
 
             if ($relation instanceof HasOne) {
-                if ($item->{$relationMethod} != null) {
-                    $item->{$relationMethod}->update($relationData['values']);
-                    $modelInstance = $item->{$relationMethod};
+                if (isset($relationData['relations'])) {
+                    // if there are nested relations, we first add the BelongsTo like in main entry
+                    $belongsToRelations = Arr::where($relationData['relations'], function ($relation_data) {
+                        return $relation_data['relation_type'] == 'BelongsTo';
+                    });
+                    
+                    // adds the values of the BelongsTo relations of this entity to the array of values that will
+                    // be saved at the same time like we do in parent entity belongs to relations
+                    $valuesWithRelations = $this->associateHasOneBelongsTo($belongsToRelations, $relationData['values'] ?? [], $relation->getModel());
+
+                    // remove previously added BelongsTo relations from relation data.
+                    $relationData['relations'] = Arr::where($relationData['relations'], function ($item) {
+                        return $item['relation_type'] != 'BelongsTo';
+                    });
+
+                    $modelInstance = $relation->updateOrCreate([], $valuesWithRelations);
                 } else {
-                    $modelInstance = new $model($relationData['values']);
-                    $relation->save($modelInstance);
+                    $modelInstance = $relation->updateOrCreate([], $relationData['values']);
                 }
             }
 
@@ -220,6 +228,27 @@ trait Create
             }
         }
     }
+
+    /**
+     * Associate the nested HasOne -> BelongsTo relations by adding the "connecting key"
+     * to the array of values that is going to be saved with HasOne relation.
+     *
+     * @param array $belongsToRelations
+     * @param array $modelValues
+     * @param Model $relationInstance
+     * @return array
+     */
+    private function associateHasOneBelongsTo($belongsToRelations, $modelValues, $modelInstance)
+    {
+        foreach ($belongsToRelations as $methodName => $values) {
+            $relation = $modelInstance->{$methodName}();
+
+            $modelValues[$relation->getForeignKeyName()] = $values['values'][$methodName];
+        }
+
+        return $modelValues;
+    }
+
 
     /**
      * Get a relation data array from the form data.
@@ -241,12 +270,14 @@ trait Create
      */
     private function getRelationDataFromFormData($data)
     {
-        $relation_fields = $this->getRelationFields();
+        $relation_fields = Arr::where($this->getRelationFields(), function ($field, $key) {
+            return $field['relation_type'] !== 'BelongsTo' || $this->isNestedRelation($field);
+        });
+
         $relationData = [];
         foreach ($relation_fields as $relation_field) {
             $attributeKey = $this->parseRelationFieldNamesFromHtml([$relation_field])[0]['name'];
-
-            if (! is_null(Arr::get($data, $attributeKey)) && isset($relation_field['pivot']) && $relation_field['pivot'] !== true) {
+            if (isset($relation_field['pivot']) && $relation_field['pivot'] !== true) {
                 $key = implode('.relations.', explode('.', $this->getOnlyRelationEntity($relation_field)));
                 $fieldData = Arr::get($relationData, 'relations.'.$key, []);
                 if (! array_key_exists('model', $fieldData)) {
@@ -255,25 +286,17 @@ trait Create
                 if (! array_key_exists('parent', $fieldData)) {
                     $fieldData['parent'] = $this->getRelationModel($attributeKey, -1);
                 }
+
+                if (! array_key_exists('relation_type', $fieldData)) {
+                    $fieldData['relation_type'] = $relation_field['relation_type'];
+                }
+
                 $relatedAttribute = Arr::last(explode('.', $attributeKey));
                 $fieldData['values'][$relatedAttribute] = Arr::get($data, $attributeKey);
 
                 Arr::set($relationData, 'relations.'.$key, $fieldData);
             }
         }
-
         return $relationData;
-    }
-
-    public function getOnlyRelationEntity($relation_field)
-    {
-        $relation_model = $this->getRelationModel($relation_field['entity'], -1);
-        $related_method = Str::afterLast($relation_field['entity'], '.');
-
-        if (! method_exists($relation_model, $related_method) && $this->isNestedRelation($relation_field)) {
-            return Str::beforeLast($relation_field['entity'], '.');
-        }
-
-        return $relation_field['entity'];
     }
 }

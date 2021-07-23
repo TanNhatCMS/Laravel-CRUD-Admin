@@ -2,6 +2,7 @@
 
 namespace Backpack\CRUD\app\Library\CrudPanel\Traits;
 
+use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
@@ -14,12 +15,21 @@ trait Relationships
      * @return object
      */
     public function getRelationInstance($field)
-    {
+    {      
         $entity = $this->getOnlyRelationEntity($field);
-        $entity_array = explode('.', $entity);
-        $related_method = Arr::last($entity_array);
+        $possible_method = Str::before($entity, '.');
+        $model = $this->model;
 
-        $relation_model = $this->getRelationModel($entity);
+        if(method_exists($model, $possible_method)) {
+            $parts = explode('.', $entity);
+            // here we are going to iterate through all relation parts to check
+            // if the attribute is present in the relation string.
+            foreach ($parts as $i => $part) {
+                $relation = $model->$part();
+                $model = $relation->getRelated();
+            }
+            return $relation;
+        }
 
         return (new $relation_model())->{$related_method}();
     }
@@ -32,13 +42,26 @@ trait Relationships
      */
     protected function isNestedRelation($field): bool
     {
-        $related_method = Str::afterLast($field['entity'], '.');
-
-        if (! method_exists($field['model'], $related_method) && Str::contains($field['entity'], '.')) {
+        $entity = $this->getOnlyRelationEntity($field);
+        if (strpos($entity, '.') !== false) {
             return true;
         }
 
         return false;
+    }
+
+
+
+    public function getOnlyRelationEntity($relation_field)
+    {
+        $relation_model = $this->getRelationModel($relation_field['entity'], -1);
+        $related_method = Str::afterLast($relation_field['entity'], '.');
+
+        if (! method_exists($relation_model, $related_method)) {
+            return Str::beforeLast($relation_field['entity'], '.');
+        }
+
+        return $relation_field['entity'];
     }
 
     /**
