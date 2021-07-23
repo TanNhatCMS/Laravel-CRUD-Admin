@@ -20,13 +20,12 @@ trait Relationships
         $related_method = Arr::last($entity_array);
 
         $relation_model = $this->getRelationModel($entity);
-        
-        return (new $relation_model())->{$related_method}();
 
+        return (new $relation_model())->{$related_method}();
     }
 
     /**
-     * Check if field is a nested relation
+     * Check if field is a nested relation.
      *
      * @param array $field
      * @return bool
@@ -38,6 +37,7 @@ trait Relationships
         if (! method_exists($field['model'], $related_method) && Str::contains($field['entity'], '.')) {
             return true;
         }
+
         return false;
     }
 
