@@ -2,7 +2,6 @@
 
 namespace Backpack\CRUD\app\Library\CrudPanel\Traits;
 
-use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
@@ -15,12 +14,12 @@ trait Relationships
      * @return object
      */
     public function getRelationInstance($field)
-    {      
+    {
         $entity = $this->getOnlyRelationEntity($field);
         $possible_method = Str::before($entity, '.');
         $model = $this->model;
 
-        if(method_exists($model, $possible_method)) {
+        if (method_exists($model, $possible_method)) {
             $parts = explode('.', $entity);
             // here we are going to iterate through all relation parts to check
             // if the attribute is present in the relation string.
@@ -28,6 +27,7 @@ trait Relationships
                 $relation = $model->$part();
                 $model = $relation->getRelated();
             }
+
             return $relation;
         }
 
@@ -49,8 +49,6 @@ trait Relationships
 
         return false;
     }
-
-
 
     public function getOnlyRelationEntity($relation_field)
     {

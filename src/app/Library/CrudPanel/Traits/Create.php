@@ -5,7 +5,6 @@ namespace Backpack\CRUD\app\Library\CrudPanel\Traits;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 
 trait Create
 {
@@ -207,7 +206,7 @@ trait Create
                     $belongsToRelations = Arr::where($relationData['relations'], function ($relation_data) {
                         return $relation_data['relation_type'] == 'BelongsTo';
                     });
-                    
+
                     // adds the values of the BelongsTo relations of this entity to the array of values that will
                     // be saved at the same time like we do in parent entity belongs to relations
                     $valuesWithRelations = $this->associateHasOneBelongsTo($belongsToRelations, $relationData['values'] ?? [], $relation->getModel());
@@ -248,7 +247,6 @@ trait Create
 
         return $modelValues;
     }
-
 
     /**
      * Get a relation data array from the form data.
@@ -297,6 +295,7 @@ trait Create
                 Arr::set($relationData, 'relations.'.$key, $fieldData);
             }
         }
+
         return $relationData;
     }
 }
