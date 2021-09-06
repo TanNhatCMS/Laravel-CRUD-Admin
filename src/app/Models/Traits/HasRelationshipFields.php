@@ -22,10 +22,9 @@ trait HasRelationshipFields
     {
         $conn = DB::connection($this->getConnectionName());
 
-        // register the enum, json and jsonb column type, because Doctrine doesn't support it
+        // register the enum, and jsonb types
         $conn->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
-        $conn->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('json', 'json_array');
-        $conn->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('jsonb', 'json_array');
+        $conn->getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('jsonb', 'json');
 
         return $conn;
     }
@@ -52,7 +51,7 @@ trait HasRelationshipFields
     public function getColumnType($columnName)
     {
         $conn = $this->getConnectionWithExtraTypeMappings();
-        $table = $this->getTableWithPrefix();
+        $table = $this->getTable();
 
         return $conn->getSchemaBuilder()->getColumnType($table, $columnName);
     }
