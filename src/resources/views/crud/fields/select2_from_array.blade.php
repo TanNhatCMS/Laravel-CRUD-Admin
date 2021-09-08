@@ -8,7 +8,7 @@
 @include('crud::fields.inc.wrapper_start')
     <label>{!! $field['label'] !!}</label>
     <select
-        name="{{ $field['name'] }}@if (isset($field['allows_multiple']) && $field['allows_multiple']==true)[]@endif"
+        name="{{ $field['name'] }}@if ($field['allows_multiple'])[]@endif"
         style="width: 100%"
         data-real-name="{{ $field['name'] }}"
         data-field-placeholder="{{$field['placeholder']}}"
@@ -97,14 +97,8 @@
             if (!element.hasClass("select2-hidden-accessible")) {
                     //if we determined that the field has no value, is multiple and allows null
                     //we create the placeholder option
-                    if(!$multiple_init && $multiple && $allows_null) {
+                    if(!$multiple_init && $multiple) {
                         element.append('<option value="" selected></option>');
-                    }
-
-                    //if we are initing a single select and null is not allowed, the first option will be selected
-                    //so we init this variable to know when selecting that this one was forced
-                    if(!$multiple_init && $multiple && !$allows_null) {
-                        element.data('force-select', true);
                     }
 
                     element.select2({
@@ -117,7 +111,8 @@
                         if ($multiple && Array.isArray(element.val()) && element.val().length == 0) {
                             //if there are no options selected we make sure the field name is reverted to single selection
                             //this way browser will send the empty value, otherwise it will omit the multiple input when empty
-                            if(typeof element.attr('name') !== typeof undefined && element.attr('name') !== false) {
+                            //we only change the name if the element attr name is present to avoid messing with repeatable
+                            if(typeof element.attr('name') !== typeof undefined) {
                                 element.attr('name', $real_name);
                             }
 
@@ -136,18 +131,8 @@
                                     allowClear: false,
                                     multiple: false
                                 });
-                                //if the field does not allow null
-                                //we make sure that atleast one option is always selected.
-                                if(!$allows_null) {
-                                    //this variable is used to unselect this option in a multiple select because was "forced" by
-                                    //developer not allowing null in the field
-                                    element.data('force-select', true);
-                                    element.val(element.find('option:eq(0)').val()).trigger('change');
-                                }else{
-                                    //otherwise we append the placeholder
-                                    element.append('<option value="">'+$placeholder+'</option>');
-                                    element.val('').trigger('change');
-                                }
+                                
+                                element.val('').trigger('change');
                             });
                         }
                     }).on('select2:opening', function() {
@@ -184,21 +169,14 @@
                             //we remove the placeholder option
                             $(element.find('option[value=""]')).remove();
 
-                                setTimeout(function() {
-                                    element.select2({
-                                        theme: "bootstrap",
-                                        placeholder: $placeholder,
-                                        allowClear: true,
-                                        multiple: true
+                            setTimeout(function() {
+                                element.select2({
+                                    theme: "bootstrap",
+                                    placeholder: $placeholder,
+                                    allowClear: true,
+                                    multiple: true
                                 });
                             });
-                        }
-
-                        //when selecting an option, if the one that is selected was forced by developer not allowing null
-                        //we remove it from the selection when the user chooses his first option
-                        if(element.data('force-select') === true) {
-                            element.data('force-select', false);
-                            element.val('').trigger('change');
                         }
                     }).on('select2:clear', function(e) {
                         //when clearing the selection we revert the field back to a "select single" state if it's multiple.
@@ -215,8 +193,6 @@
                             });
 
                             setTimeout(function() {
-
-
                                 element.select2({
                                     theme: "bootstrap",
                                     placeholder: $placeholder,
@@ -224,12 +200,8 @@
                                     multiple: false
                                 });
 
-                                if($allows_null) {
-                                    element.append('<option value="">'+$placeholder+'</option>');
-                                    element.val('').trigger('change');
-                                }else{
-                                    element.data('force-select', true);
-                                }
+                                element.append('<option value=""></option>');
+                                element.val('').trigger('change');
 
                             });
 
