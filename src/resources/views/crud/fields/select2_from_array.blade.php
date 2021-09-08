@@ -1,6 +1,6 @@
 @php
     $field['placeholder'] = $field['placeholder'] ?? '-';
-    $field['allows_null'] = $field['allows_null'] ?? false;
+    $field['allows_null'] = $field['allows_null'] ?? $crud->model::isColumnNullable($field['name']);
     $field['allows_multiple'] = $field['allows_multiple'] ?? false;
 
 @endphp
@@ -14,12 +14,13 @@
         data-field-placeholder="{{$field['placeholder']}}"
         data-allows-null="{{var_export($field['allows_null'])}}"
         data-init-function="bpFieldInitSelect2FromArrayElement"
+        data-language="{{str_replace('_', '-', app()->getLocale()) }}"
         data-field-multiple="{{var_export($field['allows_multiple'])}}"
         @include('crud::fields.inc.attributes', ['default_class' =>  'form-control select2_from_array'])
         @if ($field['allows_multiple'])multiple @endif
         >
 
-        @if($field['allows_null'] && !$field['allows_multiple'])
+        @if($field['allows_null'])
             <option value="">{{$field['placeholder']}}</option>
         @endif
 
@@ -78,12 +79,10 @@
     <!-- include select2 js-->
     <script src="{{ asset('packages/select2/dist/js/select2.full.min.js') }}"></script>
     @if (app()->getLocale() !== 'en')
-    <script src="{{ asset('packages/select2/dist/js/i18n/' . app()->getLocale() . '.js') }}"></script>
+    <script src="{{ asset('packages/select2/dist/js/i18n/' . str_replace('_', '-', app()->getLocale()) . '.js') }}"></script>
     @endif
     <script>
-         // if nullable, make sure the Clear button uses the translated string
-    document.styleSheets[0].addRule('.select2-selection__clear::after','content:  "{{ trans('backpack::crud.clear') }}";');
-
+         
         function bpFieldInitSelect2FromArrayElement(element) {
             var $placeholder = element.attr('data-field-placeholder');
             var $allows_null = element.attr('data-allows-null') == 'true' ? true : false;
