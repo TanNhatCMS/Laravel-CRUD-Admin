@@ -30,7 +30,6 @@
     <a href="https://backpackforlaravel.com/newsletter">Newsletter</a>
 </p>
 
-
 Quickly build an admin interface for your Eloquent models. Then customize every little detail. Among its features:
 
 - List operation
@@ -134,7 +133,6 @@ When installing Backpack, require its minor version (currently ```4.1.*```). For
 We've spend more than 10.000 hours creating, polishing and maintaining administration panels on Laravel. We've developed e-Commerce, e-Learning, ERPs, social networks, payment gateways and much more. We've worked on admin panels _so much_, that we've created one of the most popular packages for Laravel - just from making public what was repetitive in our projects.
 
 If you are looking for a developer/team to help you build an admin panel on Laravel, look no further. You'll have a difficult time finding someone with more experience & enthusiasm for admin panels. This is _what we do_. [Contact us](https://backpackforlaravel.com/need-freelancer-or-development-team).
-
 
 
 [ico-version]: https://img.shields.io/packagist/v/dick/crud.svg?style=flat-square
