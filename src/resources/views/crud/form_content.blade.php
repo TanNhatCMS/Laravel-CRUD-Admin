@@ -55,112 +55,118 @@
 
         function initializeFieldsVisibility() {
             // get all fields has visibility
-
                 @php
-                    $visibilitiesFields = [];
+                    $visibiltiesFields = [];
                     foreach ($fields as $field => $options) {
                         if (array_key_exists('fields', $options)) {
                              foreach ($options['fields'] as $repField => $repOptions) {
                                  if (array_key_exists('visibility', $repOptions)) {
                                      $repOptions['repeatable'] = true;
-                                     $options['checklist_dependency'] = false;
-                                     $visibilitiesFields[] = $repOptions;
+                                     $repOptions['repeatable_field_name'] = $options['name'];
+                                     $visibiltiesFields[] = $repOptions;
                                  }
                              }
-                        } else if (array_key_exists('subfields', $options)) {
-                            foreach ($options['subfields'] as $subField => $subOptions) {
-                                 if (array_key_exists('visibility', $subOptions)) {
-                                     $subOptions['checklist_dependency'] = true;
-                                     $visibilitiesFields[] = $subOptions;
-                                 }
-                             }
-                        } else if (array_key_exists('visibility', $options)) {
-                            $options['checklist_dependency'] = false;
+                        }
+                        if (array_key_exists('visibility', $options)) {
                             $options['repeatable'] = false;
-                            $visibilitiesFields[] = $options;
+                            $visibiltiesFields[] = $options;
                         }
                     }
                 @endphp
+            const JSVisibilitiesFields = {!! json_encode($visibiltiesFields) !!}
+                    // console.log("JSVisibilitiesFields:: "+JSON.stringify(JSVisibilitiesFields, null, 2))
+                    JSVisibilitiesFields.forEach(function (item) {
+                        let isInsideRepeatable = item['repeatable'];
+                        let fieldName = item['name'];
+                        let shouldDisable = item['visibility']['add_disabled'];
+                        let conditionValue = item['visibility']['value'];
+                        let parentName = item['visibility']['field_name'];
+                        let fieldGroup = $('#' + fieldName + '');
+                        let fieldElement = $('[name='+fieldName+']');
+                        let parent = null;
+                        if (isInsideRepeatable == true) {
+                            let repeatableFieldName = item['repeatable_field_name'];
+                            let mainContainer = $('[data-repeatable-holder=' + repeatableFieldName + ']');
+                            let container = $('[data-repeatable-identifier=' + repeatableFieldName + ']');
 
-                @if(count($visibilitiesFields))
-            const JSVisibilitiesFields = {!! json_encode($visibilitiesFields) !!}
-                JSVisibilitiesFields.forEach(function (item) {
-                    var isInsideChecklistDependency = item['checklist_dependency'];
-                    var isInsideRepeatable = item['repeatable'];
-                    var fieldName = item['name'];
-                    var shouldDisable = item['visibility']['add_disabled'];
-                    var conditionValue = item['visibility']['value'];
-                    var parentName = item['visibility']['field_name'];
-
-                    var fieldGroup = $('#' + fieldName + '');
-                    if (!fieldGroup.length) {
-                        fieldGroup = ('#"' + fieldName + '\\[\\]"');
-                    }
-                    var fieldElement = $('[name='+fieldName+']');
-                    if (!fieldElement.length) {
-                        fieldElement = $('[name="'+fieldName+'\\[\\]"]');
-                    }
-
-                    var parentField = $('[name="'+parentName+'"]');
-                    if (!parentField.length) {
-                        parentField = $('[name="'+parentName+'\\[\\]"]');
-                    }
-                    if (isInsideRepeatable == true) {
-                        parentField = $('[data-repeatable-input-name=' + parentName + ']');
-                        if (!parentField.length) {
-                            parentField = $('[data-repeatable-input-name="'+parentName+'\\[\\]"]');
-                        }
-                    }
-
-                    var parentValue = parentField.val();
-
-                    var conditionBool = false;
-
-                    if (parentField.length) {
-                        conditionBool = (parentValue.indexOf(conditionValue) > -1);
-
-                        if (conditionBool) {
-                            if (fieldGroup.is(':hidden')) {
-                                fieldGroup.slideDown(500);
-                                if (fieldElement.prop('disabled')) {
-                                    fieldElement.removeAttr("disabled");
-                                }
-                            }
-
+                            repeatableVisibilities(parentName, fieldName, conditionValue, shouldDisable, mainContainer, container);
                         } else {
-                            if (fieldGroup.is(':visible')) {
-                                fieldGroup.slideUp(500);
-                                if (shouldDisable) {
-                                    fieldElement.attr("disabled", "disabled");
-                                }
+                            parent = $('[name=' + parentName + ']');
+                            nonRepeatableVisibilities(parent, fieldGroup, fieldElement, conditionValue, shouldDisable);
+                        }
+                    });
+
+            function repeatableVisibilities(parentName, fieldName, conditionValue, shouldDisable, mainContainer, container) {
+
+                mainContainer.children().each(function(i, el) {
+
+                    let parent = $(el).find('[data-repeatable-input-name=' + parentName + ']');
+
+                    let fieldElement =  $(el).find('[data-repeatable-input-name=' + fieldName + ']');
+                    if (!fieldElement.length) {
+                        fieldElement =  $(el).find('[data-repeatable-input-name=\"' + fieldName + '[]\"]');
+                    }
+                    let fieldGroup = fieldElement.parent();
+
+
+                    let parentValue = parent.val();
+
+                    if (parentValue == conditionValue) {
+                        fieldGroup.show(650);
+                        if (fieldElement.prop('disabled')) {
+                            fieldElement.removeAttr("disabled");
+                        }
+                    } else {
+                        fieldGroup.hide(650);
+                        if (shouldDisable) {
+                            fieldElement.attr("disabled", "disabled");
+                        }
+                    }
+                    parent.change(function(){
+
+                        if ($(this).val() == conditionValue) {
+                            fieldGroup.show(650);
+                            if (fieldElement.prop('disabled')) {
+                                fieldElement.removeAttr("disabled");
+                            }
+                        } else {
+                            fieldGroup.hide(650);
+                            if (shouldDisable) {
+                                fieldElement.attr("disabled", "disabled");
                             }
                         }
-                        parentField.change(function(){
-                            var conditionBool = false;
-                            conditionBool = (parentField.val().indexOf(conditionValue) > -1);
+                    });
+                })
+            }
 
-                            if (conditionBool) {
-                                if (fieldGroup.is(':hidden')) {
-                                    fieldGroup.slideDown(500);
-                                    if (fieldElement.prop('disabled')) {
-                                        fieldElement.removeAttr("disabled");
-                                    }
-                                }
-                            } else {
-                                if (fieldGroup.is(':visible')) {
-                                    fieldGroup.slideUp(500);
-                                    if (shouldDisable) {
-                                        fieldElement.attr("disabled", "disabled");
-                                    }
-                                }
-                            }
-                        });
+            function nonRepeatableVisibilities(parent, fieldGroup, fieldElement, conditionValue, shouldDisable) {
+                let parentValue = parent.val();
+                if (parentValue == conditionValue) {
+                    fieldGroup.show(650);
+                    if (fieldElement.prop('disabled')) {
+                        fieldElement.removeAttr("disabled");
                     }
-
+                } else {
+                    fieldGroup.hide(650);
+                    if (shouldDisable) {
+                        fieldElement.attr("disabled", "disabled");
+                    }
+                }
+                parent.change(function(){
+                    console.log("$(this).val()::: "+$(this).val())
+                    if ($(this).val() == conditionValue) {
+                        fieldGroup.show(650);
+                        if (fieldElement.prop('disabled')) {
+                            fieldElement.removeAttr("disabled");
+                        }
+                    } else {
+                        fieldGroup.hide(650);
+                        if (shouldDisable) {
+                            fieldElement.attr("disabled", "disabled");
+                        }
+                    }
                 });
-            @endif
-
-
+            }
         }
 
         jQuery('document').ready(function($){
