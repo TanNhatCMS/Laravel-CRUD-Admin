@@ -67,7 +67,6 @@ trait Buttons
      * @param  bool|string  $position  Position on the stack: beginning or end. If false, the position will be
      *                                 'beginning' for the line stack or 'end' otherwise.
      * @param  bool  $replaceExisting  True if a button with the same name on the given stack should be replaced.
-     *
      * @return \Backpack\CRUD\app\Library\CrudPanel\CrudButton The new CRUD button.
      */
     public function addButton($stack, $name, $type, $content, $position = false, $replaceExisting = true)
@@ -104,7 +103,6 @@ trait Buttons
      *
      * @param  string  $name  The button name.
      * @param  array  $modifications  The attributes and their new values.
-     *
      * @return CrudButton The button that has suffered the changes, for daisychaining methods.
      */
     public function modifyButton($name, $modifications = null)

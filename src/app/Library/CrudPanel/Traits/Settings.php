@@ -15,7 +15,6 @@ trait Settings
      * Getter for the settings key-value store.
      *
      * @param  string  $key  Usually operation.name (ex: list.exportButtons)
-     *
      * @return mixed [description]
      */
     public function get(string $key)
@@ -38,7 +37,6 @@ trait Settings
      * Check if the settings key is used (has a value).
      *
      * @param  string  $key  Usually operation.name (ex: reorder.max_level)
-     *
      * @return bool
      */
     public function has(string $key)
@@ -67,7 +65,6 @@ trait Settings
      *
      * @param  string  $key  Usually operation.name (ex: list.exportButtons)
      * @param  mixed  $value  The value you want to store.
-     *
      * @return mixed Setting value for setter. True/false for getter.
      */
     public function setting(string $key, $value = null)
@@ -84,7 +81,6 @@ trait Settings
      *
      * @param  string  $key  Has no operation prepended. (ex: exportButtons)
      * @param  mixed  $value  The value you want to store.
-     *
      * @return mixed Setting value for setter. True/false for getter.
      */
     public function operationSetting(string $key, $value = null, $operation = null)
@@ -99,7 +95,6 @@ trait Settings
      * Defaults to the current operation.
      *
      * @param  string  $key  Has no operation prepended. (ex: exportButtons)
-     *
      * @return mixed [description]
      */
     public function getOperationSetting(string $key, $operation = null)
@@ -114,7 +109,6 @@ trait Settings
      * Defaults to the current operation.
      *
      * @param  string  $key  Has no operation prepended. (ex: exportButtons)
-     *
      * @return mixed [description]
      */
     public function hasOperationSetting(string $key, $operation = null)

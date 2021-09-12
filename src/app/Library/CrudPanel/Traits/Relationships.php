@@ -74,7 +74,6 @@ trait Relationships
      * relations - it will NOT look through relationships of relationships.
      *
      * @param  string|array  $relation_types  Eloquent relation class or array of Eloquent relation classes. Eg: BelongsTo
-     *
      * @return array The fields with corresponding relation types.
      */
     public function getFieldsWithRelationType($relation_types): array

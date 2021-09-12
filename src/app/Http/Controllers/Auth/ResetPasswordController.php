@@ -28,7 +28,6 @@ class ResetPasswordController extends Controller
      * Get the path the user should be redirected to after password reset.
      *
      * @param  \Illuminate\Http\Request  $request
-     *
      * @return string
      */
     public function redirectTo()
@@ -66,7 +65,6 @@ class ResetPasswordController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  string|null  $token
-     *
      * @return \Illuminate\Http\Response
      */
     public function showResetForm(Request $request, $token = null)

@@ -24,7 +24,6 @@ trait HasTranslations
      * Use the forced locale if present.
      *
      * @param  string  $key
-     *
      * @return mixed
      */
     public function getAttributeValue($key)
@@ -68,7 +67,6 @@ trait HasTranslations
      * Create translated items as json.
      *
      * @param  array  $attributes
-     *
      * @return static
      */
     public static function create(array $attributes = [])
@@ -97,7 +95,6 @@ trait HasTranslations
      *
      * @param  array  $attributes
      * @param  array  $options
-     *
      * @return bool
      */
     public function update(array $attributes = [], array $options = [])
@@ -179,7 +176,6 @@ trait HasTranslations
      *
      * @param  string  $method
      * @param  array  $parameters
-     *
      * @return
      */
     public function __call($method, $parameters)

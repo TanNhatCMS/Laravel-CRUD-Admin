@@ -223,7 +223,6 @@ trait ColumnsProtectedMethods
      *
      * @param  string  $table
      * @param  string  $name
-     *
      * @return bool
      */
     protected function hasDatabaseColumn($table, $name)

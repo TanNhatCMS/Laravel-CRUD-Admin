@@ -85,7 +85,6 @@ trait Stats
      * @param  string  $method  HTTP Method to use for the request.
      * @param  string  $url  URL to point the request at.
      * @param  array  $payload  The data you want sent to the URL.
-     *
      * @return void
      */
     private function makeCurlRequest($method, $url, $payload)
@@ -110,7 +109,6 @@ trait Stats
      * @param  string  $method  HTTP Method to use for the request.
      * @param  string  $url  URL to point the request at.
      * @param  array  $payload  The data you want sent to the URL.
-     *
      * @return void
      */
     private function makeGuzzleRequest($method, $url, $payload)

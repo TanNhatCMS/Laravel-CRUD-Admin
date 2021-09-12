@@ -10,7 +10,6 @@ trait FieldsPrivateMethods
      * @param  array  $fields  The form fields.
      * @param  string  $targetFieldName  The target field name.
      * @param  bool  $before  If true, the field will be moved before the target field, otherwise it will be moved after it.
-     *
      * @return array
      */
     private function moveField($fields, $targetFieldName, $before = true)
@@ -39,7 +38,6 @@ trait FieldsPrivateMethods
      *
      * @param  array  $fields  The fields array.
      * @param  array  $order  The desired field order array.
-     *
      * @return array The ordered fields array.
      */
     private function applyOrderToFields($fields, $order)

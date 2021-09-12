@@ -57,7 +57,6 @@ trait Fields
      * Add a field to the create/update form or both.
      *
      * @param  string|array  $field  The new field.
-     *
      * @return self
      */
     public function addField($field)
@@ -166,6 +165,7 @@ trait Fields
 
     /**
      * Remove an attribute from one field's definition array.
+     *
      * @param  string  $field  The name of the field.
      * @param  string  $attribute  The name of the attribute being removed.
      */
@@ -215,7 +215,6 @@ trait Fields
      * It's used in each field_type.blade.php to determine wether to push the css and js content or not (we only need to push the js and css for a field the first time it's loaded in the form, not any subsequent times).
      *
      * @param  array  $field  The current field being tested if it's the first of its type.
-     *
      * @return bool true/false
      */
     public function checkIfFieldIsFirstOfItsType($field)
@@ -299,7 +298,6 @@ trait Fields
      *
      * @param  string  $form  create/update/both - defaults to 'both'
      * @param  bool|int  $id  id of the entity - defaults to false
-     *
      * @return bool
      */
     public function hasUploadFields()

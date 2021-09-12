@@ -299,7 +299,6 @@ trait SaveActions
      * Change the session variable that remembers what to do after the "Save" action.
      *
      * @param  string|null  $forceSaveAction
-     *
      * @return void
      */
     public function setSaveAction($forceSaveAction = null)
@@ -323,7 +322,6 @@ trait SaveActions
      * Redirect to the correct URL, depending on which save action has been selected.
      *
      * @param  string  $itemId
-     *
      * @return \Illuminate\Http\Response
      */
     public function performSaveAction($itemId = null)

@@ -15,7 +15,6 @@ trait PrettyCommandOutput
      * @param  string  $command  The SSH command that needs to be run
      * @param  bool  $beforeNotice  Information for the user before the command is run
      * @param  bool  $afterNotice  Information for the user after the command is run
-     *
      * @return mixed Command-line output
      */
     public function executeProcess($command, $beforeNotice = false, $afterNotice = false)
@@ -55,7 +54,6 @@ trait PrettyCommandOutput
      * @param  array  $arguments  Key-value array of arguments to the artisan command.
      * @param  bool  $beforeNotice  Information for the user before the command is run
      * @param  bool  $afterNotice  Information for the user after the command is run
-     *
      * @return mixed Command-line output
      */
     public function executeArtisanProcess($command, $arguments = [], $beforeNotice = false, $afterNotice = false)

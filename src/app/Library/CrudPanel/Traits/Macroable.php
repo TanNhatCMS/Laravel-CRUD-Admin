@@ -16,7 +16,6 @@ trait Macroable
      *
      * @param  string  $name
      * @param  object|callable  $macro
-     *
      * @return void
      */
     public static function macro($name, $macro)

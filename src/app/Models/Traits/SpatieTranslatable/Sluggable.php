@@ -16,7 +16,6 @@ trait Sluggable
      * @param  string  $attribute
      * @param  array  $config
      * @param  string  $slug
-     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function scopeFindSimilarSlugs(Builder $query, string $attribute, array $config, string $slug): Builder

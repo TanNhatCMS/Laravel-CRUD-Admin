@@ -73,7 +73,6 @@ trait Tabs
 
     /**
      * @param  string  $label
-     *
      * @return bool
      */
     public function tabExists($label)
@@ -99,7 +98,6 @@ trait Tabs
 
     /**
      * @param $label
-     *
      * @return bool
      */
     public function isLastTab($label)
@@ -123,7 +121,6 @@ trait Tabs
 
     /**
      * @param $label
-     *
      * @return array|\Illuminate\Support\Collection
      */
     public function getTabFields($label)

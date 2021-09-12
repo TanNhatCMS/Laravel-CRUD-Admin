@@ -18,7 +18,6 @@ trait Create
      * Insert a row in the database.
      *
      * @param  array  $data  All input values to be inserted.
-     *
      * @return \Illuminate\Database\Eloquent\Model
      */
     public function create($data)
@@ -158,7 +157,6 @@ trait Create
      *
      * @param  \Illuminate\Database\Eloquent\Model  $item  The current CRUD model.
      * @param  array  $formattedData  The form data.
-     *
      * @return bool|null
      */
     private function createRelationsForItem($item, $formattedData)
@@ -211,7 +209,6 @@ trait Create
      *
      *
      * @param  array  $data  The form data.
-     *
      * @return array The formatted relation data.
      */
     private function getRelationDataFromFormData($data)

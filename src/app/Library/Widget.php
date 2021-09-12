@@ -24,7 +24,6 @@ class Widget extends Fluent
      * instead of creating a new one.
      *
      * @param  string|array  $attributes  Either the name of the widget, or an array with the attributes the new widget should hold, including the name attribute.
-     *
      * @return Widget
      */
     public static function add($attributes = null)
@@ -249,7 +248,6 @@ class Widget extends Fluent
      *
      * @param  string  $method  The method being called that doesn't exist.
      * @param  array  $parameters  The arguments when that method was called.
-     *
      * @return Widget
      */
     public function __call($method, $parameters)

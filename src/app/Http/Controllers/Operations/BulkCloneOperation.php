@@ -43,7 +43,6 @@ trait BulkCloneOperation
      * Create duplicates of multiple entries in the datatabase.
      *
      * @param  int  $id
-     *
      * @return Response
      */
     public function bulkClone()

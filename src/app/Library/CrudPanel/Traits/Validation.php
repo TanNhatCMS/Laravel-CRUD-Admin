@@ -120,7 +120,6 @@ trait Validation
      *
      * @param  string  $inputKey  Field or input name.
      * @param  string  $operation  create / update
-     *
      * @return bool
      */
     public function isRequired($inputKey)

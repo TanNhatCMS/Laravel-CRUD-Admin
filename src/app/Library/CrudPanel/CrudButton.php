@@ -201,7 +201,6 @@ class CrudButton
      * Alias of stack().
      *
      * @param  string  $stack  The name of the stack where the button should be moved.
-     *
      * @return self
      */
     public function to($stack)
@@ -214,7 +213,6 @@ class CrudButton
      * Alias of stack().
      *
      * @param  string  $stack  The name of the stack where the button should be moved.
-     *
      * @return self
      */
     public function group($stack)
@@ -227,7 +225,6 @@ class CrudButton
      * Alias of stack().
      *
      * @param  string  $stack  The name of the stack where the button should be moved.
-     *
      * @return self
      */
     public function section($stack)
@@ -244,7 +241,6 @@ class CrudButton
      * The HTML itself of the button.
      *
      * @param  object|null  $entry  The eloquent Model for the current entry or null if no current entry.
-     *
      * @return HTML
      */
     public function getHtml($entry = null)

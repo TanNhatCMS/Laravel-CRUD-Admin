@@ -17,7 +17,6 @@ trait Search
      * Add conditions to the CRUD query for a particular search term.
      *
      * @param  string  $searchTerm  Whatever string the user types in the search bar.
-     *
      * @return \Illuminate\Database\Eloquent\Builder
      */
     public function applySearchTerm($searchTerm)
@@ -201,7 +200,6 @@ trait Search
      *
      * @param  \Illuminate\Database\Eloquent\Model  $entry  A db entry of the current entity;
      * @param  bool|int  $rowNumber  The number shown to the user as row number (index);
-     *
      * @return array Array of HTML cell contents.
      */
     public function getRowViews($entry, $rowNumber = false)
@@ -243,7 +241,6 @@ trait Search
      * @param  array  $column
      * @param  \Illuminate\Database\Eloquent\Model  $entry  A db entry of the current entity;
      * @param  bool|int  $rowNumber  The number shown to the user as row number (index);
-     *
      * @return string
      */
     public function getCellView($column, $entry, $rowNumber = false)
@@ -255,7 +252,6 @@ trait Search
      * Get the name of the view to load for the cell.
      *
      * @param  array  $column
-     *
      * @return string
      */
     private function getCellViewName($column)
@@ -286,7 +282,6 @@ trait Search
      * @param  array  $column
      * @param  object  $entry
      * @param  bool|int  $rowNumber  The number shown to the user as row number (index)
-     *
      * @return string
      */
     private function renderCellView($view, $column, $entry, $rowNumber = false)
@@ -310,7 +305,6 @@ trait Search
      * @param  int  $totalRows
      * @param  int  $filteredRows
      * @param  bool|int  $startIndex
-     *
      * @return array
      */
     public function getEntriesAsJsonForDatatables($entries, $totalRows, $filteredRows, $startIndex = false)

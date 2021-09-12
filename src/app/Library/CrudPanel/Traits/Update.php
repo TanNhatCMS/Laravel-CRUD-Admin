@@ -17,7 +17,6 @@ trait Update
      *
      * @param  int  $id  The entity's id
      * @param  array  $data  All inputs to be updated.
-     *
      * @return object
      */
     public function update($id, $data)
@@ -44,7 +43,6 @@ trait Update
      * Get all fields needed for the EDIT ENTRY form.
      *
      * @param  int  $id  The id of the entry that is being edited.
-     *
      * @return array The fields with attributes, fake attributes and values.
      */
     public function getUpdateFields($id = false)
@@ -83,7 +81,6 @@ trait Update
      *
      * @param  \Illuminate\Database\Eloquent\Model  $model  The current CRUD model.
      * @param  array  $field  The CRUD field array.
-     *
      * @return mixed The value of the 'name' attribute from the relation model.
      */
     private function getModelAttributeValue($model, $field)

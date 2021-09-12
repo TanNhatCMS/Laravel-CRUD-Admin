@@ -68,7 +68,6 @@ class PublishView extends Command
      * Take a blade file from the vendor folder and publish it to the resources folder.
      *
      * @param  string  $file  The filename without extension
-     *
      * @return void
      */
     protected function publishFile($file)

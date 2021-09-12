@@ -231,7 +231,6 @@ class CrudColumn
      *
      * @param  string  $method  The method being called that doesn't exist.
      * @param  array  $parameters  The arguments when that method was called.
-     *
      * @return CrudColumn
      */
     public function __call($method, $parameters)

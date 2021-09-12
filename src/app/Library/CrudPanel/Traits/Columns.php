@@ -62,7 +62,6 @@ trait Columns
      * Add a column at the end of to the CRUD object's "columns" array.
      *
      * @param  array|string  $column
-     *
      * @return self
      */
     public function addColumn($column)
@@ -126,7 +125,6 @@ trait Columns
      * Add the default column type to the given Column, inferring the type from the database column type.
      *
      * @param  array  $column
-     *
      * @return array|bool
      */
     public function addDefaultTypeToColumn($column)
@@ -176,6 +174,7 @@ trait Columns
 
     /**
      * Remove an attribute from one column's definition array.
+     *
      * @param  string  $column  The name of the column.
      * @param  string  $attribute  The name of the attribute being removed.
      */
@@ -284,7 +283,6 @@ trait Columns
      * Get a column by the id, from the associative array.
      *
      * @param  int  $column_number  Placement inside the columns array.
-     *
      * @return array Column details.
      */
     public function findColumnById($column_number)
@@ -310,7 +308,6 @@ trait Columns
      * in the CRUD table view. Usually set to 10000 in order to hide it.
      *
      * @param  int  $number  The priority, from 1 to infinity. Lower is better.
-     *
      * @return self
      */
     public function setActionsColumnPriority($number)

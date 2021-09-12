@@ -56,7 +56,6 @@ class PublishBackpackMiddleware extends GeneratorCommand
      * Build the class. Replace Backpack namespace with App one.
      *
      * @param  string  $name
-     *
      * @return string
      */
     protected function buildClass($name = false)
@@ -72,7 +71,6 @@ class PublishBackpackMiddleware extends GeneratorCommand
      *
      * @param  string  $stub
      * @param  string  $name
-     *
      * @return $this
      */
     protected function makeReplacements(&$stub)

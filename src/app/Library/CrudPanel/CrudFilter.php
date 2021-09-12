@@ -180,6 +180,7 @@ class CrudFilter
 
     /**
      * Remove an attribute from one field's definition array.
+     *
      * @param  string  $field  The name of the field.
      * @param  string  $attribute  The name of the attribute being removed.
      */
@@ -558,7 +559,6 @@ class CrudFilter
      *
      * @param  string  $method  The method being called that doesn't exist.
      * @param  array  $parameters  The arguments when that method was called.
-     *
      * @return CrudFilter
      */
     public function __call($method, $parameters)

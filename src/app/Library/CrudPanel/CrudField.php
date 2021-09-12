@@ -250,7 +250,6 @@ class CrudField
      *
      * @param  string  $method  The method being called that doesn't exist.
      * @param  array  $parameters  The arguments when that method was called.
-     *
      * @return CrudField
      */
     public function __call($method, $parameters)

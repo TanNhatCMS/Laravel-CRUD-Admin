@@ -42,7 +42,6 @@ trait CloneOperation
      * Create a duplicate of the current entry in the datatabase.
      *
      * @param  int  $id
-     *
      * @return Response
      */
     public function clone($id)

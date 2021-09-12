@@ -42,7 +42,6 @@ trait DeleteOperation
      * Remove the specified resource from storage.
      *
      * @param  int  $id
-     *
      * @return string
      */
     public function destroy($id)

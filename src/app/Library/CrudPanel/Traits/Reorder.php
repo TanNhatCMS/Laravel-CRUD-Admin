@@ -11,7 +11,6 @@ trait Reorder
      * Change the order and parents of the given elements, according to the NestedSortable AJAX call.
      *
      * @param  array  $request  The entire request from the NestedSortable AJAX Call.
-     *
      * @return int The number of items whose position in the tree has been changed.
      */
     public function updateTreeOrder($request)

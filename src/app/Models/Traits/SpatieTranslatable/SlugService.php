@@ -11,7 +11,6 @@ class SlugService extends \Cviebrock\EloquentSluggable\Services\SlugService
      *
      * @param  \Illuminate\Database\Eloquent\Model  $model
      * @param  bool  $force
-     *
      * @return bool
      */
     public function slug(Model $model, bool $force = false): bool

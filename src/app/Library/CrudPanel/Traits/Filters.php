@@ -136,7 +136,6 @@ trait Filters
 
     /**
      * @param  string  $name
-     *
      * @return null|CrudFilter
      */
     public function getFilter($name)
@@ -148,7 +147,6 @@ trait Filters
 
     /**
      * @param  string  $name
-     *
      * @return bool
      */
     public function hasActiveFilter($name)
@@ -163,7 +161,6 @@ trait Filters
      *
      * @param  string  $name  The filter name.
      * @param  array  $modifications  An array of changes to be made.
-     *
      * @return CrudFilter The filter that has suffered modifications, for daisychaining methods.
      */
     public function modifyFilter($name, $modifications)
