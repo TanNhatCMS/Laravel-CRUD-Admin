@@ -2,8 +2,9 @@
 <li filter-name="{{ $filter->name }}"
     filter-type="{{ $filter->type }}"
     filter-key="{{ $filter->key }}"
+    filter-values="{{json_encode($filter->values)}}"
 	class="nav-item dropdown {{ Request::get($filter->name)?'active':'' }}">
-    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ $filter->label }} <span class="caret"></span></a>
+    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ $filter->label }} <span id="filter_value_{{ $filter->key }}">{{ ($filter->isActive()) ? $filter->values[$filter->currentValue] : '' }}</span> <span class="caret"></span></a>
     <div class="dropdown-menu p-0">
       <div class="form-group backpack-filter mb-0">
 			<select 
@@ -85,6 +86,7 @@
             $('select[data-filter-type=select2]').not('[data-filter-enabled]').each(function () {
             	var filterName = $(this).attr('data-filter-name');
                 var filter_key = $(this).attr('data-filter-key');
+                var filter_values = JSON.parse($("li[filter-key="+filter_key+"]").attr('filter-values'));
             	var element = $(this);
 
             	$(this).attr('data-filter-enabled', 'true');
@@ -116,11 +118,13 @@
 					// mark this filter as active in the navbar-filters
 					if (URI(new_url).hasQuery(parameter, true)) {
 						$("li[filter-key="+filter_key+"]").addClass('active');
+                        $('#filter_value_'+filter_key).text(filter_values[value]);
 					}
 					else
 					{
 						$("li[filter-key="+filter_key+"]").removeClass("active");
 						$("li[filter-key="+filter_key+"]").find('.dropdown-menu').removeClass("show");
+                        $('#filter_value_'+filter_key).text(null);
 					}
 				});
 
@@ -134,6 +138,7 @@
 					// console.log('select2 filter cleared');
 					$("li[filter-key="+filter_key+"]").removeClass('active');
 	                $('#filter_'+filter_key).val(null).trigger('change');
+                    $('#filter_value_'+filter_key).text(null);
 				});
             });
 		});
