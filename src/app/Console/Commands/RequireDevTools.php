@@ -197,7 +197,7 @@ class RequireDevTools extends Command
         // Add auth.json to gitignore
         if (File::exists('auth.json')) {
             $gitignore = Str::of(File::get('.gitignore'));
-            if (!$gitignore->contains('auth.json')) {
+            if (! $gitignore->contains('auth.json')) {
                 File::put('.gitignore', $gitignore->finish("\n")->append('auth.json'));
             }
         }
