@@ -1,5 +1,6 @@
 @php
     $value = data_get($entry, $column['name']);
+    if (is_string($value)) $value = json_decode($value); 
     $column['prefix'] = $column['prefix'] ?? '';
     $column['disk'] = $column['disk'] ?? null;
     $column['escaped'] = $column['escaped'] ?? true;
