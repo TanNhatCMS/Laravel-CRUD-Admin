@@ -3,3 +3,9 @@
 * Backpack Crud
 *
 */
+.sidebar .nav-dropdown-items .nav-dropdown {
+    padding-left: 0.8rem;
+}
+.sidebar .nav-dropdown-items .nav-dropdown:not(.open) > a {
+    font-weight: normal!important;
+}
