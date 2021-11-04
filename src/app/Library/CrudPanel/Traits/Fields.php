@@ -311,6 +311,7 @@ trait Fields
                     }
                 }
             }
+
             return isset($value['upload']) && $value['upload'] == true;
         });
 

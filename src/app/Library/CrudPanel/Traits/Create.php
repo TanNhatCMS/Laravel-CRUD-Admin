@@ -249,18 +249,20 @@ trait Create
         }
         // cicle all the fields that have the beforeSaving callback
         foreach ($fields as $field_name => $field_definition) {
-            if(!is_array($field_definition['name'])) {
-                $data[$field_name]= $this->runBeforeSavingCallback($data[$field_name], $field_name, $field_definition);
-            }else{
-                foreach($field_definition['name'] as $f_name) {
+            if (! is_array($field_definition['name'])) {
+                $data[$field_name] = $this->runBeforeSavingCallback($data[$field_name], $field_name, $field_definition);
+            } else {
+                foreach ($field_definition['name'] as $f_name) {
                     $data[$f_name] = $this->runBeforeSavingCallback($data[$f_name], $f_name, $field_definition);
                 }
             }
         }
+
         return $data;
     }
 
-    protected function runBeforeSavingCallback($current, $field_name, $field) {
+    protected function runBeforeSavingCallback($current, $field_name, $field)
+    {
         $previous_values = $this->getCurrentEntry() ? $this->getCurrentEntry()->{$field_name} : null;
         if (is_callable($field['beforeSaving'])) {
             return $field['beforeSaving']($current, $previous_values, $field_name);
