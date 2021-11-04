@@ -238,6 +238,13 @@ trait Create
         return $relationData;
     }
 
+    /**
+     * Transform the data before saving into the database. This is kind of an alias to Laravel Mutators but defined on Controler when defining the field.
+     * We basically call this "mutator" before saving the data into the database but after data is already validated.
+     *
+     * @param  array  $data  The form data.
+     * @return array The processed data.
+     */
     protected function handleBeforeSavingCallback($data)
     {
         $fields = array_filter($this->fields(), function ($field) use ($data) {
