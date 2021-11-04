@@ -27,6 +27,8 @@ trait Update
 
         $data = $this->changeBelongsToNamesFromRelationshipToForeignKey($data);
 
+        $data = $this->handleBeforeSavingCallback($data);
+
         $this->createRelations($item, $data);
 
         // omit the n-n relationships when updating the eloquent item
