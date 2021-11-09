@@ -22,8 +22,8 @@ trait FetchOperation
 
         if (count($matches[1])) {
             foreach ($matches[1] as $methodName) {
-                Route::post($segment.'/fetch/'.$methodName, [
-                    'as'        => $segment.'.fetch'.Str::studly($methodName),
+                Route::post($segment.'/fetch/'.lcfirst($methodName), [
+                    'as'        => $segment.'.fetch'.$methodName,
                     'uses'      => $controller.'@fetch'.$methodName,
                     'operation' => 'FetchOperation',
                 ]);
