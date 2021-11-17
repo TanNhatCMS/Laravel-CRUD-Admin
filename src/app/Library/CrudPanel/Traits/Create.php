@@ -255,7 +255,7 @@ trait Create
             return $data;
         }
         // cicle all the fields that have the beforeSaving callback
-        foreach ($fields as $field_name => $field_definition) {
+        foreach ($fieldsWithBeforeSaving as $field_name => $field_definition) {
             if (! is_array($field_definition['name'])) {
                 $data[$field_name] = $this->runBeforeSavingCallback($data[$field_name], $field_name, $field_definition);
             } else {
