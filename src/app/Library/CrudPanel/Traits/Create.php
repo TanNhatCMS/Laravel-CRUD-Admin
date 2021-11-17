@@ -247,7 +247,7 @@ trait Create
      */
     protected function handleBeforeSavingCallback($data)
     {
-        $fields = array_filter($this->fields(), function ($field) use ($data) {
+        $fieldsWithBeforeSaving = array_filter($this->fields(), function ($field) use ($data) {
             return in_array($field['name'], array_keys($data)) && isset($field['beforeSaving']);
         });
 
