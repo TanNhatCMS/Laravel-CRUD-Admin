@@ -27,7 +27,7 @@ trait Update
 
         $data = $this->changeBelongsToNamesFromRelationshipToForeignKey($data);
 
-        $data = $this->handleBeforeSavingCallback($data);
+        $data = $this->handleBeforeSavingCallbacks($data);
 
         $this->createRelations($item, $data);
 

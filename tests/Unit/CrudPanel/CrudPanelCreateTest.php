@@ -405,4 +405,40 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
         $entry = Article::find(1);
         $this->crudPanel->syncPivot($entry, $inputData);
     }
+
+    public function testBeforSavingCallback() {
+        $this->crudPanel->setModel(User::class);
+
+        $this->crudPanel->addFields([
+        [
+            'name' => 'id',
+            'type' => 'hidden'
+        ],
+        [
+            'name' => 'name',
+            'beforeSaving' => function($data,$current,$previous) {
+                return strtoupper($current);
+            }
+        ], 
+        [
+            'name' => 'email',
+            'type' => 'email',
+        ], 
+        [
+            'name' => 'password',
+            'type' => 'password',
+        ],
+    ]);
+        $faker = Factory::create();
+        $name = $faker->name;
+        $inputData = [
+            'name'     => $name,
+            'email'    => $faker->safeEmail,
+            'password' => bcrypt($faker->password()),
+        ];
+
+        $entry = $this->crudPanel->create($inputData);
+
+        $this->assertEquals($entry->name, strtoupper($name));
+    }
 }

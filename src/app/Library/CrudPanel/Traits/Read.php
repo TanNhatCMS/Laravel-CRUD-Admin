@@ -20,7 +20,7 @@ trait Read
             return $this->entry->getKey();
         }
 
-        $params = \Route::current()->parameters();
+        $params = !is_null(\Route::current()) ? \Route::current()->parameters() : [];
 
         return  // use the entity name to get the current entry
                 // this makes sure the ID is corrent even for nested resources
