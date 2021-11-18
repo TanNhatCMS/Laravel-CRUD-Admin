@@ -25,7 +25,7 @@ trait Create
         $data = $this->decodeJsonCastedAttributes($data);
         $data = $this->compactFakeFields($data);
         $data = $this->changeBelongsToNamesFromRelationshipToForeignKey($data);
-        $data = $this->handleBeforeSavingCallback($data);
+        $data = $this->handleBeforeSavingCallbacks($data);
 
         // omit the n-n relationships when updating the eloquent item
         $nn_relationships = Arr::pluck($this->getRelationFieldsWithPivot(), 'name');
@@ -245,7 +245,7 @@ trait Create
      * @param  array  $data  The form data.
      * @return array The processed data.
      */
-    private function handleBeforeSavingCallback($data)
+    private function handleBeforeSavingCallbacks($data)
     {
         $fieldsWithBeforeSaving = array_filter($this->fields(), function ($field) use ($data) {
             return in_array($field['name'], array_keys($data)) && (isset($field['beforeSaving']) && is_callable($field['beforeSaving']));
@@ -257,10 +257,12 @@ trait Create
         // cicle all the fields that have the beforeSaving callback
         foreach ($fieldsWithBeforeSaving as $field_name => $field_definition) {
             if (! is_array($field_definition['name'])) {
-                $data[$field_name] = call_user_func($field_definition['beforeSaving'],[$data[$field_name]]);
+                $previous_values = $this->getCurrentEntry() ? $this->getCurrentEntry()->{$field_name} : null;
+                $data[$field_name] = call_user_func($field_definition['beforeSaving'],[$data, $data[$field_name], $previous_values]);
             } else { // field name is an array, call the before saving for each of the represented fields (eg: start_date|end_date in daterange)
                 foreach ($field_definition['name'] as $field_name) {
-                    $data[$field_name] = call_user_func($field_definition['beforeSaving'],[$data[$field_name]]);
+                    $previous_values = $this->getCurrentEntry() ? $this->getCurrentEntry()->{$field_name} : null;
+                    $data[$field_name] = call_user_func($field_definition['beforeSaving'],[$data, $data[$field_name], $previous_values]);
                 }
             }
         }
