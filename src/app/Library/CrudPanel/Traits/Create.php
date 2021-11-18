@@ -258,14 +258,15 @@ trait Create
         foreach ($fieldsWithBeforeSaving as $field_name => $field_definition) {
             if (! is_array($field_definition['name'])) {
                 $previous_values = $this->getCurrentEntry() ? $this->getCurrentEntry()->{$field_name} : null;
-                $data[$field_name] = call_user_func($field_definition['beforeSaving'],[$data, $data[$field_name], $previous_values]);
+                $data[$field_name] = call_user_func($field_definition['beforeSaving'], [$data, $data[$field_name], $previous_values]);
             } else { // field name is an array, call the before saving for each of the represented fields (eg: start_date|end_date in daterange)
                 foreach ($field_definition['name'] as $field_name) {
                     $previous_values = $this->getCurrentEntry() ? $this->getCurrentEntry()->{$field_name} : null;
-                    $data[$field_name] = call_user_func($field_definition['beforeSaving'],[$data, $data[$field_name], $previous_values]);
+                    $data[$field_name] = call_user_func($field_definition['beforeSaving'], [$data, $data[$field_name], $previous_values]);
                 }
             }
         }
+
         return $data;
     }
 }
