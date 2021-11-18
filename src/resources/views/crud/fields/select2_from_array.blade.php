@@ -1,10 +1,10 @@
+<!-- select2 from array -->
 @php
     $field['placeholder'] = $field['placeholder'] ?? '-';
     $field['allows_null'] = $field['allows_null'] ?? $crud->model::isColumnNullable($field['name']);
     $field['allows_multiple'] = $field['allows_multiple'] ?? false;
 
 @endphp
-<!-- select2 from array -->
 @include('crud::fields.inc.wrapper_start')
     <label>{!! $field['label'] !!}</label>
     <select
