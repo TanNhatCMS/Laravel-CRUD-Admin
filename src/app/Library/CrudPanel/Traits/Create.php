@@ -245,34 +245,25 @@ trait Create
      * @param  array  $data  The form data.
      * @return array The processed data.
      */
-    protected function handleBeforeSavingCallback($data)
+    private function handleBeforeSavingCallback($data)
     {
         $fieldsWithBeforeSaving = array_filter($this->fields(), function ($field) use ($data) {
-            return in_array($field['name'], array_keys($data)) && isset($field['beforeSaving']);
+            return in_array($field['name'], array_keys($data)) && (isset($field['beforeSaving']) && is_callable($field['beforeSaving']));
         });
 
-        if (empty($fields)) {
+        if (empty($fieldsWithBeforeSaving)) {
             return $data;
         }
         // cicle all the fields that have the beforeSaving callback
         foreach ($fieldsWithBeforeSaving as $field_name => $field_definition) {
             if (! is_array($field_definition['name'])) {
-                $data[$field_name] = $this->runBeforeSavingCallback($data[$field_name], $field_name, $field_definition);
-            } else {
-                foreach ($field_definition['name'] as $f_name) {
-                    $data[$f_name] = $this->runBeforeSavingCallback($data[$f_name], $f_name, $field_definition);
+                $data[$field_name] = call_user_func($field_definition['beforeSaving'],[$data[$field_name]]);
+            } else { // field name is an array, call the before saving for each of the represented fields (eg: start_date|end_date in daterange)
+                foreach ($field_definition['name'] as $field_name) {
+                    $data[$field_name] = call_user_func($field_definition['beforeSaving'],[$data[$field_name]]);
                 }
             }
         }
-
         return $data;
-    }
-
-    protected function runBeforeSavingCallback($current, $field_name, $field)
-    {
-        $previous_values = $this->getCurrentEntry() ? $this->getCurrentEntry()->{$field_name} : null;
-        if (is_callable($field['beforeSaving'])) {
-            return $field['beforeSaving']($current, $previous_values, $field_name);
-        }
     }
 }
