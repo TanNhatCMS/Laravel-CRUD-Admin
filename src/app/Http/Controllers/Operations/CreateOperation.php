@@ -2,6 +2,7 @@
 
 namespace Backpack\CRUD\app\Http\Controllers\Operations;
 
+use Backpack\CRUD\BackpackServiceProvider;
 use Illuminate\Support\Facades\Route;
 
 trait CreateOperation
@@ -21,11 +22,13 @@ trait CreateOperation
             'operation' => 'create',
         ]);
 
-        Route::post($segment, [
+        $storeRoute = Route::post($segment, [
             'as'        => $routeName.'.store',
             'uses'      => $controller.'@store',
             'operation' => 'create',
         ]);
+
+        BackpackServiceProvider::skipConvertingEmptyStringsToNull($storeRoute);
     }
 
     /**

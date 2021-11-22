@@ -220,6 +220,29 @@ class BackpackServiceProvider extends ServiceProvider
         });
     }
 
+    /**
+     * Add a rule to ConvertEmptyStringsToNull to not run itself for a specific route.
+     * Used to be used inside CreateOperation and UpdateOperation, but can be used
+     * by any other operation too, if they need it.
+     *
+     * @param  \Illuminate\Routing\Route $route
+     * @return void
+     */
+    public function skipConvertingEmptyStringsToNull($route)
+    {
+        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::skipWhen(
+            function ($request) use ($route) {
+                // Unfortunately inside this closure we don't have access to the current route,
+                // both request()->route() and Route::getCurrent() will return null,
+                // so we have to rely on manual matching
+                $routeUriMatches = $request->is(str_replace('{id}', '*', $route->uri));
+                $routeMethodMatches = in_array($request->method(), $route->methods);
+
+                return ($routeUriMatches && $routeMethodMatches) ? true : false;
+            }
+        );
+    }
+
     public function loadViewsWithFallbacks()
     {
         $customBaseFolder = resource_path('views/vendor/backpack/base');
