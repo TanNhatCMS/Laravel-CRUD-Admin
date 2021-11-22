@@ -225,7 +225,7 @@ class BackpackServiceProvider extends ServiceProvider
      * Used to be used inside CreateOperation and UpdateOperation, but can be used
      * by any other operation too, if they need it.
      *
-     * @param  \Illuminate\Routing\Route $route
+     * @param  \Illuminate\Routing\Route  $route
      * @return void
      */
     public function skipConvertingEmptyStringsToNull($route)
