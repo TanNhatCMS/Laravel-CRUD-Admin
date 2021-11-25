@@ -348,9 +348,10 @@ class CrudPanel
         if (! isset($model)) {
             $model = $this->model;
         }
-
+        
         $result = array_reduce(array_splice($relationArray, 0, $length), function ($obj, $method) {
             try {
+                
                 $result = $obj->$method();
 
                 return $result->getRelated();

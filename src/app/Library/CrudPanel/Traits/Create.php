@@ -5,6 +5,7 @@ namespace Backpack\CRUD\app\Library\CrudPanel\Traits;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 trait Create
 {
@@ -24,19 +25,37 @@ trait Create
     {
         $data = $this->decodeJsonCastedAttributes($data);
         $data = $this->compactFakeFields($data);
+
+        // omit all relationships except BelongsTo when creating the entry
+        $relationship_field_names = $this->getRelationshipFieldNamesToExclude();
+        
         $data = $this->changeBelongsToNamesFromRelationshipToForeignKey($data);
 
-        // omit the n-n relationships when updating the eloquent item
-        $nn_relationships = Arr::pluck($this->getRelationFieldsWithPivot(), 'name');
-
-        $item = $this->model->create(Arr::except($data, $nn_relationships));
-
-        $relationData = $this->getRelationDataFromFormData($data);
-
+        $item = $this->model->create(Arr::except($data, $relationship_field_names));
+        
+        $relation_data = $this->getRelationDataFromFormData($data);
+        
         // handle the creation of the model relations after the main entity is created.
-        $this->createRelationsForItem($item, $relationData);
+        $this->createRelationsForItem($item, $relation_data);
 
         return $item;
+    }
+
+    protected function getRelationshipFieldNamesToExclude() {
+        $fields = $this->parseRelationFieldNamesFromHtml($this->getRelationFields());
+        // we want the main entry BelongsTo relations to go through
+        $fields = array_filter($fields, function($field) {
+            return $field['relation_type'] !== 'BelongsTo' || ($field['relation_type'] === 'BelongsTo' && Str::contains($field['name'], '.'));
+        });
+
+        // we check if any of the field names to be removed contains a dot, if so, we remove all fields from array with same key.
+        // example: HasOne Address -> address.street, address.country, would remove whole `address` instead of both single fields
+        return array_unique(array_map(function($field_name) {
+            if(Str::contains($field_name, '.')) {
+                return Str::before($field_name, '.');
+            }
+            return $field_name;
+        },Arr::pluck($fields, 'name')));
     }
 
     /**
@@ -50,31 +69,17 @@ trait Create
     }
 
     /**
-     * Get all fields with relation set (model key set on field).
+     * Get all fields with relation set
      *
      * @return array The fields with model key set.
      */
     public function getRelationFields()
     {
         $fields = $this->fields();
-        $relationFields = [];
 
-        foreach ($fields as $field) {
-            if (isset($field['model']) && $field['model'] !== false) {
-                array_push($relationFields, $field);
-            }
-
-            if (isset($field['subfields']) &&
-                is_array($field['subfields']) &&
-                count($field['subfields'])) {
-                foreach ($field['subfields'] as $subfield) {
-                    $subfield = $this->makeSureFieldHasNecessaryAttributes($subfield);
-                    array_push($relationFields, $subfield);
-                }
-            }
-        }
-
-        return $relationFields;
+        return array_filter($fields, function($field) {
+            return isset($field['relation_type']);
+        });
     }
 
     /**
@@ -226,27 +231,75 @@ trait Create
      */
     private function getRelationDataFromFormData($data)
     {
-        $relation_fields = $this->getRelationFields();
-        $relationData = [];
+        $fields = $this->parseRelationFieldNamesFromHtml($this->getRelationFields());
+        
+        // exclude the already attached belongs to relations but include nested belongs to.
+        $relation_fields = Arr::where($fields, function ($field, $key) {
+            return $field['relation_type'] !== 'BelongsTo' || ($field['relation_type'] === 'BelongsTo' && Str::contains($field['name'], '.'));
+        });
+        
+        $relation_data = [];
+
         foreach ($relation_fields as $relation_field) {
-            $attributeKey = $this->parseRelationFieldNamesFromHtml([$relation_field])[0]['name'];
+            $attributeKey = $relation_field['name'];
+            $relation_entity = $this->getOnlyRelationEntity($relation_field);
+            $key = implode('.relations.', explode('.', $relation_entity));
+            $field_data = Arr::get($relation_data, 'relations.'.$key, []);
 
-            if (! is_null(Arr::get($data, $attributeKey)) && isset($relation_field['pivot']) && $relation_field['pivot'] !== true) {
-                $key = implode('.relations.', explode('.', $this->getOnlyRelationEntity($relation_field)));
-                $fieldData = Arr::get($relationData, 'relations.'.$key, []);
-                if (! array_key_exists('model', $fieldData)) {
-                    $fieldData['model'] = $relation_field['model'];
-                }
-                if (! array_key_exists('parent', $fieldData)) {
-                    $fieldData['parent'] = $this->getRelationModel($attributeKey, -1);
-                }
-                $relatedAttribute = Arr::last(explode('.', $attributeKey));
-                $fieldData['values'][$relatedAttribute] = Arr::get($data, $attributeKey);
+            if (! array_key_exists('model', $field_data)) {
+                $field_data['model'] = $relation_field['model'];
+            }
+            if (! array_key_exists('parent', $field_data)) {
+                $field_data['parent'] = $this->getRelationModel($relation_entity, -1);
+            }
 
-                Arr::set($relationData, 'relations.'.$key, $fieldData);
+            // when using HasMany/MorphMany if fallback_id is provided instead of deleting the models
+            // from database we resort to this fallback provided by developer
+            if (array_key_exists('fallback_id', $relation_field)) {
+                $field_data['fallback_id'] = $relation_field['fallback_id'];
+            }
+
+            // when using HasMany/MorphMany and column is nullable, by default backpack sets the value to null.
+            // this allow developers to override that behavior and force deletion from database
+            $field_data['force_delete'] = $relation_field['force_delete'] ?? false;
+
+            if (! array_key_exists('relation_type', $field_data)) {
+                $field_data['relation_type'] = $relation_field['relation_type'];
+            }
+
+            $related_attribute = Arr::last(explode('.', $attributeKey));
+
+            $attribute_to_get_from_data_array = $attributeKey;
+
+            if($field_data['relation_type'] === 'BelongsTo') {
+                $model_instance = new $field_data['parent'];
+                $relation = $model_instance->{$related_attribute}();
+                $attribute_to_get_from_data_array = Arr::has($data, $attributeKey) ? $attributeKey : Str::beforeLast($attributeKey, '.').'.'.$relation->getForeignKeyName();
+            } 
+
+            $field_data['values'][$related_attribute] = Arr::get($data, $attribute_to_get_from_data_array);
+
+            Arr::set($relation_data, 'relations.'.$key, $field_data);
+        }
+   
+        $relation_data = $this->mergeBelongsToRelationsIntoRelationData($relation_data);
+        
+        return $relation_data;
+    }
+
+    private function mergeBelongsToRelationsIntoRelationData($relation_data) {
+        foreach($relation_data['relations'] as  $key => $data) {
+            if(isset($data['relations'])) {
+                foreach($data['relations'] as $nested_key => $nested_relation) {
+                    if($nested_relation['relation_type'] === 'BelongsTo') {
+                        $model_instance = new $nested_relation['parent'];
+                        $relation = $model_instance->{$nested_key}();
+                        $relation_data['relations'][$key]['values'][$relation->getForeignKeyName()] = array_key_exists($relation->getRelationName(), $nested_relation['values']) ? $nested_relation['values'][$relation->getRelationName()] : $nested_relation['values'][$relation->getForeignKeyName()];
+                        unset($relation_data['relations'][$key]['relations'][$nested_key]);
+                    }
+                }
             }
         }
-
-        return $relationData;
+        return $relation_data;
     }
 }

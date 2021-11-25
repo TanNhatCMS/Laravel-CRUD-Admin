@@ -92,23 +92,38 @@ trait Relationships
      * @param  array  $fields
      * @return array
      */
-    public function parseRelationFieldNamesFromHtml($fields)
+    private function parseRelationFieldNamesFromHtml($fields)
     {
         foreach ($fields as &$field) {
-            //we only want to parse fields that has a relation type and their name contains [ ] used in html.
-            if (isset($field['relation_type']) && preg_match('/[\[\]]/', $field['name']) !== 0) {
-                $chunks = explode('[', $field['name']);
-
-                foreach ($chunks as &$chunk) {
-                    if (strpos($chunk, ']')) {
-                        $chunk = str_replace(']', '', $chunk);
-                    }
-                }
-                $field['name'] = implode('.', $chunks);
+            //we only want to parse fields that has a relation type
+            if (isset($field['relation_type'])) {
+                $field['name'] = $this->parseRelationFieldNameFromHtml($field['name']);
             }
         }
-
         return $fields;
+    }
+
+    /**
+     * Parse the field name back to the related entity after the form is submited.
+     * Its called in getAllFieldNames().
+     *
+     * @param  string  $field_name
+     * @return array
+     */
+    private function parseRelationFieldNameFromHtml($field_name)
+    {   
+        //we only want to parse fields that name contains [ ] used in html.
+        if (preg_match('/[\[\]]/', $field_name) !== 0) {
+            $chunks = explode('[', $field_name);
+
+            foreach ($chunks as &$chunk) {
+                if (strpos($chunk, ']')) {
+                    $chunk = str_replace(']', '', $chunk);
+                }
+            }
+            return implode('.', $chunks);
+        }
+        return $field_name;
     }
 
     protected function changeBelongsToNamesFromRelationshipToForeignKey($data)
@@ -116,17 +131,19 @@ trait Relationships
         $belongs_to_fields = $this->getFieldsWithRelationType('BelongsTo');
 
         foreach ($belongs_to_fields as $relation_field) {
-            if (! isset($relation_field['entity'])) {
-                dd($relation_field);
-            }
             $relation = $this->getRelationInstance($relation_field);
             $entity = $this->getOnlyRelationEntity($relation_field);
+            $relation_key_to_substitute = $relation->getForeignKeyName();
+            // if we are in a nested relation 
+            if(Str::contains($entity, '.')) {
+                $relation_key_to_substitute = Str::beforeLast($entity, '.').'.'.$relation->getForeignKeyName();
+            }
             if (Arr::has($data, $entity)) {
-                Arr::set($data, $entity.'.'.$relation->getForeignKeyName(), Arr::get($data, $entity));
+                Arr::set($data, $relation_key_to_substitute, Arr::get($data, $entity));
                 Arr::forget($data, $entity);
             }
         }
-
+        
         return $data;
     }
 

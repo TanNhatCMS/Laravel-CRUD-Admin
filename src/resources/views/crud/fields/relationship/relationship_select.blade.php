@@ -44,6 +44,8 @@
                                 ->pluck($field['attribute'], $connected_entity_key_name);
                 break;
         }
+
+        $current_value = !is_array($current_value) ? $current_value->toArray() : $current_value;
     }
 @endphp
 
@@ -80,7 +82,7 @@
             @php
                 $selected = '';
                 if(!empty($current_value)) {
-                    if(in_array($key, array_keys($current_value->toArray()))) {
+                    if(in_array($key, array_keys($current_value))) {
                         $selected = 'selected';
                     }
                 }
