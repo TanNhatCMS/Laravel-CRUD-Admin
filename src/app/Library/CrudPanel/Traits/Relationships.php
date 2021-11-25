@@ -100,6 +100,7 @@ trait Relationships
                 $field['name'] = $this->parseRelationFieldNameFromHtml($field['name']);
             }
         }
+
         return $fields;
     }
 
@@ -111,7 +112,7 @@ trait Relationships
      * @return array
      */
     private function parseRelationFieldNameFromHtml($field_name)
-    {   
+    {
         //we only want to parse fields that name contains [ ] used in html.
         if (preg_match('/[\[\]]/', $field_name) !== 0) {
             $chunks = explode('[', $field_name);
@@ -121,8 +122,10 @@ trait Relationships
                     $chunk = str_replace(']', '', $chunk);
                 }
             }
+
             return implode('.', $chunks);
         }
+
         return $field_name;
     }
 
@@ -134,8 +137,8 @@ trait Relationships
             $relation = $this->getRelationInstance($relation_field);
             $entity = $this->getOnlyRelationEntity($relation_field);
             $relation_key_to_substitute = $relation->getForeignKeyName();
-            // if we are in a nested relation 
-            if(Str::contains($entity, '.')) {
+            // if we are in a nested relation
+            if (Str::contains($entity, '.')) {
                 $relation_key_to_substitute = Str::beforeLast($entity, '.').'.'.$relation->getForeignKeyName();
             }
             if (Arr::has($data, $entity)) {
@@ -143,7 +146,7 @@ trait Relationships
                 Arr::forget($data, $entity);
             }
         }
-        
+
         return $data;
     }
 

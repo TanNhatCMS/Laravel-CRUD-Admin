@@ -28,34 +28,36 @@ trait Create
 
         // omit all relationships except BelongsTo when creating the entry
         $relationship_field_names = $this->getRelationshipFieldNamesToExclude();
-        
+
         $data = $this->changeBelongsToNamesFromRelationshipToForeignKey($data);
 
         $item = $this->model->create(Arr::except($data, $relationship_field_names));
-        
+
         $relation_data = $this->getRelationDataFromFormData($data);
-        
+
         // handle the creation of the model relations after the main entity is created.
         $this->createRelationsForItem($item, $relation_data);
 
         return $item;
     }
 
-    protected function getRelationshipFieldNamesToExclude() {
+    protected function getRelationshipFieldNamesToExclude()
+    {
         $fields = $this->parseRelationFieldNamesFromHtml($this->getRelationFields());
         // we want the main entry BelongsTo relations to go through
-        $fields = array_filter($fields, function($field) {
+        $fields = array_filter($fields, function ($field) {
             return $field['relation_type'] !== 'BelongsTo' || ($field['relation_type'] === 'BelongsTo' && Str::contains($field['name'], '.'));
         });
 
         // we check if any of the field names to be removed contains a dot, if so, we remove all fields from array with same key.
         // example: HasOne Address -> address.street, address.country, would remove whole `address` instead of both single fields
-        return array_unique(array_map(function($field_name) {
-            if(Str::contains($field_name, '.')) {
+        return array_unique(array_map(function ($field_name) {
+            if (Str::contains($field_name, '.')) {
                 return Str::before($field_name, '.');
             }
+
             return $field_name;
-        },Arr::pluck($fields, 'name')));
+        }, Arr::pluck($fields, 'name')));
     }
 
     /**
@@ -69,7 +71,7 @@ trait Create
     }
 
     /**
-     * Get all fields with relation set
+     * Get all fields with relation set.
      *
      * @return array The fields with model key set.
      */
@@ -77,7 +79,7 @@ trait Create
     {
         $fields = $this->fields();
 
-        return array_filter($fields, function($field) {
+        return array_filter($fields, function ($field) {
             return isset($field['relation_type']);
         });
     }
@@ -232,12 +234,12 @@ trait Create
     private function getRelationDataFromFormData($data)
     {
         $fields = $this->parseRelationFieldNamesFromHtml($this->getRelationFields());
-        
+
         // exclude the already attached belongs to relations but include nested belongs to.
         $relation_fields = Arr::where($fields, function ($field, $key) {
             return $field['relation_type'] !== 'BelongsTo' || ($field['relation_type'] === 'BelongsTo' && Str::contains($field['name'], '.'));
         });
-        
+
         $relation_data = [];
 
         foreach ($relation_fields as $relation_field) {
@@ -271,27 +273,28 @@ trait Create
 
             $attribute_to_get_from_data_array = $attributeKey;
 
-            if($field_data['relation_type'] === 'BelongsTo') {
+            if ($field_data['relation_type'] === 'BelongsTo') {
                 $model_instance = new $field_data['parent'];
                 $relation = $model_instance->{$related_attribute}();
                 $attribute_to_get_from_data_array = Arr::has($data, $attributeKey) ? $attributeKey : Str::beforeLast($attributeKey, '.').'.'.$relation->getForeignKeyName();
-            } 
+            }
 
             $field_data['values'][$related_attribute] = Arr::get($data, $attribute_to_get_from_data_array);
 
             Arr::set($relation_data, 'relations.'.$key, $field_data);
         }
-   
+
         $relation_data = $this->mergeBelongsToRelationsIntoRelationData($relation_data);
-        
+
         return $relation_data;
     }
 
-    private function mergeBelongsToRelationsIntoRelationData($relation_data) {
-        foreach($relation_data['relations'] as  $key => $data) {
-            if(isset($data['relations'])) {
-                foreach($data['relations'] as $nested_key => $nested_relation) {
-                    if($nested_relation['relation_type'] === 'BelongsTo') {
+    private function mergeBelongsToRelationsIntoRelationData($relation_data)
+    {
+        foreach ($relation_data['relations'] as  $key => $data) {
+            if (isset($data['relations'])) {
+                foreach ($data['relations'] as $nested_key => $nested_relation) {
+                    if ($nested_relation['relation_type'] === 'BelongsTo') {
                         $model_instance = new $nested_relation['parent'];
                         $relation = $model_instance->{$nested_key}();
                         $relation_data['relations'][$key]['values'][$relation->getForeignKeyName()] = array_key_exists($relation->getRelationName(), $nested_relation['values']) ? $nested_relation['values'][$relation->getRelationName()] : $nested_relation['values'][$relation->getForeignKeyName()];
@@ -300,6 +303,7 @@ trait Create
                 }
             }
         }
+
         return $relation_data;
     }
 }
