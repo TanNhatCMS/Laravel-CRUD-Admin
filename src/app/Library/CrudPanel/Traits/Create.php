@@ -31,8 +31,10 @@ trait Create
 
         $item = $this->model->create(Arr::except($data, $nn_relationships));
 
-        // if there are any relationships available, also sync those
-        $this->createRelations($item, $data);
+        $relationData = $this->getRelationDataFromFormData($data);
+
+        // handle the creation of the model relations after the main entity is created.
+        $this->createRelationsForItem($item, $relationData);
 
         return $item;
     }
@@ -66,6 +68,7 @@ trait Create
                 is_array($field['subfields']) &&
                 count($field['subfields'])) {
                 foreach ($field['subfields'] as $subfield) {
+                    $subfield = $this->makeSureFieldHasNecessaryAttributes($subfield);
                     array_push($relationFields, $subfield);
                 }
             }
@@ -96,8 +99,13 @@ trait Create
      */
     public function createRelations($item, $data)
     {
+        $relationData = $this->getRelationDataFromFormData($data);
+
+        // handles 1-1 and 1-n relations (HasOne, MorphOne, HasMany, MorphMany)
+        $this->createRelationsForItem($item, $relationData);
+
+        // this specifically handles M-M relations that could sync additional information into pivot table
         $this->syncPivot($item, $data);
-        $this->createOneToOneRelations($item, $data);
     }
 
     /**
@@ -153,7 +161,7 @@ trait Create
     }
 
     /**
-     * Create any existing one to one relations for the current model from the relation data.
+     * Create any existing relations for the current model.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $item  The current CRUD model.
      * @param  array  $formattedData  The form data.
@@ -168,24 +176,29 @@ trait Create
             if (! isset($relationData['model'])) {
                 continue;
             }
-            $model = $relationData['model'];
             $relation = $item->{$relationMethod}();
+            $relation_type = get_class($relation);
 
-            if ($relation instanceof BelongsTo) {
-                $modelInstance = $model::find($relationData['values'])->first();
-                if ($modelInstance != null) {
-                    $relation->associate($modelInstance)->save();
-                } else {
-                    $relation->dissociate()->save();
-                }
-            } elseif ($relation instanceof HasOne) {
-                if ($item->{$relationMethod} != null) {
-                    $item->{$relationMethod}->update($relationData['values']);
-                    $modelInstance = $item->{$relationMethod};
-                } else {
-                    $modelInstance = new $model($relationData['values']);
-                    $relation->save($modelInstance);
-                }
+            switch ($relation_type) {
+                case HasOne::class:
+                case MorphOne::class:
+                        $modelInstance = $relation->updateOrCreate([], $relationData['values']);
+                    break;
+                    
+                case HasMany::class:
+                case MorphMany::class:
+                    $relation_values = $relationData['values'][$relationMethod];
+
+                    if (is_string($relation_values)) {
+                        $relation_values = json_decode($relationData['values'][$relationMethod], true);
+                    }
+
+                    if ($relation_values === null || count($relation_values) == count($relation_values, COUNT_RECURSIVE)) {
+                        $this->attachManyRelation($item, $relation, $relationMethod, $relationData, $relation_values);
+                    } else {
+                        $this->createManyEntries($item, $relation, $relationMethod, $relationData);
+                    }
+                    break;
             }
 
             if (isset($relationData['relations'])) {

@@ -70,8 +70,7 @@ trait Relationships
     }
 
     /**
-     * Get the fields for relationships, according to the relation type. It looks only for direct
-     * relations - it will NOT look through relationships of relationships.
+     * Get the fields for with given relation type.
      *
      * @param  string|array  $relation_types  Eloquent relation class or array of Eloquent relation classes. Eg: BelongsTo
      * @return array The fields with corresponding relation types.
@@ -83,11 +82,6 @@ trait Relationships
         return collect($this->fields())
             ->where('model')
             ->whereIn('relation_type', $relation_types)
-            ->filter(function ($item) {
-                $related_model = get_class($this->model->{Str::before($item['entity'], '.')}()->getRelated());
-
-                return Str::contains($item['entity'], '.') && $item['model'] !== $related_model ? false : true;
-            })
             ->toArray();
     }
 
@@ -122,10 +116,14 @@ trait Relationships
         $belongs_to_fields = $this->getFieldsWithRelationType('BelongsTo');
 
         foreach ($belongs_to_fields as $relation_field) {
+            if(!isset($relation_field['entity'])) {
+                dd($relation_field);
+            }
             $relation = $this->getRelationInstance($relation_field);
-            if (Arr::has($data, $relation->getRelationName())) {
-                $data[$relation->getForeignKeyName()] = Arr::get($data, $relation->getRelationName());
-                unset($data[$relation->getRelationName()]);
+            $entity = $this->getOnlyRelationEntity($relation_field);
+            if (Arr::has($data, $entity)) {
+                Arr::set($data, $entity.'.'.$relation->getForeignKeyName(), Arr::get($data, $entity));
+                Arr::forget($data, $entity);
             }
         }
 
