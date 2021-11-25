@@ -184,7 +184,7 @@ trait Create
                 case MorphOne::class:
                         $modelInstance = $relation->updateOrCreate([], $relationData['values']);
                     break;
-                    
+
                 case HasMany::class:
                 case MorphMany::class:
                     $relation_values = $relationData['values'][$relationMethod];

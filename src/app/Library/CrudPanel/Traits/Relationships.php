@@ -116,7 +116,7 @@ trait Relationships
         $belongs_to_fields = $this->getFieldsWithRelationType('BelongsTo');
 
         foreach ($belongs_to_fields as $relation_field) {
-            if(!isset($relation_field['entity'])) {
+            if (! isset($relation_field['entity'])) {
                 dd($relation_field);
             }
             $relation = $this->getRelationInstance($relation_field);
