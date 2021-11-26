@@ -349,7 +349,7 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
     {
     }
 
-    public function testSyncPivot()
+    public function testManyToManyPivotSync()
     {
         $this->crudPanel->setModel(User::class);
         $this->crudPanel->addFields($this->userInputFieldsManyToMany);
@@ -363,12 +363,12 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
         ];
 
         $entry = User::find(1);
-        $this->crudPanel->syncPivot($entry, $inputData);
+        $this->crudPanel->update($entry->id, $inputData);
 
         $this->assertEquals($inputData['roles'], $entry->roles->pluck('id')->toArray());
     }
 
-    public function testSyncPivotUnknownData()
+    public function testManyToManySyncPivotNotData()
     {
         $this->crudPanel->setModel(User::class);
         $this->crudPanel->addFields($this->nonRelationshipField);
@@ -382,7 +382,7 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
         ];
 
         $entry = User::find(1);
-        $this->crudPanel->syncPivot($entry, $inputData);
+        $this->crudPanel->update($entry->id, $inputData);
 
         $this->assertEquals(1, $entry->roles->count());
     }

@@ -99,75 +99,6 @@ trait Create
     }
 
     /**
-     * Create the relations for the current model.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model  $item  The current CRUD model.
-     * @param  array  $data  The form data.
-     */
-    public function createRelations($item, $data)
-    {
-        $relationData = $this->getRelationDataFromFormData($data);
-
-        // handles 1-1 and 1-n relations (HasOne, MorphOne, HasMany, MorphMany)
-        $this->createRelationsForItem($item, $relationData);
-
-        // this specifically handles M-M relations that could sync additional information into pivot table
-        $this->syncPivot($item, $data);
-    }
-
-    /**
-     * Sync the declared many-to-many associations through the pivot field.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model  $model  The current CRUD model.
-     * @param  array  $data  The form data.
-     */
-    public function syncPivot($model, $data)
-    {
-        $fields_with_relationships = $this->getRelationFields();
-        foreach ($fields_with_relationships as $key => $field) {
-            if (isset($field['pivot']) && $field['pivot']) {
-                $values = isset($data[$field['name']]) ? $data[$field['name']] : [];
-
-                // if a JSON was passed instead of an array, turn it into an array
-                if (is_string($values)) {
-                    $values = json_decode($values);
-                }
-
-                $relation_data = [];
-                foreach ($values as $pivot_id) {
-                    $pivot_data = [];
-
-                    if (isset($field['pivotFields'])) {
-                        foreach ($field['pivotFields'] as $pivot_field_name) {
-                            $pivot_data[$pivot_field_name] = $data[$pivot_field_name][$pivot_id];
-                        }
-                    }
-                    $relation_data[$pivot_id] = $pivot_data;
-                }
-
-                $model->{$field['name']}()->sync($relation_data);
-            }
-
-            if (isset($field['morph']) && $field['morph'] && isset($data[$field['name']])) {
-                $values = $data[$field['name']];
-                $model->{$field['name']}()->sync($values);
-            }
-        }
-    }
-
-    /**
-     * Create any existing one to one relations for the current model from the form data.
-     *
-     * @param  \Illuminate\Database\Eloquent\Model  $item  The current CRUD model.
-     * @param  array  $data  The form data.
-     */
-    private function createOneToOneRelations($item, $data)
-    {
-        $relationData = $this->getRelationDataFromFormData($data);
-        $this->createRelationsForItem($item, $relationData);
-    }
-
-    /**
      * Create any existing relations for the current model.
      *
      * @param  \Illuminate\Database\Eloquent\Model  $item  The current CRUD model.
@@ -312,7 +243,7 @@ trait Create
     // belongs to relations should be saved along with main entry. We check for `user_id` (key) or `user` (relation name).
     private function mergeBelongsToRelationsIntoRelationData($relation_data)
     {
-        foreach ($relation_data['relations'] as  $key => $data) {
+        foreach ($relation_data['relations'] ?? [] as  $key => $data) {
             if (isset($data['relations'])) {
                 foreach ($data['relations'] as $nested_key => $nested_relation) {
                     if ($nested_relation['relation_type'] === 'BelongsTo') {
