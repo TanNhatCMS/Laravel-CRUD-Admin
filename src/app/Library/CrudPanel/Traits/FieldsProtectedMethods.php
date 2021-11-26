@@ -154,8 +154,8 @@ trait FieldsProtectedMethods
 
         // if there's a method on the model with this name
         if (method_exists($this->model, $field['name'])) {
-             // if it has parameters it's not a relation method.
-             $field['entity'] = $this->modelMethodHasParameters($this->model, $field['name']) ? false : $field['name'];
+            // if it has parameters it's not a relation method.
+            $field['entity'] = $this->modelMethodHasParameters($this->model, $field['name']) ? false : $field['name'];
 
             return $field;
         }
@@ -166,12 +166,13 @@ trait FieldsProtectedMethods
             $possibleMethodName = Str::replaceLast('_id', '', $field['name']);
 
             if (method_exists($this->model, $possibleMethodName)) {
-                 // if it has parameters it's not a relation method.
-                 $field['entity'] = $this->modelMethodHasParameters($this->model, $possibleMethodName) ? false : $possibleMethodName;
+                // if it has parameters it's not a relation method.
+                $field['entity'] = $this->modelMethodHasParameters($this->model, $possibleMethodName) ? false : $possibleMethodName;
 
                 return $field;
             }
         }
+
         return $field;
     }
 

@@ -2,14 +2,14 @@
 
 namespace Backpack\CRUD\app\Library\CrudPanel\Traits;
 
-use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 
 trait Update
 {
@@ -96,21 +96,20 @@ trait Update
         if (isset($field['entity']) && $field['entity'] !== false) {
             $relational_entity = $this->parseRelationFieldNameFromHtml($field['name']);
 
-           
             $relation_array = explode('.', $relational_entity);
-          
+
             $related_model = array_reduce(array_splice($relation_array, 0, -1), function ($obj, $method) {
                 return $obj->{$method} ? $obj->{$method} : $obj;
             }, $model);
-      
+
             $relation_method = Str::afterLast($relational_entity, '.');
 
-            if(method_exists($related_model, $relation_method)) {        
+            if (method_exists($related_model, $relation_method)) {
                 $relation_type = get_class($related_model->{$relation_method}());
-                switch($relation_type) {
-                    case MorphMany::class: 
+                switch ($relation_type) {
+                    case MorphMany::class:
                     case HasMany::class:
-                    case BelongsToMany::class: 
+                    case BelongsToMany::class:
                     case MorphToMany::class:
                         if (isset($field['pivotFields']) && is_array($field['pivotFields'])) {
                             $pivot_fields = Arr::where($field['pivotFields'], function ($item) use ($field) {
@@ -118,7 +117,7 @@ trait Update
                             });
                             $related_models = $model->{$relation_method};
                             $result = [];
-                    
+
                             // for any given model, we grab the attributes that belong to our pivot table.
                             foreach ($related_models as $related_model) {
                                 $item = [];
@@ -132,7 +131,7 @@ trait Update
                                         $item[$related_model->getKeyName()] = $related_model->getKey();
                                         $result[] = $item;
                                         break;
-                    
+
                                     case BelongsToMany::class:
                                     case MorphToMany::class:
                                         // for any given related model, we get the pivot fields.
@@ -144,13 +143,14 @@ trait Update
                                         break;
                                 }
                             }
+
                             return $result;
                         }
-                        
+
                         break;
-                    case HasOne::class: 
-                    case MorphOne::class: 
-                        return $related_model->{$relation_method}->{Str::afterLast($relational_entity, '.')};   
+                    case HasOne::class:
+                    case MorphOne::class:
+                        return $related_model->{$relation_method}->{Str::afterLast($relational_entity, '.')};
                         break;
                 }
             }

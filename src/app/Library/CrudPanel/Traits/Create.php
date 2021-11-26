@@ -205,22 +205,22 @@ trait Create
                     }
                     break;
                 case 'BelongsToMany':
-                case 'MorphToMany':   
+                case 'MorphToMany':
                     $values = $relationData['values'][$relationMethod] ?? [];
 
                     $relation_data = [];
 
                     foreach ($values as $value) {
-                        if(isset($value[$relationMethod])) {
+                        if (isset($value[$relationMethod])) {
                             $relation_data[$value[$relationMethod]] = Arr::except($value, $relationMethod);
-                        }                            
+                        }
                     }
 
-                    if(empty($relation_data)) { 
+                    if (empty($relation_data)) {
                         $relation_data = array_values($values);
                     }
 
-                    $item->{$relationMethod}()->sync($relation_data);       
+                    $item->{$relationMethod}()->sync($relation_data);
             }
 
             if (isset($relationData['relations'])) {
@@ -308,7 +308,6 @@ trait Create
 
         return $relation_data;
     }
-
 
     // belongs to relations should be saved along with main entry. We check for `user_id` (key) or `user` (relation name).
     private function mergeBelongsToRelationsIntoRelationData($relation_data)
