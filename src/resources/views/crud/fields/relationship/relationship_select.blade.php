@@ -51,7 +51,8 @@
 
 @include('crud::fields.inc.wrapper_start')
     <label>{!! $field['label'] !!}</label>
-
+    <input type="hidden" name="{{ $field['name'] }}" value="" @if(in_array('disabled', $field['attributes'] ?? [])) disabled @endif />
+    @include('crud::fields.inc.translatable_icon')
     <select
         style="width:100%"
         name="{{ $field['name'].($field['multiple']?'[]':'') }}"
@@ -163,6 +164,9 @@
         {
             $(element).select2($select2Settings);
         }
+
+        
+
     }
 </script>
 @endpush

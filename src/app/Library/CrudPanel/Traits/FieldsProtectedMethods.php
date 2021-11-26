@@ -124,14 +124,38 @@ trait FieldsProtectedMethods
 
         //if the name is dot notation we are sure it's a relationship
         if (strpos($field['name'], '.') !== false) {
-            $field['entity'] = $field['name'];
+            $possibleMethodName = Str::before($field['name'], '.');
+            // if it has parameters it's not a relation method.
+            $field['entity'] = $this->modelMethodHasParameters($this->model, $possibleMethodName) ? false : $field['name'];
+
+            $parts = explode('.', $field['entity']);
+
+            $attribute_in_relation = false;
+
+            $model = $this->model;
+
+            // here we are going to iterate through all relation parts to check
+            // if the attribute is present in the relation string.
+            foreach ($parts as $i => $part) {
+                try {
+                    $model = $model->$part()->getRelated();
+                } catch (\Exception $e) {
+                    $attribute_in_relation = true;
+                }
+            }
+            // if the user setup the attribute in relation string, we are not going to infer that attribute from model
+            // instead we get the defined attribute by the user.
+            if ($attribute_in_relation) {
+                $field['attribute'] = $field['attribute'] ?? end($parts);
+            }
 
             return $field;
         }
 
         // if there's a method on the model with this name
         if (method_exists($this->model, $field['name'])) {
-            $field['entity'] = $field['name'];
+             // if it has parameters it's not a relation method.
+             $field['entity'] = $this->modelMethodHasParameters($this->model, $field['name']) ? false : $field['name'];
 
             return $field;
         }
@@ -142,12 +166,12 @@ trait FieldsProtectedMethods
             $possibleMethodName = Str::replaceLast('_id', '', $field['name']);
 
             if (method_exists($this->model, $possibleMethodName)) {
-                $field['entity'] = $possibleMethodName;
+                 // if it has parameters it's not a relation method.
+                 $field['entity'] = $this->modelMethodHasParameters($this->model, $possibleMethodName) ? false : $possibleMethodName;
 
                 return $field;
             }
         }
-
         return $field;
     }
 
@@ -159,7 +183,7 @@ trait FieldsProtectedMethods
         }
 
         // only 1-1 relationships are supported, if it's anything else, abort
-        if ($field['relation_type'] != 'HasOne') {
+        if ($field['relation_type'] !== 'HasOne' || $field['relation_type'] !== 'MorphOne') {
             return $field;
         }
 

@@ -184,28 +184,43 @@ trait Create
                 continue;
             }
             $relation = $item->{$relationMethod}();
-            $relation_type = get_class($relation);
+            $relation_type = $relationData['relation_type'];
 
             switch ($relation_type) {
-                case HasOne::class:
-                case MorphOne::class:
+                case 'HasOne':
+                case 'MorphOne':
                         $modelInstance = $relation->updateOrCreate([], $relationData['values']);
                     break;
 
-                case HasMany::class:
-                case MorphMany::class:
+                case 'HasMany':
+                case 'MorphMany':
                     $relation_values = $relationData['values'][$relationMethod];
 
-                    if (is_string($relation_values)) {
-                        $relation_values = json_decode($relationData['values'][$relationMethod], true);
-                    }
-
+                    // if relation values are null we can only attach, also we check if we sent a single dimensional array [1,2,3], or an array of arrays: [[1][2][3]]
+                    // if is as single dimensional array we can only attach.
                     if ($relation_values === null || count($relation_values) == count($relation_values, COUNT_RECURSIVE)) {
                         $this->attachManyRelation($item, $relation, $relationMethod, $relationData, $relation_values);
                     } else {
                         $this->createManyEntries($item, $relation, $relationMethod, $relationData);
                     }
                     break;
+                case 'BelongsToMany':
+                case 'MorphToMany':   
+                    $values = $relationData['values'][$relationMethod] ?? [];
+
+                    $relation_data = [];
+
+                    foreach ($values as $value) {
+                        if(isset($value[$relationMethod])) {
+                            $relation_data[$value[$relationMethod]] = Arr::except($value, $relationMethod);
+                        }                            
+                    }
+
+                    if(empty($relation_data)) { 
+                        $relation_data = array_values($values);
+                    }
+
+                    $item->{$relationMethod}()->sync($relation_data);       
             }
 
             if (isset($relationData['relations'])) {
@@ -238,6 +253,11 @@ trait Create
         // exclude the already attached belongs to relations but include nested belongs to.
         $relation_fields = Arr::where($fields, function ($field, $key) {
             return $field['relation_type'] !== 'BelongsTo' || ($field['relation_type'] === 'BelongsTo' && Str::contains($field['name'], '.'));
+        });
+
+        //remove fields that are not in the submitted form data (or not present or disabled by developer)
+        $relation_fields = array_filter($relation_fields, function ($item) use ($data) {
+            return Arr::has($data, $item['name']);
         });
 
         $relation_data = [];
@@ -289,6 +309,8 @@ trait Create
         return $relation_data;
     }
 
+
+    // belongs to relations should be saved along with main entry. We check for `user_id` (key) or `user` (relation name).
     private function mergeBelongsToRelationsIntoRelationData($relation_data)
     {
         foreach ($relation_data['relations'] as  $key => $data) {
@@ -305,5 +327,99 @@ trait Create
         }
 
         return $relation_data;
+    }
+
+    /**
+     * When using the HasMany/MorphMany relations as selectable elements we use this function to sync those relations.
+     * Here we allow for different functionality than when creating. Developer could use this relation as a
+     * selectable list of items that can belong to one/none entity at any given time.
+     *
+     * @return void
+     */
+    public function attachManyRelation($item, $relation, $relationMethod, $relationData, $relation_values)
+    {
+        $model_instance = $relation->getRelated();
+        $force_delete = $relationData['force_delete'];
+        $relation_foreign_key = $relation->getForeignKeyName();
+        $relation_local_key = $relation->getLocalKeyName();
+
+        $relation_column_is_nullable = $model_instance->isColumnNullable($relation_foreign_key);
+
+        if ($relation_values !== null && $relationData['values'][$relationMethod][0] !== null) {
+            // we add the new values into the relation
+            $model_instance->whereIn($model_instance->getKeyName(), $relation_values)
+                ->update([$relation_foreign_key => $item->{$relation_local_key}]);
+
+            // we clear up any values that were removed from model relation.
+            // if developer provided a fallback id, we use it
+            // if column is nullable we set it to null if developer didn't specify `force_delete => true`
+            // if none of the above we delete the model from database
+            if (isset($relationData['fallback_id'])) {
+                $model_instance->whereNotIn($model_instance->getKeyName(), $relation_values)
+                    ->where($relation_foreign_key, $item->{$relation_local_key})
+                    ->update([$relation_foreign_key => $relationData['fallback_id']]);
+            } else {
+                if (! $relation_column_is_nullable || $force_delete) {
+                    $model_instance->whereNotIn($model_instance->getKeyName(), $relation_values)
+                        ->where($relation_foreign_key, $item->{$relation_local_key})
+                        ->delete();
+                } else {
+                    $model_instance->whereNotIn($model_instance->getKeyName(), $relation_values)
+                        ->where($relation_foreign_key, $item->{$relation_local_key})
+                        ->update([$relation_foreign_key => null]);
+                }
+            }
+        } else {
+            // the developer cleared the selection
+            // we gonna clear all related values by setting up the value to the fallback id, to null or delete.
+            if (isset($relationData['fallback_id'])) {
+                $model_instance->where($relation_foreign_key, $item->{$relation_local_key})
+                    ->update([$relation_foreign_key => $relationData['fallback_id']]);
+            } else {
+                if (! $relation_column_is_nullable || $force_delete) {
+                    $model_instance->where($relation_foreign_key, $item->{$relation_local_key})->delete();
+                } else {
+                    $model_instance->where($relation_foreign_key, $item->{$relation_local_key})
+                        ->update([$relation_foreign_key => null]);
+                }
+            }
+        }
+    }
+
+    /**
+     * Handle HasMany/MorphMany relations when used as creatable entries in the crud.
+     * By using repeatable field, developer can allow the creation of such entries
+     * in the crud forms.
+     *
+     * @return void
+     */
+    public function createManyEntries($entry, $relation, $relationMethod, $relationData)
+    {
+        $items = $relationData['values'][$relationMethod];
+
+        $relation_local_key = $relation->getLocalKeyName();
+
+        // if the collection is empty we clear all previous values in database if any.
+        if (empty($items)) {
+            $entry->{$relationMethod}()->sync([]);
+        } else {
+            $created_ids = [];
+
+            foreach ($items as $item) {
+                if (isset($item[$relation_local_key]) && ! empty($item[$relation_local_key])) {
+                    $entry->{$relationMethod}()->updateOrCreate([$relation_local_key => $item[$relation_local_key]], $item);
+                } else {
+                    $created_ids[] = $entry->{$relationMethod}()->create($item)->{$relation_local_key};
+                }
+            }
+
+            // get from $items the sent ids, and merge the ones created.
+            $relatedItemsSent = array_merge(array_filter(Arr::pluck($items, $relation_local_key)), $created_ids);
+
+            if (! empty($relatedItemsSent)) {
+                // we perform the cleanup of removed database items
+                $entry->{$relationMethod}()->whereNotIn($relation_local_key, $relatedItemsSent)->delete();
+            }
+        }
     }
 }

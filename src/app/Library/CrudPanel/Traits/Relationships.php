@@ -161,7 +161,6 @@ trait Relationships
         switch ($field['relation_type']) {
             case 'BelongsToMany':
             case 'HasMany':
-            case 'HasManyThrough':
             case 'MorphMany':
             case 'MorphToMany':
             case 'BelongsTo':
@@ -183,7 +182,6 @@ trait Relationships
         switch ($relation_type) {
             case 'BelongsToMany':
             case 'HasMany':
-            case 'HasManyThrough':
             case 'HasOneOrMany':
             case 'MorphMany':
             case 'MorphOneOrMany':
@@ -205,9 +203,8 @@ trait Relationships
     {
         switch ($relation_type) {
             case 'BelongsToMany':
-            case 'HasManyThrough':
             case 'MorphMany':
-            case 'MorphOneOrMany':
+            case 'HasMany':
             case 'MorphToMany':
                 return true;
             default:

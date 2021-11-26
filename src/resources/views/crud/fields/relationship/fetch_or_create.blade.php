@@ -95,12 +95,12 @@ if($activeInlineCreate) {
 
 @include('crud::fields.inc.wrapper_start')
 
-        <label>{!! $field['label'] !!}</label>
-        @include('crud::fields.inc.translatable_icon')
-
-        @if($activeInlineCreate)
-            @include('crud::fields.relationship.inline_create_button', ['field' => $field])
-        @endif
+    <label>{!! $field['label'] !!}</label>
+    <input type="hidden" name="{{ $field['name'] }}" value="" @if(in_array('disabled', $field['attributes'] ?? [])) disabled @endif />
+    @include('crud::fields.inc.translatable_icon')
+    @if($activeInlineCreate)
+        @include('crud::fields.relationship.inline_create_button', ['field' => $field])
+    @endif
     <select
         name="{{ $field['name'].($field['multiple'] ? '[]' : '') }}"
         data-field-is-inline="{{var_export($inlineCreate ?? false)}}"
