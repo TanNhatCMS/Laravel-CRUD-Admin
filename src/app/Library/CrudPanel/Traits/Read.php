@@ -51,7 +51,6 @@ trait Read
      * Find and retrieve an entry in the database or fail.
      *
      * @param int The id of the row in the db to fetch.
-     *
      * @return \Illuminate\Database\Eloquent\Model The row in the db.
      */
     public function getEntry($id)
@@ -68,7 +67,6 @@ trait Read
      * Find and retrieve an entry in the database or fail.
      *
      * @param int The id of the row in the db to fetch.
-     *
      * @return \Illuminate\Database\Eloquent\Model The row in the db.
      */
     public function getEntryWithoutFakes($id)
@@ -158,25 +156,11 @@ trait Read
         $this->addColumn([
             'type'            => 'checkbox',
             'name'            => 'bulk_actions',
-            'label'           => ' <input type="checkbox" class="crud_bulk_actions_main_checkbox" style="width: 16px; height: 16px;" />',
+            'label'           => ' <span style="display:flex"><input type="checkbox" class="crud_bulk_actions_main_checkbox" style="width: 16px; height: 16px; margin: 2px 0;" /></span>',
             'priority'        => 0,
             'searchLogic'     => false,
             'orderable'       => false,
             'visibleInTable'  => true,
-            'visibleInModal'  => false,
-            'visibleInExport' => false,
-            'visibleInShow'   => false,
-            'hasActions'      => true,
-        ])->makeFirstColumn();
-
-        $this->addColumn([
-            'type'            => 'custom_html',
-            'name'            => 'blank_first_column',
-            'label'           => ' ',
-            'priority'        => 0,
-            'searchLogic'     => false,
-            'orderable'       => false,
-            'visibleInTabel'  => true,
             'visibleInModal'  => false,
             'visibleInExport' => false,
             'visibleInShow'   => false,
@@ -192,7 +176,6 @@ trait Read
         $this->setOperationSetting('bulkActions', false);
 
         $this->removeColumn('bulk_actions');
-        $this->removeColumn('blank_first_column');
     }
 
     /**
@@ -245,7 +228,7 @@ trait Read
     /**
      * Specify array of available page lengths on the list view.
      *
-     * @param array|int $menu
+     * @param  array|int  $menu
      *
      * https://backpackforlaravel.com/docs/4.1/crud-cheat-sheet#page-length
      */
@@ -279,7 +262,7 @@ trait Read
      * Builds the menu from the given array. It works out with two different types of arrays:
      *  [1, 2, 3] AND [1 => 'one', 2 => 'two', 3 => 'three'].
      *
-     * @param array $menu
+     * @param  array  $menu
      * @return array
      */
     private function buildPageLengthMenuFromArray($menu)
@@ -325,7 +308,7 @@ trait Read
     /**
      * Checks if the provided PageLength segment is valid.
      *
-     * @param array|int $value
+     * @param  array|int  $value
      * @return void
      */
     private function abortIfInvalidPageLength($value)

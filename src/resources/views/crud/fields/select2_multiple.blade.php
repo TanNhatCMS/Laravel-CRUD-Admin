@@ -12,6 +12,10 @@
 
     $field['multiple'] = $field['multiple'] ?? true;
     $field['allows_null'] = $field['allows_null'] ?? $crud->model::isColumnNullable($field['name']);
+
+    if(isset($field['value']) && is_array($field['value'])) {
+         $field['value'] = $field['options']->whereIn((new $field['model'])->getKeyName(), $field['value']);
+    }
 @endphp
 
 @include('crud::fields.inc.wrapper_start')
@@ -21,6 +25,7 @@
         name="{{ $field['name'] }}[]"
         style="width: 100%"
         data-init-function="bpFieldInitSelect2MultipleElement"
+        data-field-is-inline="{{var_export($inlineCreate ?? false)}}"
         data-select-all="{{ var_export($field['select_all'] ?? false)}}"
         data-options-for-js="{{json_encode(array_values($options_ids_array))}}"
         data-language="{{ str_replace('_', '-', app()->getLocale()) }}"
@@ -81,23 +86,26 @@
 
                 var $select_all = element.attr('data-select-all');
                 if (!element.hasClass("select2-hidden-accessible"))
-                    {
-                        var $obj = element.select2({
-                            theme: "bootstrap"
+                {
+                    let $isFieldInline = element.data('field-is-inline');
+
+                    var $obj = element.select2({
+                        theme: "bootstrap",
+                        dropdownParent: $isFieldInline ? $('#inline-create-dialog .modal-content') : document.body
+                    });
+
+                    //get options ids stored in the field.
+                    var options = JSON.parse(element.attr('data-options-for-js'));
+
+                    if($select_all) {
+                        element.parent().find('.clear').on("click", function () {
+                            $obj.val([]).trigger("change");
                         });
-
-                        //get options ids stored in the field.
-                        var options = JSON.parse(element.attr('data-options-for-js'));
-
-                        if($select_all) {
-                            element.parent().find('.clear').on("click", function () {
-                                $obj.val([]).trigger("change");
-                            });
-                            element.parent().find('.select_all').on("click", function () {
-                                $obj.val(options).trigger("change");
-                            });
-                        }
+                        element.parent().find('.select_all').on("click", function () {
+                            $obj.val(options).trigger("change");
+                        });
                     }
+                }
             }
         </script>
     @endpush

@@ -9,9 +9,9 @@ trait UpdateOperation
     /**
      * Define which routes are needed for this operation.
      *
-     * @param string $name       Name of the current entity (singular). Used as first URL segment.
-     * @param string $routeName  Prefix of the route name.
-     * @param string $controller Name of the current CrudController.
+     * @param  string  $name  Name of the current entity (singular). Used as first URL segment.
+     * @param  string  $routeName  Prefix of the route name.
+     * @param  string  $controller  Name of the current CrudController.
      */
     protected function setupUpdateRoutes($segment, $routeName, $controller)
     {
@@ -40,9 +40,9 @@ trait UpdateOperation
 
             if ($this->crud->getModel()->translationEnabled()) {
                 $this->crud->addField([
-                    'name' => 'locale',
+                    'name' => '_locale',
                     'type' => 'hidden',
-                    'value' => request()->input('locale') ?? app()->getLocale(),
+                    'value' => request()->input('_locale') ?? app()->getLocale(),
                 ]);
             }
 
@@ -57,8 +57,7 @@ trait UpdateOperation
     /**
      * Show the form for editing the specified resource.
      *
-     * @param int $id
-     *
+     * @param  int  $id
      * @return \Illuminate\Contracts\View\View
      */
     public function edit($id)
@@ -92,7 +91,10 @@ trait UpdateOperation
         $request = $this->crud->validateRequest();
 
         // update the row in the db
-        $item = $this->crud->update($request->get($this->crud->model->getKeyName()), $this->crud->getStrippedSaveRequest($request));
+        $item = $this->crud->update(
+            $request->get($this->crud->model->getKeyName()),
+            $this->crud->getStrippedSaveRequest($request)
+        );
         $this->data['entry'] = $this->crud->entry = $item;
 
         // show a success message

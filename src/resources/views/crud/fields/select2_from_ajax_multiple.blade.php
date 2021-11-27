@@ -16,6 +16,7 @@
         name="{{ $field['name'] }}[]"
         style="width: 100%"
         data-init-function="bpFieldInitSelect2FromAjaxMultipleElement"
+        data-field-is-inline="{{var_export($inlineCreate ?? false)}}"
         data-dependencies="{{ isset($field['dependencies'])?json_encode(Arr::wrap($field['dependencies'])): json_encode([]) }}"
         data-placeholder="{{ $field['placeholder'] }}"
         data-minimum-input-length="{{ $field['minimum_input_length'] }}"
@@ -93,26 +94,7 @@
         var $allowClear = element.attr('data-column-nullable') == 'true' ? true : false;
         var $dependencies = JSON.parse(element.attr('data-dependencies'));
         var $ajaxDelay = element.attr('data-ajax-delay');
-        var $selectedOptions = typeof element.attr('data-selected-options') === 'string' ? JSON.parse(element.attr('data-selected-options')) : JSON.parse("[]");
-
-        var select2AjaxMultipleFetchSelectedEntries = function (element) {
-            return new Promise(function (resolve, reject) {
-                $.ajax({
-                    url: $dataSource,
-                    data: {
-                        'keys': $selectedOptions
-                    },
-                    type: $method,
-                    success: function (result) {
-
-                        resolve(result);
-                    },
-                    error: function (result) {
-                        reject(result);
-                    }
-                });
-            });
-        };
+        var $isFieldInline = element.data('field-is-inline');
 
         if (!$(element).hasClass("select2-hidden-accessible"))
         {
@@ -121,6 +103,7 @@
                 multiple: true,
                 placeholder: $placeholder,
                 minimumInputLength: $minimumInputLength,
+                dropdownParent: $isFieldInline ? $('#inline-create-dialog .modal-content') : document.body,
                 ajax: {
                     url: $dataSource,
                     type: $method,
@@ -160,26 +143,6 @@
             });
         }
 
-        // if we have selected options here we are on a repeatable field, we need to fetch the options with the keys
-        // we have stored from the field and append those options in the select.
-        if (typeof $selectedOptions !== typeof undefined && $selectedOptions !== false && $selectedOptions != '') {
-            var optionsForSelect = [];
-            select2AjaxMultipleFetchSelectedEntries(element).then(result => {
-                result.forEach(function(item) {
-                    $itemText = item[$fieldAttribute];
-                    $itemValue = item[$connectedEntityKeyName];
-                    //add current key to be selected later.
-                    optionsForSelect.push($itemValue);
-
-                    //create the option in the select
-                    $(element).append('<option value="'+$itemValue+'">'+$itemText+'</option>');
-                });
-
-                // set the option keys as selected.
-                $(element).val(optionsForSelect);
-            });
-        }
-
         // if any dependencies have been declared
         // when one of those dependencies changes value
         // reset the select2 value
@@ -187,7 +150,7 @@
             var $dependency = $dependencies[i];
             //if element does not have a custom-selector attribute we use the name attribute
             if(typeof element.attr('data-custom-selector') == 'undefined') {
-                form.find(`[name="${$dependency}"], [name="${$dependency}[]"]`).change(function(el) {
+                form.find('[name="'+$dependency+'"], [name="'+$dependency+'[]"]').change(function(el) {
                         $(element.find('option:not([value=""])')).remove();
                         element.val(null).trigger("change");
                 });

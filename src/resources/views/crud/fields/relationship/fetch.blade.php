@@ -26,7 +26,7 @@
     // make sure the $field['value'] takes the proper value
     // and format it to JSON, so that select2 can parse it
     $current_value = old(square_brackets_to_dots($field['name'])) ?? $field['value'] ?? $field['default'] ?? '';
-    if ($current_value != false) {
+    if (!empty($current_value) || is_int($current_value)) {
         switch (gettype($current_value)) {
             case 'array':
                 $current_value = $connected_entity
@@ -55,7 +55,6 @@
                 break;
         }
     }
-    $field['value'] = json_encode($current_value);
 @endphp
 
 @include('crud::fields.inc.wrapper_start')
@@ -65,6 +64,7 @@
         style="width:100%"
         name="{{ $field['name'].($field['multiple']?'[]':'') }}"
         data-init-function="bpFieldInitFetchElement"
+        data-field-is-inline="{{var_export($inlineCreate ?? false)}}"
         data-column-nullable="{{ var_export($field['allows_null']) }}"
         data-dependencies="{{ isset($field['dependencies'])?json_encode(Arr::wrap($field['dependencies'])): json_encode([]) }}"
         data-model-local-key="{{$crud->model->getKeyName()}}"
@@ -75,7 +75,6 @@
         data-field-attribute="{{ $field['attribute'] }}"
         data-connected-entity-key-name="{{ $connected_entity_key_name }}"
         data-include-all-form-fields="{{ var_export($field['include_all_form_fields']) }}"
-        data-current-value="{{ $field['value'] }}"
         data-app-current-lang="{{ app()->getLocale() }}"
         data-ajax-delay="{{ $field['delay'] }}"
         data-language="{{ str_replace('_', '-', app()->getLocale()) }}"
@@ -86,6 +85,14 @@
         multiple
         @endif
         >
+
+        @if (!empty($current_value))
+            @foreach ($current_value as $key => $item)
+                <option value="{{ $key }}" selected>
+                    {{ $item }}
+                </option>
+            @endforeach
+        @endif
     </select>
 
     {{-- HINT --}}
@@ -126,49 +133,6 @@
 <script>
     // if nullable, make sure the Clear button uses the translated string
     document.styleSheets[0].addRule('.select2-selection__clear::after','content:  "{{ trans('backpack::crud.clear') }}";');
-
-    // if this function is not already on page, for example in fetch_create we add it.
-    // this function is responsible for query the ajax endpoint and fetch a default entry
-    // in case the field does not allow null
-    if (!window.fetchDefaultEntry) {
-        var fetchDefaultEntry = function (element) {
-            var $fetchUrl = element.attr('data-data-source');
-            var $relatedAttribute = element.attr('data-field-attribute');
-            var $relatedKeyName = element.attr('data-connected-entity-key-name');
-            var $return = {};
-
-            return new Promise(function (resolve, reject) {
-                $.ajax({
-                    url: $fetchUrl,
-                    data: {
-                        'q': ''
-                    },
-                    type: 'POST',
-                    success: function (result) {
-                        // if data is available here it means a paginated collection has been returned.
-                // we want only the first to be default.
-                if (typeof result.data !== "undefined"){
-                    $key = result.data[0][$relatedKeyName];
-                    $value = processItemText(result.data[0], $relatedAttribute);
-                }else{
-                    $key = result[0][$relatedKeyName];
-                    $value = processItemText(result[0], $relatedAttribute);
-                }
-
-                $pair = { [$relatedKeyName] : $key, [$relatedAttribute] : $value}
-                $return = {...$return, ...$pair};
-
-                $(element).attr('data-current-value', JSON.stringify($return));
-                resolve($return);
-                    },
-                    error: function (result) {
-                        reject(result);
-                    }
-                });
-            });
-        };
-    }
-
     /**
      * Initialize Select2 on an element that wants the "Fetch" functionality.
      * This method gets called automatically by Backpack:
@@ -190,89 +154,13 @@
         var $includeAllFormFields = element.attr('data-include-all-form-fields') == 'false' ? false : true;
         var $dependencies = JSON.parse(element.attr('data-dependencies'));
         var $allows_null = element.attr('data-column-nullable') == 'true' ? true : false;
-        var $selectedOptions = typeof element.attr('data-selected-options') === 'string' ? JSON.parse(element.attr('data-selected-options')) : JSON.parse(null);
         var $multiple = element.prop('multiple');
         var $ajaxDelay = element.attr('data-ajax-delay');
-
-        var FetchAjaxFetchSelectedEntry = function (element) {
-            return new Promise(function (resolve, reject) {
-                $.ajax({
-                    url: $dataSource,
-                    data: {
-                        'keys': $selectedOptions
-                    },
-                    type: $method,
-                    success: function (result) {
-
-                        resolve(result);
-                    },
-                    error: function (result) {
-                        reject(result);
-                    }
-                });
-            });
-        };
+        var $isFieldInline = element.data('field-is-inline');
 
         if($allows_null && !$multiple) {
             $(element).append('<option value="">'+$placeholder+'</option>');
-        }
-
-
-        if (typeof $selectedOptions !== typeof undefined &&
-            $selectedOptions !== false &&
-            $selectedOptions != '' &&
-            $selectedOptions != null &&
-            $selectedOptions != [])
-        {
-            var optionsForSelect = [];
-            FetchAjaxFetchSelectedEntry(element).then(result => {
-                result.forEach(function(item) {
-                    $itemText = processItemText(item, $fieldAttribute);
-                    $itemValue = item[$connectedEntityKeyName];
-                    //add current key to be selected later.
-                    optionsForSelect.push($itemValue);
-
-                    //create the option in the select
-                    $(element).append('<option value="'+$itemValue+'">'+$itemText+'</option>');
-                });
-
-                // set the option keys as selected.
-                $(element).val(optionsForSelect);
-                $(element).trigger('change');
-            });
-        }
-
-        var $item = false;
-
-        var $value = JSON.parse(element.attr('data-current-value'))
-
-        if(Object.keys($value).length > 0) {
-            $item = true;
-        }
-
-        var $currentValue = $item ? $value : '';
-
-        //we reselect the previously selected options if any.
-        var selectedOptions = [];
-
-        for (const [key, value] of Object.entries($currentValue)) {
-            selectedOptions.push(key);
-            var $option = new Option(value, key);
-            $(element).append($option);
-        }
-
-        $(element).val(selectedOptions);
-
-
-        if (!$allows_null && $item === false && $selectedOptions == null) {
-            fetchDefaultEntry(element).then(result => {
-                var $item = JSON.parse(element.attr('data-current-value'));
-                $(element).append('<option value="'+$item[$modelKey]+'">'+$item[$fieldAttribute]+'</option>');
-                $(element).val($item[$modelKey]);
-                $(element).trigger('change');
-            });
-        }
-
+        }  
 
         var $select2Settings = {
                 theme: 'bootstrap',
@@ -280,6 +168,7 @@
                 placeholder: $placeholder,
                 minimumInputLength: $minimumInputLength,
                 allowClear: $allows_null,
+                dropdownParent: $isFieldInline ? $('#inline-create-dialog .modal-content') : document.body,
                 ajax: {
                     url: $dataSource,
                     type: $method,
@@ -349,7 +238,7 @@
                 var $dependency = $dependencies[i];
                 //if element does not have a custom-selector attribute we use the name attribute
                 if(typeof element.attr('data-custom-selector') == 'undefined') {
-                    form.find(`[name="${$dependency}"], [name="${$dependency}[]"]`).change(function(el) {
+                    form.find('[name="'+$dependency+'"], [name="'+$dependency+'[]"]').change(function(el) {
                             $(element.find('option:not([value=""])')).remove();
                             element.val(null).trigger("change");
                     });
@@ -381,7 +270,7 @@
 
             // try to retreive the item in app language; then fallback language; then first entry; if nothing found empty translation string
             return typeof $itemField === 'object' && $itemField !== null
-                ? $itemField[$appLang] ?? $itemField[$appLangFallback] ?? Object.values($itemField)[0] ?? $emptyTranslation
+                ? $itemField[$appLang] ? $itemField[$appLang] : $itemField[$appLangFallback] ? $itemField[$appLangFallback] : Object.values($itemField)[0] ? Object.values($itemField)[0] : $emptyTranslation
                 : $itemField;
         }
     }
