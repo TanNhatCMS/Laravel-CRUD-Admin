@@ -94,18 +94,19 @@ trait Update
     private function getModelAttributeValue($model, $field)
     {
         if (isset($field['entity']) && $field['entity'] !== false) {
-            $relational_entity = $this->parseRelationFieldNameFromHtml($field['name']);
+            $relational_entity = $this->getOnlyRelationEntity($field);
 
             $relation_array = explode('.', $relational_entity);
 
             $related_model = array_reduce(array_splice($relation_array, 0, -1), function ($obj, $method) {
+                $method = Str::endsWith($method, '_id') ? Str::replaceLast('_id', '', $method) : $method;
                 return $obj->{$method} ? $obj->{$method} : $obj;
             }, $model);
 
             $relation_method = Str::afterLast($relational_entity, '.');
-
+           
             if (method_exists($related_model, $relation_method)) {
-                $relation_type = get_class($related_model->{$relation_method}());
+               $relation_type = get_class($related_model->{$relation_method}());
                 switch ($relation_type) {
                     case MorphMany::class:
                     case HasMany::class:
@@ -115,7 +116,7 @@ trait Update
                             $pivot_fields = Arr::where($field['pivotFields'], function ($item) use ($field) {
                                 return $field['name'] != $item['name'];
                             });
-                            $related_models = $model->{$relation_method};
+                            $related_models = $related_model->{$relation_method};
                             $result = [];
 
                             // for any given model, we grab the attributes that belong to our pivot table.
@@ -149,12 +150,11 @@ trait Update
 
                         break;
                     case HasOne::class:
-                    case MorphOne::class:
-                        return $related_model->{$relation_method}->{Str::afterLast($relational_entity, '.')};
+                    case MorphOne::class: 
+                            return $related_model->{$relation_method}->{Str::afterLast($field['entity'], '.')};
                         break;
                 }
             }
-
             return $related_model->{$relation_method};
         }
 
@@ -170,5 +170,24 @@ trait Update
 
             return $result;
         }
+    }
+
+    private function relationStringHasAttribute($field) {
+
+        $parts = explode('.', $field['entity']);
+        
+        $model = $this->model;
+
+        // here we are going to iterate through all relation parts to check
+        // if the attribute is present in the relation string.
+        foreach ($parts as $i => $part) {
+            try {
+                $model = $model->$part()->getRelated();
+            } catch (\Exception $e) {
+               
+                return true;
+            } 
+        }
+        return false;
     }
 }

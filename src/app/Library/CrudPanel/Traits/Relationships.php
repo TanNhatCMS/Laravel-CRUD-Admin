@@ -16,19 +16,22 @@ trait Relationships
     public function getRelationInstance($field)
     {
         $entity = $this->getOnlyRelationEntity($field);
-        $possible_method = Str::before($entity, '.');
+       
         $model = $this->model;
 
-        if (method_exists($model, $possible_method)) {
             $parts = explode('.', $entity);
             // here we are going to iterate through all relation parts to check
             foreach ($parts as $i => $part) {
-                $relation = $model->$part();
-                $model = $relation->getRelated();
+                try {
+                    $relation = $model->$part();
+                    $model = $relation->getRelated();
+                } catch (\Exception $e) {
+                    return $relation;
+                }                
             }
 
             return $relation;
-        }
+        
     }
 
     /**

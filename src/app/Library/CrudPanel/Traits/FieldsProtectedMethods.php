@@ -124,32 +124,11 @@ trait FieldsProtectedMethods
 
         //if the name is dot notation we are sure it's a relationship
         if (strpos($field['name'], '.') !== false) {
-            $possibleMethodName = Str::before($field['name'], '.');
+            $possibleMethodName = Str::endsWith(Str::before($field['name'], '.'), '_id') ? Str::replaceLast('_id', '', Str::before($field['name'], '.')) : Str::before($field['name'], '.');
             // if it has parameters it's not a relation method.
-            $field['entity'] = $this->modelMethodHasParameters($this->model, $possibleMethodName) ? false : $field['name'];
+            $field['entity'] = $this->modelMethodHasParameters($this->model, $possibleMethodName) ? false : $possibleMethodName.'.'.Str::after($field['name'], '.');
 
-            $parts = explode('.', $field['entity']);
-
-            $attribute_in_relation = false;
-
-            $model = $this->model;
-
-            // here we are going to iterate through all relation parts to check
-            // if the attribute is present in the relation string.
-            foreach ($parts as $i => $part) {
-                try {
-                    $model = $model->$part()->getRelated();
-                } catch (\Exception $e) {
-                    $attribute_in_relation = true;
-                }
-            }
-            // if the user setup the attribute in relation string, we are not going to infer that attribute from model
-            // instead we get the defined attribute by the user.
-            if ($attribute_in_relation) {
-                $field['attribute'] = $field['attribute'] ?? end($parts);
-            }
-
-            return $field;
+            
         }
 
         // if there's a method on the model with this name
@@ -202,6 +181,31 @@ trait FieldsProtectedMethods
 
     protected function makeSureFieldHasAttribute($field)
     {
+        if($field['entity']) {
+            $parts = explode('.', $field['entity']);
+
+            $attribute_in_relation = false;
+
+            $model = $this->model;
+
+            // here we are going to iterate through all relation parts to check
+            // if the attribute is present in the relation string.
+            foreach ($parts as $i => $part) {
+                try {          
+                    $relation = $model->$part();
+                    $model = $relation->getRelated();
+                } catch (\Exception $e) {
+                    $attribute_in_relation = true;
+                }
+            }
+            // if the user setup the attribute in relation string, we are not going to infer that attribute from model
+            // instead we get the defined attribute by the user.
+            if ($attribute_in_relation) {
+                $field['attribute'] = $field['attribute'] ?? end($parts);
+            }
+
+            return $field;
+        }
         // if there's a model defined, but no attribute
         // guess an attribute using the identifiableAttribute functionality in CrudTrait
         if (isset($field['model']) && ! isset($field['attribute']) && method_exists($field['model'], 'identifiableAttribute')) {
