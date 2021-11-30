@@ -100,13 +100,14 @@ trait Update
 
             $related_model = array_reduce(array_splice($relation_array, 0, -1), function ($obj, $method) {
                 $method = Str::endsWith($method, '_id') ? Str::replaceLast('_id', '', $method) : $method;
+
                 return $obj->{$method} ? $obj->{$method} : $obj;
             }, $model);
 
             $relation_method = Str::afterLast($relational_entity, '.');
-           
+
             if (method_exists($related_model, $relation_method)) {
-               $relation_type = get_class($related_model->{$relation_method}());
+                $relation_type = get_class($related_model->{$relation_method}());
                 switch ($relation_type) {
                     case MorphMany::class:
                     case HasMany::class:
@@ -150,11 +151,12 @@ trait Update
 
                         break;
                     case HasOne::class:
-                    case MorphOne::class: 
+                    case MorphOne::class:
                             return $related_model->{$relation_method}->{Str::afterLast($field['entity'], '.')};
                         break;
                 }
             }
+
             return $related_model->{$relation_method};
         }
 
@@ -172,10 +174,10 @@ trait Update
         }
     }
 
-    private function relationStringHasAttribute($field) {
-
+    private function relationStringHasAttribute($field)
+    {
         $parts = explode('.', $field['entity']);
-        
+
         $model = $this->model;
 
         // here we are going to iterate through all relation parts to check
@@ -184,10 +186,10 @@ trait Update
             try {
                 $model = $model->$part()->getRelated();
             } catch (\Exception $e) {
-               
                 return true;
-            } 
+            }
         }
+
         return false;
     }
 }

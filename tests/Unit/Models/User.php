@@ -48,7 +48,8 @@ class User extends Model
         return $this->morphMany('Backpack\CRUD\Tests\Unit\Models\Star', 'starable');
     }
 
-    public function superArticles() {
+    public function superArticles()
+    {
         return $this->belongsToMany('Backpack\CRUD\Tests\Unit\Models\Article', 'articles_user')->withPivot('notes');
     }
 

@@ -107,7 +107,6 @@ trait Create
      */
     private function createRelationsForItem($item, $formattedData)
     {
-        
         if (! isset($formattedData['relations'])) {
             return false;
         }
@@ -179,13 +178,13 @@ trait Create
      * @return array The formatted relation data.
      */
     private function getRelationDataFromFormData($data)
-    {   
+    {
         $fields = $this->parseRelationFieldNamesFromHtml($this->getRelationFields());
 
         // exclude the already attached belongs to relations but include nested belongs to.
         $relation_fields = Arr::where($fields, function ($field, $key) {
             return $field['relation_type'] !== 'BelongsTo' || ($field['relation_type'] === 'BelongsTo' && Str::contains($field['name'], '.'));
-        });        
+        });
 
         $relation_data = [];
 
@@ -230,7 +229,7 @@ trait Create
 
             Arr::set($relation_data, 'relations.'.$key, $field_data);
         }
-        
+
         $relation_data = $this->mergeBelongsToRelationsIntoRelationData($relation_data);
 
         return $relation_data;
@@ -247,13 +246,13 @@ trait Create
                         $model_instance = new $nested_relation['parent'];
                         $relation = $model_instance->{$nested_key}();
                         $relation_data['relations'][$key]['values'][$relation->getForeignKeyName()] = array_key_exists($relation->getRelationName(), $nested_relation['values']) ? $nested_relation['values'][$relation->getRelationName()] : $nested_relation['values'][$relation->getForeignKeyName()];
-                       
+
                         unset($relation_data['relations'][$key]['relations'][$nested_key]);
                     }
                 }
             }
         }
-       
+
         return $relation_data;
     }
 

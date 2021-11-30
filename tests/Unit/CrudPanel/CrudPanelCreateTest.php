@@ -2,10 +2,9 @@
 
 namespace Backpack\CRUD\Tests\Unit\CrudPanel;
 
-use Backpack\CRUD\Tests\Unit\Models\Star;
+use Backpack\CRUD\Tests\Unit\Models\Article;
 use Backpack\CRUD\Tests\Unit\Models\Bill;
 use Backpack\CRUD\Tests\Unit\Models\Recommend;
-use Backpack\CRUD\Tests\Unit\Models\Article;
 use Backpack\CRUD\Tests\Unit\Models\User;
 use Faker\Factory;
 use Illuminate\Support\Arr;
@@ -222,7 +221,7 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
         $this->assertInstanceOf(User::class, $entry);
         $this->assertEntryEquals($inputData, $entry);
     }
-    
+
     public function testBelongsToManyWithPivotDataRelationship()
     {
         $this->crudPanel->setModel(User::class);
@@ -232,8 +231,8 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
             'pivotFields' => [
                 [
                     'name' => 'notes',
-                ]
-            ]
+                ],
+            ],
         ]);
 
         $faker = Factory::create();
@@ -254,12 +253,12 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
                 [
                     'superArticles' => $article->id,
                     'notes' => 'my first article note',
-                ]
+                ],
             ],
         ];
 
         $entry = $this->crudPanel->create($inputData);
-        
+
         $this->assertCount(1, $entry->fresh()->superArticles);
         $this->assertEquals('my first article note', $entry->fresh()->superArticles->first()->pivot->notes);
     }
@@ -351,7 +350,7 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
 
         $this->assertEquals($account_details->nickname, 'i_have_has_one');
     }
-   
+
     public function testCreateHasOneWithNestedRelations()
     {
         $this->crudPanel->setModel(User::class);
@@ -366,7 +365,7 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
             ],
             [
                 'name' => 'accountDetails.article',
-            ]
+            ],
         ]);
 
         $faker = Factory::create();
@@ -380,7 +379,7 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
             'accountDetails' => [
                 'nickname' => 'i_have_has_one',
                 'profile_picture' => 'ohh my picture 1.jpg',
-                'article' => 1
+                'article' => 1,
             ],
         ];
 
@@ -404,7 +403,7 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
             ],
             [
                 'name' => 'accountDetails.article_id',
-            ]
+            ],
         ]);
 
         $faker = Factory::create();
@@ -418,7 +417,7 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
             'accountDetails' => [
                 'nickname' => 'i_have_has_one',
                 'profile_picture' => 'ohh my picture 1.jpg',
-                'article_id' => 1
+                'article_id' => 1,
             ],
         ];
 
@@ -470,7 +469,7 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
         $this->crudPanel->setModel(User::class);
         $this->crudPanel->addFields($this->userInputFieldsNoRelationships, 'both');
         $this->crudPanel->addField([
-            'name' => 'comment.text'
+            'name' => 'comment.text',
         ], 'both');
 
         $faker = Factory::create();
@@ -480,11 +479,10 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
             'password'       => bcrypt($faker->password()),
             'remember_token' => null,
             'comment'          => [
-                'text' => 'some test comment text'
+                'text' => 'some test comment text',
             ],
         ];
 
-        
         $entry = $this->crudPanel->create($inputData);
 
         $this->assertEquals($inputData['comment']['text'], $entry->comment->text);
@@ -494,7 +492,6 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
         $this->crudPanel->update($entry->id, $inputData);
 
         $this->assertEquals($inputData['comment']['text'], $entry->fresh()->comment->text);
-
     }
 
     public function testMorphManyWithPivotRelationship()
@@ -502,13 +499,13 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
         $this->crudPanel->setModel(User::class);
         $this->crudPanel->addFields($this->userInputFieldsNoRelationships, 'both');
         $this->crudPanel->addField([
-                'name'    => 'stars',
-                'pivotFields' => [
-                    [
-                        'name' => 'title',
-                    ],
+            'name'    => 'stars',
+            'pivotFields' => [
+                [
+                    'name' => 'title',
                 ],
-            ], 'both');
+            ],
+        ], 'both');
 
         $faker = Factory::create();
         $inputData = [
@@ -518,14 +515,14 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
             'remember_token' => null,
             'stars'          => [
                 [
-                    'title' => 'this is the star 1 title'
+                    'title' => 'this is the star 1 title',
                 ],
                 [
-                    'title' => 'this is the star 2 title'
+                    'title' => 'this is the star 2 title',
                 ],
             ],
         ];
-        
+
         $entry = $this->crudPanel->create($inputData);
 
         $this->assertCount(2, $entry->stars);
@@ -534,8 +531,8 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
 
         $inputData['stars'] = [
             [
-                'title' => 'only one star with changed title'
-            ]
+                'title' => 'only one star with changed title',
+            ],
         ];
 
         $this->crudPanel->update($entry->id, $inputData);
@@ -543,7 +540,6 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
         $this->assertCount(1, $entry->fresh()->stars);
 
         $this->assertEquals($inputData['stars'][0]['title'], $entry->fresh()->stars->first()->title);
-
     }
 
     public function testMorphToManySelectableRelationship()
@@ -568,7 +564,7 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
             'remember_token' => null,
             'bills'          => [$bill1->id],
         ];
-        
+
         $entry = $this->crudPanel->create($inputData);
 
         $this->assertCount(1, $entry->bills);
@@ -582,17 +578,16 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
         $this->assertCount(2, $entry->fresh()->bills);
 
         $this->assertEquals([$bill1->id, $bill2->id], $entry->fresh()->bills->pluck('id')->toArray());
-
     }
-    
+
     public function testMorphToManyCreatableRelationship()
     {
         $this->crudPanel->setModel(User::class);
         $this->crudPanel->addFields($this->userInputFieldsNoRelationships, 'both');
         $this->crudPanel->addField(['name' => 'recommends', 'pivotFields' => [
             [
-                'name' => 'text'
-            ]
+                'name' => 'text',
+            ],
         ]], 'both');
 
         $recommend1 = Recommend::create([
@@ -612,11 +607,11 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
             'recommends'          => [
                 [
                     'recommends' => $recommend1->id,
-                    'text' => 'my pivot recommend field'
-                ]
-            ]
+                    'text' => 'my pivot recommend field',
+                ],
+            ],
         ];
-        
+
         $entry = $this->crudPanel->create($inputData);
 
         $this->assertCount(1, $entry->recommends);
@@ -626,8 +621,8 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
         $inputData['recommends'] = [
             [
                 'recommends' => $recommend2->id,
-                'text' => 'I changed the recommend and the pivot text'
-            ]
+                'text' => 'I changed the recommend and the pivot text',
+            ],
         ];
 
         $this->crudPanel->update($entry->id, $inputData);
@@ -635,16 +630,9 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
         $this->assertCount(1, $entry->fresh()->recommends);
 
         $this->assertEquals($recommend2->id, $entry->recommends()->first()->id);
- 
+
         $this->assertEquals('I changed the recommend and the pivot text', $entry->fresh()->recommends->first()->pivot->text);
-
     }
-
-    
-
-    
-
-
 
     public function testManyToManyPivotSync()
     {

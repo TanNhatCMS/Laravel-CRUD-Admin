@@ -127,8 +127,6 @@ trait FieldsProtectedMethods
             $possibleMethodName = Str::endsWith(Str::before($field['name'], '.'), '_id') ? Str::replaceLast('_id', '', Str::before($field['name'], '.')) : Str::before($field['name'], '.');
             // if it has parameters it's not a relation method.
             $field['entity'] = $this->modelMethodHasParameters($this->model, $possibleMethodName) ? false : $possibleMethodName.'.'.Str::after($field['name'], '.');
-
-            
         }
 
         // if there's a method on the model with this name
@@ -181,7 +179,7 @@ trait FieldsProtectedMethods
 
     protected function makeSureFieldHasAttribute($field)
     {
-        if($field['entity']) {
+        if ($field['entity']) {
             $parts = explode('.', $field['entity']);
 
             $attribute_in_relation = false;
@@ -191,7 +189,7 @@ trait FieldsProtectedMethods
             // here we are going to iterate through all relation parts to check
             // if the attribute is present in the relation string.
             foreach ($parts as $i => $part) {
-                try {          
+                try {
                     $relation = $model->$part();
                     $model = $relation->getRelated();
                 } catch (\Exception $e) {
