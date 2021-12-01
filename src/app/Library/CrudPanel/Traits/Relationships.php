@@ -61,8 +61,8 @@ trait Relationships
 
     /**
      * Return only the related entity excluding the attribute if present in the relation string.
-     *  
-     * @param array $relation_field - the crud field
+     *
+     * @param  array  $relation_field  - the crud field
      * @return string the relation entity
      */
     public function getOnlyRelationEntity($relation_field)
@@ -138,9 +138,9 @@ trait Relationships
     }
 
     /**
-     * Changes BelongsTo relation names (article) into the connected key (article_id)
-     * 
-     * @param array $data - the form data array
+     * Changes BelongsTo relation names (article) into the connected key (article_id).
+     *
+     * @param  array  $data  - the form data array
      * @return array
      */
     protected function changeBelongsToNamesFromRelationshipToForeignKey($data)
@@ -227,7 +227,7 @@ trait Relationships
     }
 
     /**
-     * This function is reponsible to return the relationship field names that should be excluded from main entry saving process
+     * This function is reponsible to return the relationship field names that should be excluded from main entry saving process.
      */
     protected function getRelationshipFieldNamesToExclude()
     {
