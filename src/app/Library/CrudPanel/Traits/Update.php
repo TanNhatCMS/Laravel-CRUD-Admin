@@ -152,11 +152,12 @@ trait Update
                         break;
                     case HasOne::class:
                     case MorphOne::class:
-                        if(! $related_model->{$relation_method}) {
-                            return; 
+                        if (! $related_model->{$relation_method}) {
+                            return;
                         }
+
                         return $related_model->{$relation_method}->{Str::afterLast($field['entity'], '.')};
-                        
+
                         break;
                 }
             }

@@ -95,16 +95,15 @@ trait Create
                     $values = is_string($values) ? json_decode($values, true) : $values;
 
                     $relation_data = [];
-                    
+
                     foreach ($values as $value) {
-                        if(!isset($value[$relationMethod])) {
+                        if (! isset($value[$relationMethod])) {
                             continue;
                         }
-                        
+
                         $relation_data[$value[$relationMethod]] = Arr::except($value, $relationMethod);
-                        
                     }
-                    
+
                     // if there is no relation data, and the values array is single dimensional we have
                     // an array of keys with no aditional pivot data. sync those.
                     if (empty($relation_data) && count($values) == count($values, COUNT_RECURSIVE)) {
