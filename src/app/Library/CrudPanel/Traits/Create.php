@@ -41,25 +41,6 @@ trait Create
         return $item;
     }
 
-    protected function getRelationshipFieldNamesToExclude()
-    {
-        $fields = $this->parseRelationFieldNamesFromHtml($this->getRelationFields());
-        // we want the main entry BelongsTo relations to go through
-        $fields = array_filter($fields, function ($field) {
-            return $field['relation_type'] !== 'BelongsTo' || ($field['relation_type'] === 'BelongsTo' && Str::contains($field['name'], '.'));
-        });
-
-        // we check if any of the field names to be removed contains a dot, if so, we remove all fields from array with same key.
-        // example: HasOne Address -> address.street, address.country, would remove whole `address` instead of both single fields
-        return array_unique(array_map(function ($field_name) {
-            if (Str::contains($field_name, '.')) {
-                return Str::before($field_name, '.');
-            }
-
-            return $field_name;
-        }, Arr::pluck($fields, 'name')));
-    }
-
     /**
      * Get all fields needed for the ADD NEW ENTRY form.
      *
@@ -68,34 +49,6 @@ trait Create
     public function getCreateFields()
     {
         return $this->fields();
-    }
-
-    /**
-     * Get all fields with relation set.
-     *
-     * @return array The fields with model key set.
-     */
-    public function getRelationFields()
-    {
-        $fields = $this->fields();
-
-        return array_filter($fields, function ($field) {
-            return isset($field['relation_type']);
-        });
-    }
-
-    /**
-     * Get all fields with n-n relation set (pivot table is true).
-     *
-     * @return array The fields with n-n relationships.
-     */
-    public function getRelationFieldsWithPivot()
-    {
-        $all_relation_fields = $this->getRelationFields();
-
-        return Arr::where($all_relation_fields, function ($value, $key) {
-            return isset($value['pivot']) && $value['pivot'];
-        });
     }
 
     /**
@@ -235,7 +188,7 @@ trait Create
         return $relation_data;
     }
 
-    // belongs to relations should be saved along with main entry. We check for `user_id` (key) or `user` (relation name).
+    // BelongsTo relations should be saved along with main entry. We check for `user_id` (key) or `user` (relation name).
     private function mergeBelongsToRelationsIntoRelationData($relation_data)
     {
         $data = $relation_data;

@@ -298,29 +298,6 @@ class CrudPanel
         });
     }
 
-    // ------------
-    // TONE FUNCTIONS - UNDOCUMENTED, UNTESTED, SOME MAY BE USED IN THIS FILE
-    // ------------
-    //
-    // TODO:
-    // - figure out if they are really needed
-    // - comments inside the function to explain how they work
-    // - write docblock for them
-    // - place in the correct section above (CREATE, READ, UPDATE, DELETE, ACCESS, MANIPULATION)
-
-    public function sync($type, $fields, $attributes)
-    {
-        if (! empty($this->{$type})) {
-            $this->{$type} = array_map(function ($field) use ($fields, $attributes) {
-                if (in_array($field['name'], (array) $fields)) {
-                    $field = array_merge($field, $attributes);
-                }
-
-                return $field;
-            }, $this->{$type});
-        }
-    }
-
     /**
      * Get the Eloquent Model name from the given relation definition string.
      *
