@@ -253,7 +253,7 @@ trait Relationships
      *
      * @return array The fields with n-n relationships.
      */
-    protected function getRelationFieldsWithPivot()
+    public function getRelationFieldsWithPivot()
     {
         $all_relation_fields = $this->getRelationFields();
 
