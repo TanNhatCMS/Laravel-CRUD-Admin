@@ -100,7 +100,7 @@
       // Place the focus on the first element in the form
       @if( $crud->getAutoFocusOnFirstField() )
         @php
-          $focusField = Arr::first($fields, function($field) {
+          $focusField = Arr::first($crud->fields(), function($field) {
               return isset($field['auto_focus']) && $field['auto_focus'] == true;
           });
         @endphp

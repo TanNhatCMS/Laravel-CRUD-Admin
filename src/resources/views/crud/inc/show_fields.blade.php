@@ -5,6 +5,6 @@
         $fieldsViewNamespace = $field['view_namespace'] ?? 'crud::fields';
     @endphp
 
-    @include($fieldsViewNamespace.'.'.$field['type'], ['field' => $field])
+    @include($fieldsViewNamespace.'.'.$field['type'], ['field' => $crud->overwriteFieldNameFromDotNotationToArray($field)])
 @endforeach
 

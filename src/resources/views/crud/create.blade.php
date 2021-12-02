@@ -41,9 +41,9 @@
 			  {!! csrf_field() !!}
 		      <!-- load the view from the application if it exists, otherwise load the one in the package -->
 		      @if(view()->exists('vendor.backpack.crud.form_content'))
-		      	@include('vendor.backpack.crud.form_content', [ 'fields' => $crud->fields(), 'action' => 'create' ])
+		      	@include('vendor.backpack.crud.form_content', ['action' => 'create' ])
 		      @else
-		      	@include('crud::form_content', [ 'fields' => $crud->fields(), 'action' => 'create' ])
+		      	@include('crud::form_content', ['action' => 'create' ])
 		      @endif
 
 	          @include('crud::inc.form_save_buttons')

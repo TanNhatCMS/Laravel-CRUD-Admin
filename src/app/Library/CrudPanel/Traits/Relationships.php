@@ -91,32 +91,6 @@ trait Relationships
             ->toArray();
     }
 
-    /**
-     * Parse the field name back to the related entity after the form is submited.
-     * Its called in getAllFieldNames().
-     *
-     * @param  array  $fields
-     * @return array
-     */
-    public function parseRelationFieldNamesFromHtml($fields)
-    {
-        foreach ($fields as &$field) {
-            //we only want to parse fields that has a relation type and their name contains [ ] used in html.
-            if (isset($field['relation_type']) && preg_match('/[\[\]]/', $field['name']) !== 0) {
-                $chunks = explode('[', $field['name']);
-
-                foreach ($chunks as &$chunk) {
-                    if (strpos($chunk, ']')) {
-                        $chunk = str_replace(']', '', $chunk);
-                    }
-                }
-                $field['name'] = implode('.', $chunks);
-            }
-        }
-
-        return $fields;
-    }
-
     protected function changeBelongsToNamesFromRelationshipToForeignKey($data)
     {
         $belongs_to_fields = $this->getFieldsWithRelationType('BelongsTo');

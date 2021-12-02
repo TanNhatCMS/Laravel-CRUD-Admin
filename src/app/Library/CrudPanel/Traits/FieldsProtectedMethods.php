@@ -69,7 +69,7 @@ trait FieldsProtectedMethods
      */
     public function overwriteFieldNameFromDotNotationToArray($field)
     {
-        if (! is_array($field['name']) && strpos($field['name'], '.') !== false) {
+        if (! is_array($field['name']) && strpos($field['name'], '.') !== false && isset($field['relation_type']) && in_array($field['relation_type'], ['HasOne', 'MorphOne'])) {
             $entity_array = explode('.', $field['name']);
             $name_string = '';
 
@@ -246,7 +246,7 @@ trait FieldsProtectedMethods
         $fieldKey = $this->getFieldKey($field);
 
         $allFields = $this->getOperationSetting('fields');
-        $allFields = Arr::add($this->fields(), $fieldKey, $field);
+        $allFields = array_merge($this->fields(), [$fieldKey => $field]);
 
         $this->setOperationSetting('fields', $allFields);
     }

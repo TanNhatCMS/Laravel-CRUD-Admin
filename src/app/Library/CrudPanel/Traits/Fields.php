@@ -46,9 +46,7 @@ trait Fields
             $field = $this->makeSureFieldHasMultiple($field);
             $field = $this->makeSureFieldHasPivot($field);
         }
-
         $field = $this->makeSureFieldHasType($field);
-        $field = $this->overwriteFieldNameFromDotNotationToArray($field);
 
         return $field;
     }
@@ -417,10 +415,7 @@ trait Fields
      */
     public function getAllFieldNames()
     {
-        //we need to parse field names in relation fields so they get posted/stored correctly
-        $fields = $this->parseRelationFieldNamesFromHtml($this->getCurrentFields());
-
-        return Arr::flatten(Arr::pluck($fields, 'name'));
+        return Arr::flatten(Arr::pluck($this->getCurrentFields(), 'name'));
     }
 
     /**

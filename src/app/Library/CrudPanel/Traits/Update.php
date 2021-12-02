@@ -86,7 +86,7 @@ trait Update
     private function getModelAttributeValue($model, $field)
     {
         if (isset($field['entity'])) {
-            $relational_entity = $this->parseRelationFieldNamesFromHtml([$field])[0]['name'];
+            $relational_entity = $field['name'];
 
             $relation_array = explode('.', $relational_entity);
 
