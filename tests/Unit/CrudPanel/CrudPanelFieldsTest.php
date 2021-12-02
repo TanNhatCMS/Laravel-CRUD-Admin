@@ -544,7 +544,7 @@ class CrudPanelFieldsTest extends BaseDBCrudPanelTest
     {
         $this->crudPanel->setModel(User::class);
         $this->crudPanel->addField('accountDetails.nickname');
-        $field = $this->crudPanel->fields()['accountDetails[nickname]'];
+        $field = $this->crudPanel->fields()['accountDetails.nickname'];
         $this->assertEquals($field['relation_type'], 'HasOne');
     }
 
