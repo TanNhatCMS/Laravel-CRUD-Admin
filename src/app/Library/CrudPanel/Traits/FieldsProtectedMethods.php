@@ -2,7 +2,6 @@
 
 namespace Backpack\CRUD\app\Library\CrudPanel\Traits;
 
-use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 trait FieldsProtectedMethods
