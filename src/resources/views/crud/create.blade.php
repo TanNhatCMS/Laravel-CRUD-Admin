@@ -43,7 +43,7 @@
 		      @if(view()->exists('vendor.backpack.crud.form_content'))
 		      	@include('vendor.backpack.crud.form_content', ['action' => 'create' ])
 		      @else
-		      	@include('crud::form_content', ['action' => 'create' ])
+		      	@include('crud::form_content', ['action' => 'create' 'fields' => $fields])
 		      @endif
 
 	          @include('crud::inc.form_save_buttons')

@@ -7,7 +7,7 @@
 @else
   <div class="card">
     <div class="card-body row">
-      @include('crud::inc.show_fields', ['fields' => $crud->fields()])
+      @include('crud::inc.show_fields', ['fields' => $crud->fieldsWithOverwrittenNamesForHtml($fields)])
     </div>
   </div>
 @endif
@@ -114,7 +114,7 @@
       // Place the focus on the first element in the form
       @if( $crud->getAutoFocusOnFirstField() )
         @php
-          $focusField = Arr::first($crud->fields(), function($field) {
+          $focusField = Arr::first($fields, function($field) {
               return isset($field['auto_focus']) && $field['auto_focus'] == true;
           });
         @endphp

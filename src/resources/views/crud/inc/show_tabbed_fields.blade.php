@@ -27,11 +27,11 @@
 @if ($crud->getFieldsWithoutATab()->filter(function ($value, $key) { return $value['type'] != 'hidden'; })->count())
 <div class="card">
     <div class="card-body row">
-    @include('crud::inc.show_fields', ['fields' => $crud->getFieldsWithoutATab()])
+    @include('crud::inc.show_fields', ['fields' => $crud->fieldsWithOverwrittenNamesForHtml($crud->getFieldsWithoutATab())])
     </div>
 </div>
 @else
-    @include('crud::inc.show_fields', ['fields' => $crud->getFieldsWithoutATab()])
+    @include('crud::inc.show_fields', ['fields' => $crud->fieldsWithOverwrittenNamesForHtml($crud->getFieldsWithoutATab())])
 @endif
 
 <div class="tab-container {{ $horizontalTabs ? '' : 'container'}} mb-2">

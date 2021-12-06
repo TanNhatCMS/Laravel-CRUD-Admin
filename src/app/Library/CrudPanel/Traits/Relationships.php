@@ -106,6 +106,25 @@ trait Relationships
         return $data;
     }
 
+
+    /**
+     * Get the CRUD fields for the current operation, but with
+     * their names ready to be used inside inputs. For example
+     * 'relationship.attribute' => 'relationship[attribute]'
+     *
+     * @return array
+     */
+    public function fieldsWithOverwrittenNamesForHtml($fields = null)
+    {
+        $fields = $fields ?? $this->fields();
+
+        foreach ($fields as $key => $field) {
+            $fields[$key] = $this->overwriteFieldNameFromDotNotationToArray($field);
+        }
+
+        return $fields;
+    }
+
     /**
      * Based on relation type returns the default field type.
      *
