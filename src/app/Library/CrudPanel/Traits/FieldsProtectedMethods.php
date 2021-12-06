@@ -68,16 +68,22 @@ trait FieldsProtectedMethods
      */
     public function overwriteFieldNameFromDotNotationToArray($field)
     {
-        if (! is_array($field['name']) && strpos($field['name'], '.') !== false && isset($field['relation_type']) && in_array($field['relation_type'], ['HasOne', 'MorphOne'])) {
-            $entity_array = explode('.', $field['name']);
-            $name_string = '';
-
-            foreach ($entity_array as $key => $array_entity) {
-                $name_string .= ($key == 0) ? $array_entity : '['.$array_entity.']';
-            }
-
-            $field['name'] = $name_string;
+        if (is_array($field['name'])) {
+            return $field;
         }
+        
+        if (strpos($field['name'], '.') === false) {
+            return $field;
+        }
+
+        $entity_array = explode('.', $field['name']);
+        $name_string = '';
+
+        foreach ($entity_array as $key => $array_entity) {
+            $name_string .= ($key == 0) ? $array_entity : '['.$array_entity.']';
+        }
+
+        $field['name'] = $name_string;
 
         return $field;
     }
