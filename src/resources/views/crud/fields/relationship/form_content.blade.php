@@ -7,7 +7,7 @@
 @else
   <div class="card">
     <div class="card-body row">
-      @include('crud::fields.relationship.show_fields', ['fields' => $crud->fields()])
+      @include('crud::fields.relationship.show_fields', ['fields' => $crud->fieldsWithOverwrittenNamesForHtml()])
     </div>
   </div>
 @endif
