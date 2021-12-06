@@ -150,30 +150,6 @@ trait FieldsProtectedMethods
         return $field;
     }
 
-    protected function overwriteFieldNameFromEntity($field)
-    {
-        // if the entity doesn't have a dot, it means we don't need to overwrite the name
-        if (! Str::contains($field['entity'], '.')) {
-            return $field;
-        }
-
-        // only 1-1 relationships are supported, if it's anything else, abort
-        if ($field['relation_type'] != 'HasOne') {
-            return $field;
-        }
-
-        if (count(explode('.', $field['entity'])) == count(explode('.', $this->getOnlyRelationEntity($field)))) {
-            $field['name'] = implode('.', array_slice(explode('.', $field['entity']), 0, -1));
-            $relation = $this->getRelationInstance($field);
-            if (! empty($field['name'])) {
-                $field['name'] .= '.';
-            }
-            $field['name'] .= $relation->getForeignKeyName();
-        }
-
-        return $field;
-    }
-
     protected function makeSureFieldHasAttribute($field)
     {
         // if there's a model defined, but no attribute
