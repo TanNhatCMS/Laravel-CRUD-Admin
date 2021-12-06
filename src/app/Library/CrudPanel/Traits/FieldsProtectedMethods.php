@@ -71,7 +71,7 @@ trait FieldsProtectedMethods
         if (is_array($field['name'])) {
             return $field;
         }
-        
+
         if (strpos($field['name'], '.') === false) {
             return $field;
         }
