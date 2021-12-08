@@ -1,5 +1,4 @@
 @php
-    //in case entity is superNews we want the url friendly super-news
     $connected_entity = new $field['model'];
     $connected_entity_key_name = $connected_entity->getKeyName();
     $field['multiple'] = $field['multiple'] ?? $crud->relationAllowsMultiple($field['relation_type']);
@@ -7,7 +6,6 @@
     $field['include_all_form_fields'] = $field['include_all_form_fields'] ?? true;
     $field['allows_null'] = $field['allows_null'] ?? $crud->model::isColumnNullable($field['name']);
     // Note: isColumnNullable returns true if column is nullable in database, also true if column does not exist.
-
 
     if (!isset($field['options'])) {
             $field['options'] = $connected_entity::all()->pluck($field['attribute'],$connected_entity_key_name);
@@ -20,7 +18,7 @@
     $current_value = old(square_brackets_to_dots($field['name'])) ?? $field['value'] ?? $field['default'] ?? '';
 
 
-    if ($current_value != false) {
+    if (!empty($current_value) || is_int($current_value)) {
         switch (gettype($current_value)) {
             case 'array':
                 $current_value = $connected_entity
@@ -34,8 +32,7 @@
                     $current_value = [$current_value->{$connected_entity_key_name} => $current_value->{$field['attribute']}];
                 }else{
                     $current_value = $current_value
-                                    ->pluck($field['attribute'], $connected_entity_key_name)
-                                    ->toArray();
+                                    ->pluck($field['attribute'], $connected_entity_key_name);
                     }
 
             break;
@@ -62,8 +59,9 @@
         style="width:100%"
         name="{{ $field['name'].($field['multiple']?'[]':'') }}"
         data-init-function="bpFieldInitRelationshipSelectElement"
+        data-field-is-inline="{{var_export($inlineCreate ?? false)}}"
         data-column-nullable="{{ var_export($field['allows_null']) }}"
-        data-dependencies="{{ isset($field['dependencies'])?json_encode(array_wrap($field['dependencies'])): json_encode([]) }}"
+        data-dependencies="{{ isset($field['dependencies'])?json_encode(Arr::wrap($field['dependencies'])): json_encode([]) }}"
         data-model-local-key="{{$crud->model->getKeyName()}}"
         data-placeholder="{{ $field['placeholder'] }}"
         data-field-attribute="{{ $field['attribute'] }}"
@@ -71,8 +69,7 @@
         data-include-all-form-fields="{{ var_export($field['include_all_form_fields']) }}"
         data-current-value="{{ $field['value'] }}"
         data-field-multiple="{{var_export($field['multiple'])}}"
-        data-options-for-select="{{json_encode($field['options'])}}"
-        data-app-current-lang="{{ app()->getLocale() }}"
+        data-language="{{ str_replace('_', '-', app()->getLocale()) }}"
 
         @include('crud::fields.inc.attributes', ['default_class' =>  'form-control'])
 
@@ -80,6 +77,15 @@
         multiple
         @endif
         >
+        @if ($field['allows_null'])
+            <option value="">-</option>
+        @endif
+
+        @if (count($field['options']))
+            @foreach ($field['options'] as $key => $option)
+                    <option value="{{ $key }}">{{ $option }}</option>
+            @endforeach
+        @endif
     </select>
 
     {{-- HINT --}}
@@ -109,7 +115,7 @@
     <!-- include select2 js-->
     <script src="{{ asset('packages/select2/dist/js/select2.full.min.js') }}"></script>
     @if (app()->getLocale() !== 'en')
-    <script src="{{ asset('packages/select2/dist/js/i18n/' . app()->getLocale() . '.js') }}"></script>
+    <script src="{{ asset('packages/select2/dist/js/i18n/' . str_replace('_', '-', app()->getLocale()) . '.js') }}"></script>
     @endif
     @endpush
 
@@ -138,10 +144,10 @@
         var $includeAllFormFields = element.attr('data-include-all-form-fields') == 'false' ? false : true;
         var $dependencies = JSON.parse(element.attr('data-dependencies'));
         var $multiple = element.attr('data-field-multiple')  == 'false' ? false : true;
-        var $optionsForSelect = JSON.parse(element.attr('data-options-for-select'));
-        var $selectedOptions = JSON.parse(element.attr('data-selected-options') ?? null);
+        var $selectedOptions = typeof element.attr('data-selected-options') === 'string' ? JSON.parse(element.attr('data-selected-options')) : JSON.parse(null);
         var $allows_null = (element.attr('data-column-nullable') == 'true') ? true : false;
         var $allowClear = $allows_null;
+        var $isFieldInline = element.data('field-is-inline');
 
         var $item = false;
 
@@ -150,46 +156,17 @@
         if(Object.keys($value).length > 0) {
             $item = true;
         }
-
-
         var selectedOptions = [];
-        var $currentValue = $item ? $value : '';
+        var $currentValue = $item ? $value : {};
 
+        //we reselect the previously selected options if any.
+        Object.entries($currentValue).forEach(function(option) {
+            selectedOptions.push(option[0]);
+            $(element).val(selectedOptions);
+        });
 
-        for (const [key, value] of Object.entries($optionsForSelect)) {
-            var $option = new Option(value, key);
-            $(element).append($option);
-            //if option key is the same of current value we reselect it
-            if(!$multiple) {
-                if (key == Object.keys($currentValue)[0]) {
-                    $(element).val(key);
-                }
-            }else{
-                for (const [key, value] of Object.entries($currentValue)) {
-                        selectedOptions.push(key);
-                    }
-
-                    $(element).val(selectedOptions);
-            }
-
-        }
-
-        if (typeof $selectedOptions !== typeof undefined &&
-                    $selectedOptions !== false &&
-                        $selectedOptions != '' &&
-                        $selectedOptions != null &&
-                        $selectedOptions != [])
-                {
-                    $(element).val($selectedOptions);
-                    $(element).trigger('change');
-                }
-
-        if (!$allows_null && $item === false && $selectedOptions == null) {
-            if(Object.keys($optionsForSelect).length > 0) {
-                $(element).val(Object.keys($optionsForSelect)[0]);
-            }else{
-                $(element).val(null);
-            }
+        if (!$allows_null && $item === false) {
+            element.find('option:eq(0)').prop('selected', true);
         }
 
         $(element).attr('data-current-value',$(element).val());
@@ -200,36 +177,13 @@
                 multiple: $multiple,
                 placeholder: $placeholder,
                 allowClear: $allowClear,
+                dropdownParent: $isFieldInline ? $('#inline-create-dialog .modal-content') : document.body
             };
         if (!$(element).hasClass("select2-hidden-accessible"))
         {
             $(element).select2($select2Settings);
-             // if any dependencies have been declared
-            // when one of those dependencies changes value
-            // reset the select2 value
-            for (var i=0; i < $dependencies.length; i++) {
-                $dependency = $dependencies[i];
-                $('input[name='+$dependency+'], select[name='+$dependency+'], checkbox[name='+$dependency+'], radio[name='+$dependency+'], textarea[name='+$dependency+']').change(function () {
-                    element.val(null).trigger("change");
-                });
-
-            }
         }
     }
-
-    if (typeof processItemText !== 'function') {
-    function processItemText(item, $fieldAttribute, $appLang) {
-        if(typeof item[$fieldAttribute] === 'object' && item[$fieldAttribute] !== null)  {
-                        if(item[$fieldAttribute][$appLang] != 'undefined') {
-                            return item[$fieldAttribute][$appLang];
-                        }else{
-                            return item[$fieldAttribute][0];
-                        }
-                    }else{
-                        return item[$fieldAttribute];
-                    }
-    }
-}
 </script>
 @endpush
 @endif

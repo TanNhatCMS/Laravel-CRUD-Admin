@@ -9,9 +9,9 @@ trait UpdateOperation
     /**
      * Define which routes are needed for this operation.
      *
-     * @param string $name       Name of the current entity (singular). Used as first URL segment.
-     * @param string $routeName  Prefix of the route name.
-     * @param string $controller Name of the current CrudController.
+     * @param  string  $name  Name of the current entity (singular). Used as first URL segment.
+     * @param  string  $routeName  Prefix of the route name.
+     * @param  string  $controller  Name of the current CrudController.
      */
     protected function setupUpdateRoutes($segment, $routeName, $controller)
     {
@@ -24,12 +24,6 @@ trait UpdateOperation
         Route::put($segment.'/{id}', [
             'as'        => $routeName.'.update',
             'uses'      => $controller.'@update',
-            'operation' => 'update',
-        ]);
-
-        Route::get($segment.'/{id}/translate/{lang}', [
-            'as'        => $routeName.'.translateItem',
-            'uses'      => $controller.'@translateItem',
             'operation' => 'update',
         ]);
     }
@@ -63,9 +57,8 @@ trait UpdateOperation
     /**
      * Show the form for editing the specified resource.
      *
-     * @param int $id
-     *
-     * @return Response
+     * @param  int  $id
+     * @return \Illuminate\Contracts\View\View
      */
     public function edit($id)
     {
@@ -88,7 +81,7 @@ trait UpdateOperation
     /**
      * Update the specified resource in the database.
      *
-     * @return Response
+     * @return \Illuminate\Http\Response
      */
     public function update()
     {
