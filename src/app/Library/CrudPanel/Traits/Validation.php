@@ -14,8 +14,8 @@ trait Validation
     public function setValidationFromArray(array $rules, array $messages = [])
     {
         $this->setRequiredFields($rules);
-        $this->setOperationSetting('validationRules', $rules);
-        $this->setOperationSetting('validationMessages', $messages);
+        $this->setOperationSetting('validation.rules', $rules);
+        $this->setOperationSetting('validation.messages', $messages);
     }
 
     /**
@@ -29,26 +29,21 @@ trait Validation
         // construct the validation rules array
         // (eg. ['name' => 'required|min:2'])
         $rules = collect($fields)
-                    ->filter(function ($value, $key) {
-                        // only keep fields where 'validationRules' attribute is defined
-                        return array_key_exists('validationRules', $value);
-                    })->map(function ($item, $key) {
-                        // only keep the rules, not the entire field definition
-                        return $item['validationRules'];
-                    })->toArray();
+            ->map(function ($item, $key) {
+                return $item['validation']['rules'] ?? false;
+            })
+            ->filter()
+            ->toArray();
 
         // construct the validation messages array
         // (eg. ['title.required' => 'You gotta write smth man.'])
         $messages = [];
         collect($fields)
-                    ->filter(function ($value, $key) {
-                        // only keep fields where 'validationMessages' attribute is defined
-                        return array_key_exists('validationMessages', $value);
-                    })->each(function ($item, $key) use (&$messages) {
-                        foreach ($item['validationMessages'] as $rule => $message) {
-                            $messages[$key.'.'.$rule] = $message;
-                        }
-                    });
+            ->each(function ($item, $key) use (&$messages) {
+                foreach ($item['validation']['messages'] ?? [] as $rule => $message) {
+                    $messages["$key.$rule"] = $message;
+                }
+            });
 
         $this->setValidationFromArray($rules, $messages);
     }
@@ -139,9 +134,9 @@ trait Validation
         } else {
             $request = $this->getRequest();
 
-            if ($this->hasOperationSetting('validationRules')) {
-                $rules = $this->getOperationSetting('validationRules');
-                $messages = $this->getOperationSetting('validationMessages') ?? [];
+            if ($this->hasOperationSetting('validation.rules')) {
+                $rules = $this->getOperationSetting('validation.rules');
+                $messages = $this->getOperationSetting('validation.messages') ?? [];
                 $request->validate($rules, $messages);
             }
         }
