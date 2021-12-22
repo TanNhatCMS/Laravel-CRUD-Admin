@@ -3,6 +3,7 @@
 <div class="d-none">
 @endif
 
+
 <div class="col-md-12 well repeatable-element row m-1 p-2" data-repeatable-identifier="{{ $field['name'] }}">
     @if (isset($field['fields']) && is_array($field['fields']) && count($field['fields']))
     <div class="controls">
@@ -22,6 +23,7 @@
             $fieldViewNamespace = $subfield['view_namespace'] ?? 'crud::fields';
             $fieldViewPath = $fieldViewNamespace.'.'.$subfield['type'];
             if(isset($row)) {
+                $subfield['row_key'] = $row_key;
                 if(!is_array($subfield['name'])) {
                     // this is a fix for 4.1 repeatable names that when the field was multiple, saved the keys with `[]` in the end. Eg: `tags[]` instead of `tags`
                     if(isset($row[$subfield['name']]) || isset($row[$subfield['name'].'[]'])) {
@@ -29,10 +31,12 @@
                     }
                 }else{
                     $subfield['value'] = $row;
+                    
                 }
             }                       
         @endphp
-
+@php
+@endphp
         @include($fieldViewPath, ['field' => $subfield])
     @endforeach
 

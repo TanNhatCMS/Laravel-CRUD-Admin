@@ -15,6 +15,14 @@
     if (!empty($current_value) || is_int($current_value)) {
         switch (gettype($current_value)) {
             case 'array':
+                // check if field have `row_key` set, if it has we are in a repeatable
+                // and should get the current row value
+                if(isset($field['row_key'])) { 
+                    if (isset($current_value[$field['row_key']]) && isset($current_value[$field['row_key']][$field['name']])) {
+                        $current_value = array($current_value[$field['row_key']][$field['name']]);
+                    }
+                }
+                
                 $current_value = $connected_entity
                                     ->whereIn($connected_entity_key_name, $current_value)
                                     ->get()
