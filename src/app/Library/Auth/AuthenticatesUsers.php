@@ -153,7 +153,7 @@ trait AuthenticatesUsers
      */
     public function username()
     {
-        return 'email';
+        return config('backpack.base.authentication_column', 'email');
     }
 
     /**
