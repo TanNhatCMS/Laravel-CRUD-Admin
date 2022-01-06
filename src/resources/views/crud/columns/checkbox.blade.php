@@ -1,10 +1,12 @@
 {{-- checkbox with loose false/null/0 checking --}}
 <span>
+    @if (!isset($crud->bulkCallback) || !is_callable($crud->bulkCallback) || ($crud->bulkCallback)($entry))
     <input type="checkbox"
     		class="crud_bulk_actions_row_checkbox"
     		data-primary-key-value="{{ $entry->getKey() }}"
     		style="width: 16px; height: 16px; vertical-align: middle; margin-bottom: 2px;"
     		>
+    @endif
 </span>
 
 <script>
