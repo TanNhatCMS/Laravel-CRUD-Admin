@@ -1,7 +1,7 @@
 <!-- icon picker input -->
 @php
     // if no iconset was provided, set the default iconset to Line-Awesome
-    $field['iconset'] = $field['iconset'] ?? 'lineawesome';
+    $field['iconset'] = $field['iconset'] ?? 'fontawesome';
 
     switch ($field['iconset']) {
         case 'ionicon':
