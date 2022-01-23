@@ -150,7 +150,7 @@
         var $isPivotSelect = element.data('is-pivot-select');
         
         const changePivotOptionState = function(pivot_selector, enable = true) {
-            let pivots_container = pivot_selector.closest('div[data-repeatable-holder='+pivot_selector.data('repeatable-input-name')+']');
+            let pivots_container = pivot_selector.closest('div[data-repeatable-holder="'+pivot_selector.data('repeatable-input-name')+'"]');
             
             $(pivots_container).children().each(function(i,container) {
                 $(container).find('select').each(function(i, el) {
@@ -171,7 +171,7 @@
         };
 
         const disablePreviouslySelectedPivots = function(pivot_selector) {
-            let pivots_container = pivot_selector.closest('div[data-repeatable-holder='+pivot_selector.data('repeatable-input-name')+']');
+            let pivots_container = pivot_selector.closest('div[data-repeatable-holder="'+pivot_selector.data('repeatable-input-name')+'"]');
             let selected_values = [];
             let select_inputs = [];
             

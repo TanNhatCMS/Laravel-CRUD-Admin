@@ -146,7 +146,7 @@
 
             var field_name = element.attr('name');
 
-            var container_holder = $('[data-repeatable-holder='+field_name+']');
+            var container_holder = $('[data-repeatable-holder="'+field_name+'"]');
 
             var init_rows = Number(container_holder.attr('data-init-rows'));
             var min_rows = Number(container_holder.attr('data-min-rows'));

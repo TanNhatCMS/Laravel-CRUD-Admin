@@ -199,7 +199,7 @@
 
                         // if field is a pivot select, we are gonna get other pivot values,so we can disable them from selection.
                         if ($isPivotSelect) {
-                            let pivots_container = $(element).closest('div[data-repeatable-holder='+$(element).data('repeatable-input-name')+']');
+                            let pivots_container = $(element).closest('div[data-repeatable-holder="'+$(element).data('repeatable-input-name')+'"]');
                             var selected_values = [];
 
                             $(pivots_container).children().each(function(i,container) {
