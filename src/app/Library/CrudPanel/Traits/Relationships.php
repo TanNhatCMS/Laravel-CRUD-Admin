@@ -2,7 +2,6 @@
 
 namespace Backpack\CRUD\app\Library\CrudPanel\Traits;
 
-use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
@@ -17,24 +16,24 @@ trait Relationships
     public function getRelationInstance($field)
     {
         $entity = $this->getOnlyRelationEntity($field);
-        $possible_method = Str::before($entity, '.');        
-        
+        $possible_method = Str::before($entity, '.');
+
         $model = isset($field['baseModel']) ? app($field['baseModel']) : $this->model;
-        
+
         if (method_exists($model, $possible_method)) {
             $relation = $model->$possible_method();
-           
-            if(Str::contains($entity, '.')) {
+
+            if (Str::contains($entity, '.')) {
                 $parts = explode('.', $entity);
                 // here we are going to iterate through all relation parts
                 foreach ($parts as $i => $part) {
-                
-                        $relation = $model->$part();
-                        $model = $relation->getRelated();
+                    $relation = $model->$part();
+                    $model = $relation->getRelated();
                 }
+
                 return $relation;
             }
-            
+
             return $relation;
         }
         abort(500, 'Did not find a matching relationship. Are you sure that '.get_class($model)." has the {$field['entity']}() relationship on it?");
@@ -71,7 +70,7 @@ trait Relationships
         $entity = isset($field['baseEntity']) ? $field['baseEntity'].'.'.$field['entity'] : $field['entity'];
         $model = $this->getRelationModel($entity, -1);
         $lastSegmentAfterDot = Str::of($field['entity'])->afterLast('.');
-    
+
         if (! method_exists($model, $lastSegmentAfterDot)) {
             return (string) Str::of($field['entity'])->beforeLast('.');
         }
