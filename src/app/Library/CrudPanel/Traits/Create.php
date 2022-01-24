@@ -37,7 +37,7 @@ trait Create
         $item = $this->model->create(Arr::except($input, $field_names_to_exclude));
 
         $relation_input = $this->getRelationDetailsFromInput($input);
-
+        
         // handle the creation of the model relations after the main entity is created.
         $this->createRelationsForItem($item, $relation_input);
 
@@ -84,11 +84,7 @@ trait Create
                 }
             }
         }
-
-        //dd('her', $relationFields);
-        return $relationFields;
-
-        
+        return $relationFields; 
     }
 
     /**
@@ -100,7 +96,7 @@ trait Create
      */
     private function createRelationsForItem($item, $formattedRelations)
     {
-        //dd($formattedRelations);
+        dd($formattedRelations);
         if (! isset($formattedRelations['relations'])) {
             return false;
         }
@@ -112,36 +108,18 @@ trait Create
             $relationType = $relationDetails['relation_type'];
 
             switch ($relationType) {
-                /* case 'BelongsTo':
-                    $modelInstance = $relationDetails['model']::find($relationDetails['values']);
-                    if ($modelInstance != null) {
-                        $relation->associate($modelInstance)->save();
-                    } else {
-                        $relation->dissociate()->save();
-                    }
-                    break; */
                 case 'HasOne':
                 case 'MorphOne':
                         if (is_null($relationDetails['values'])) {
                             $relation->delete();
                             break;
                         }
-                        /* if($relationType === 'MorphOne') {
-                            dd($relation);
-                            $relationDetails['values'][$relation->getLocalKeyName()] = $item->id;
-                        } */
-                        //dd($formattedRelations);
+                
                         $modelInstance = $relation->updateOrCreate([], $relationDetails['values']);
-                        if($relationType === 'MorphOne') {
-                            //dd($relation);
-                            //$relationDetails['values'][$relation->getLocalKeyName()] = $item->id;
-                        }
+                       
                     break;
                 case 'HasMany':
                 case 'MorphMany':
-                    if($relationType === 'MorphMany') {
-                        //dd($relation);
-                    }
                     $relationValues = $relationDetails['values'];
                     // if relation values are null we can only attach, also we check if we sent
                     // - a single dimensional array: [1,2,3]
@@ -157,7 +135,6 @@ trait Create
                 case 'MorphToMany':
                     $values = $relationDetails['values'] ?? [];
                     $values = is_string($values) ? json_decode($values, true) : $values;
-                    //dd($values);
                     $relationValues = [];
 
                     if (is_multidimensional_array($values)) {
@@ -302,9 +279,8 @@ trait Create
     private function getRelationDetailsFromInput($input)
     {
 
-        //dd($input);
         $relationFields = $this->getRelationFields();
-        //dd($relationFields);
+        
         // exclude the already attached belongs to relations in the main entry but include nested belongs to.
         $relationFields = Arr::where($relationFields, function ($field, $key) {
             return $field['relation_type'] !== 'BelongsTo' || ($field['relation_type'] === 'BelongsTo' && Str::contains($field['name'], '.'));
@@ -314,30 +290,22 @@ trait Create
         $relationFields = array_filter($relationFields, function ($field) use ($input) {
             return Arr::has($input, $field['name']);
         });
-        //dd($relationFields);
-        //dd($input, $relationFields);
+        
         $relationDetails = [];
         foreach ($relationFields as $field) {
             $relationDetails = $this->geFieldDetailsForRelationSaving($field, $input, $relationDetails);
 
             if(isset($field['subfields'])) {
                 foreach($field['subfields'] as $subfield) {
-                    //dd($subfield);
                     $subfield['baseModel'] = $field['model'];
                     $subfield['baseEntity'] = $field['entity'];
                     $subfield = $this->makeSureFieldHasNecessaryAttributes($subfield);
-                    //dd($subfield);
-                    if($subfield['name'] === 'address.country') {
-                        //dd($subfield);
-                    }
                     if(isset($subfield['relation_type'])) {
                         $relationDetails = $this->geFieldDetailsForRelationSaving($subfield, $input, $relationDetails, $field);
                     }
                 }
             }
         }
-
-        //dd($relationDetails);
         return $relationDetails;
     }
 
@@ -354,7 +322,7 @@ trait Create
             if(!$parent) {
                 $key = implode('.relations.', explode('.', $this->getOnlyRelationEntity($field)));
                 $fieldDetails = Arr::get($relationDetails, 'relations.'.$key, []);
-
+                // relation.fiel or relation [field]
                 if($field['relation_type'] === 'HasOne' || $field['relation_type'] === 'MorphOne') {
                     if(!isset($field['subfields'])) {
                         $fieldDetails['values'][$attributeName] = is_array(Arr::get($input, $relationEntity)) ? current(Arr::get($input, $relationEntity)) : Arr::get($input, $relationEntity);

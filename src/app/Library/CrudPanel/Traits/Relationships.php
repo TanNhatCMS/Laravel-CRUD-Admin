@@ -17,9 +17,7 @@ trait Relationships
     public function getRelationInstance($field)
     {
         $entity = $this->getOnlyRelationEntity($field);
-        $possible_method = Str::before($entity, '.');
-       // $entity = isset($field['baseEntity']) ? $field['baseEntity'].'.'.$entity : $entity;
-        
+        $possible_method = Str::before($entity, '.');        
         
         $model = isset($field['baseModel']) ? app($field['baseModel']) : $this->model;
         
@@ -32,7 +30,6 @@ trait Relationships
                 foreach ($parts as $i => $part) {
                 
                         $relation = $model->$part();
-                        //dd($parts);
                         $model = $relation->getRelated();
                 }
                 return $relation;
@@ -40,8 +37,6 @@ trait Relationships
             
             return $relation;
         }
-        dd($field, $possible_method, $entity, debug_backtrace()[1]['function'], $model);
-        //dd();
         abort(500, 'Did not find a matching relationship. Are you sure that '.get_class($model)." has the {$field['entity']}() relationship on it?");
     }
 
