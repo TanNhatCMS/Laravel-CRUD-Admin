@@ -97,9 +97,7 @@ trait Update
     private function getModelAttributeValueFromRelationship($model, $field)
     {
         [$related_model, $relation_method] = $this->getModelAndMethodFromEntity($model, $field);
-        
-            
-        
+
         if (! method_exists($related_model, $relation_method)) {
             return $related_model->{$relation_method};
         }
@@ -151,16 +149,17 @@ trait Update
                 if (! $related_entry) {
                     return;
                 }
-                
+
                 if (Str::contains($field['entity'], '.')) {
                     dd($related_entry);
+
                     return $related_entry->{Str::afterLast($field['entity'], '.')};
                 }
-               
+
                 if ($field['subfields']) {
                     $result = [];
                     foreach ($field['subfields'] as $subfield) {
-                        if(isset($subfield['entity']) && !in_array($subfield['name'],['fallback_icon', 'products', 'select2', 'select2_from_ajax','select_multiple', 'tags', 'categories','articles'])) {
+                        if (isset($subfield['entity']) && ! in_array($subfield['name'], ['fallback_icon', 'products', 'select2', 'select2_from_ajax', 'select_multiple', 'tags', 'categories', 'articles'])) {
                             dd($subfield);
                         }
                         $name = is_string($subfield) ? $subfield : $subfield['name'];
