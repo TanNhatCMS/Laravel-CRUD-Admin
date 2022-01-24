@@ -138,13 +138,15 @@ trait Create
 
                     if (is_multidimensional_array($values)) {
                         foreach ($values as $value) {
-                            $relationValues[$value[$relationMethod]] = Arr::except($value, $relationMethod);
+                            if(isset($value[$relationMethod])) {
+                                $relationValues[$value[$relationMethod]] = Arr::except($value, $relationMethod);
+                            }
                         }
                     }
 
                     // if there is no relation data, and the values array is single dimensional we have
                     // an array of keys with no aditional pivot data. sync those.
-                    if (empty($relationValues)) {
+                    if (empty($relationValues) && !is_multidimensional_array($values)) {
                         $relationValues = array_values($values);
                     }
 
@@ -182,14 +184,16 @@ trait Create
 
             return $this->handleManyRelationItemRemoval($modelInstance, $removed_entries, $relationDetails, $relationForeignKey);
         }
-        // we add the new values into the relation
-        if($relationDetails['relation_type'] === 'HasMany') {
-            $modelInstance->whereIn($modelInstance->getKeyName(), $relation_values)
-                ->update([$relationForeignKey => $item->{$relationLocalKey}]);
-        }else{
-            $modelInstance->whereIn($modelInstance->getKeyName(), $relation_values)
-                ->update([$relationForeignKey => $item->{$relationLocalKey}, $relation->getQualifiedMorphType() => $relation->getMorphClass()]);
+        // we add the new values into the relation, if it is HasMany we only update the foreign_key,
+        // otherwise (it's a MorphMany) we need to update the morphs keys too
+        $toUpdate[$relationForeignKey] = $item->{$relationLocalKey};
+
+        if($relationDetails['relation_type'] === 'MorphMany') {
+            $toUpdate[$relation->getQualifiedMorphType()] = $relation->getMorphClass();
         }
+
+        $modelInstance->whereIn($modelInstance->getKeyName(), $relation_values)
+            ->update($toUpdate);
 
         // we clear up any values that were removed from model relation.
         // if developer provided a fallback id, we use it
@@ -197,6 +201,11 @@ trait Create
         // if none of the above we delete the model from database
         $removed_entries = $modelInstance->whereNotIn($modelInstance->getKeyName(), $relation_values)
                             ->where($relationForeignKey, $item->{$relationLocalKey});
+        
+        // if relation is MorphMany we also match by morph type.                    
+        if($relationDetails['relation_type'] === 'MorphMany') {
+            $removed_entries->where($relation->getQualifiedMorphType(), $relation->getMorphClass());
+        }
 
         return $this->handleManyRelationItemRemoval($modelInstance, $removed_entries, $relationDetails, $relationForeignKey);
     }

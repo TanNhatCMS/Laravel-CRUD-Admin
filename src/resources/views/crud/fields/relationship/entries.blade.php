@@ -15,12 +15,12 @@
     
     $pivotSelectorField = $field['pivotSelect'] ?? [];
     $inline_create = !isset($inlineCreate) && isset($pivotSelectorField['inline_create']) ? $pivotSelectorField['inline_create'] : false;
-    $pivotSelectorField['name'] = $field['name'];
+    $pivotSelectorField['name'] = Str::afterLast($field['real_name'] ?? '', '.') ?? $field['name'];
     $pivotSelectorField['type'] = 'relationship';
     $pivotSelectorField['is_pivot_select'] = true;
     $pivotSelectorField['multiple'] = false;
     $pivotSelectorField['label'] = $pivotSelect['label'] ?? '';
-    $pivotSelectorField['entity'] = $field['name'];    
+    $pivotSelectorField['entity'] =  $field['real_name'] ?? $field['name'];    
     $pivotSelectorField['ajax'] = $inline_create !== false ? true : ($pivotSelectorField['ajax'] ?? false);
     $pivotSelectorField['data_source'] = $pivotSelectorField['data_source'] ?? ($pivotSelectorField['ajax'] ? url($crud->route.'/fetch/'.$field['entity']) : 'false');
     $pivotSelectorField['minimum_input_length'] = $pivotSelectorField['minimum_input_length'] ?? 2;

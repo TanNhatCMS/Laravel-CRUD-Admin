@@ -1,7 +1,9 @@
 {{-- REPEATABLE FIELD TYPE --}}
 
 @php
-  $field['value'] = old_empty_or_null($field['name'], []) ??  $field['value'] ?? $field['default'] ?? [];
+  $fieldNameForRepeatable = $field['real_name'] ?? $field['name'];
+  $field['value'] = old_empty_or_null($fieldNameForRepeatable, []) ??  $field['value'] ?? $field['default'] ?? [];
+
   // make sure the value is always an array, even if stored as JSON in database
   $field['value'] = is_string($field['value']) ? json_decode($field['value'], true) : $field['value'];
 
@@ -46,7 +48,7 @@
 
 <div class="container-repeatable-elements">
     <div
-        data-repeatable-holder="{{ $field['name'] }}"
+        data-repeatable-holder="{{ $fieldNameForRepeatable }}"
         data-init-rows="{{ $field['init_rows'] }}"
         data-max-rows="{{ $field['max_rows'] }}"
         data-min-rows="{{ $field['min_rows'] }}"

@@ -163,7 +163,7 @@ class CrudPanelCreateTest extends BaseDBCrudPanelTest
         $this->crudPanel->addFields($this->userInputFieldsNoRelationships);
         $this->crudPanel->addField([
             'name' => 'accountDetails',
-            'fields' => [
+            'subfields' => [
                 [
                     'name' => 'nickname',
                 ],
