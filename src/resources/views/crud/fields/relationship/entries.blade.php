@@ -24,8 +24,17 @@
     $pivotSelectorField['data_source'] = $pivotSelectorField['data_source'] ?? ($pivotSelectorField['ajax'] ? url($crud->route.'/fetch/'.$field['entity']) : 'false');
     $pivotSelectorField['minimum_input_length'] = $pivotSelectorField['minimum_input_length'] ?? 2;
     $pivotSelectorField['delay'] = $pivotSelectorField['delay'] ?? 500;
+    $pivotSelectorField['relation_type'] = $field['relation_type'];
+    $pivotSelectorField['model'] = $field['model'];
     $pivotSelectorField['placeholder'] = $pivotSelectorField['placeholder'] ?? trans('backpack::crud.select_entry');
-    $pivotSelectorField['baseModel'] = $pivotSelectorField['baseModel'] ?? get_class($crud->model);
+    if(isset($field['baseModel']) || isset($pivotSelectorField['baseModel'])) {
+        $pivotSelectorField['baseModel'] = $pivotSelectorField['baseModel'] ?? $field['baseModel'];
+    }
+    //dd($pivotSelectorField);
+
+    if($field['name'] === 'dummyproducts') {
+      //  dd($field);
+    }
     
     switch ($field['relation_type']) {
         case 'MorphToMany':
@@ -35,8 +44,13 @@
         case 'MorphMany':
         case 'HasMany':
             if(isset($entry)) {
+                if($field['entity'] === 'postalboxes') {
+                    //dd($field);
+                }
+                //$entity = isset($field['baseEntity']) ? $field['baseEntity'].'.'.$field['entity'];
+                //$relation = CRUD::getRelationInstance(['entity' => $entity]);
                 $field['subfields'] = Arr::prepend($field['subfields'], [
-                    'name' => $entry->{$field['name']}()->getLocalKeyName(),
+                    'name' => (new $field['model'])->getKeyName(),
                     'type' => 'hidden',
                 ]);
             }

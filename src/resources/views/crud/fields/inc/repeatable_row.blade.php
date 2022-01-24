@@ -32,6 +32,7 @@
                 // we look if `category()` relationship exists on the model, we look on
                 // the model this repeatable represents, not the main CRUD model
                 $subfield['baseModel'] = $subfield['baseModel'] ?? $field['model'];
+                $subfield['baseEntity'] = $subfield['baseEntity'] ?? $field['entity'];
             }
             $subfield = $crud->makeSureFieldHasNecessaryAttributes($subfield);
             $fieldViewNamespace = $subfield['view_namespace'] ?? 'crud::fields';

@@ -155,7 +155,7 @@
             // make a copy of the group of inputs in their default state
             // this way we have a clean element we can clone when the user
             // wants to add a new group of inputs
-            var container = $('[data-repeatable-identifier='+field_name+']').last();
+            var container = $('[data-repeatable-identifier="'+field_name+'"]').last();
             
             // make sure the inputs get the data-repeatable-input-name
             // so we can know that they are inside repeatable
@@ -250,7 +250,7 @@
             delete_button.click(function(){
 
                 let $repeatableElement = $(this).closest('.repeatable-element');
-                let container = $('[data-repeatable-holder='+$($repeatableElement).attr('data-repeatable-identifier')+']')
+                let container = $('[data-repeatable-holder="'+$($repeatableElement).attr('data-repeatable-identifier')+'"]')
 
                 row.find('input, select, textarea').each(function(i, el) {
                     // we trigger this event so fields can intercept when they are beeing deleted from the page
@@ -287,7 +287,7 @@
             reorder_buttons.click(function(e){
                 
                 let $repeatableElement = $(e.target).closest('.repeatable-element');
-                let container = $('[data-repeatable-holder='+$($repeatableElement).attr('data-repeatable-identifier')+']')
+                let container = $('[data-repeatable-holder="'+$($repeatableElement).attr('data-repeatable-identifier')+'"]')
 
                 // get existing values
                 let index = $repeatableElement.index();
@@ -369,11 +369,22 @@
                             field_name = field_name.substring(field_name_position + 1).slice(0,-1);
                         }
 
+                        let name_to_write = '['+field_name+']';
+
+                        if(field_name.lastIndexOf('.') !== -1) {
+                            let parts = field_name.split('.');
+                            name_to_write = '';
+                            parts.forEach(part => {
+                                name_to_write = name_to_write+'['+part+']';
+                            });
+                            
+                        }
+
                         if(typeof $(el).attr('data-repeatable-input-name') === 'undefined') {
                             $(el).attr('data-repeatable-input-name', field_name);
                         }
 
-                        $(el).attr('name', container.attr('data-repeatable-holder')+'['+index+']['+field_name+']'+suffix);
+                        $(el).attr('name', container.attr('data-repeatable-holder')+'['+index+']'+name_to_write+suffix);
                     }
                 });
             });

@@ -129,6 +129,8 @@ trait FieldsProtectedMethods
     {
         $model = isset($field['baseModel']) ? app($field['baseModel']) : $this->model;
 
+        //$base_entity = isset($field['baseEntity']) ? $field['baseEntity'].'.' : '';
+        
         if (isset($field['entity'])) {
             return $field;
         }

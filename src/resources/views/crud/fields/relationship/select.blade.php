@@ -51,6 +51,10 @@
 
     $current_value = !is_array($current_value) ? $current_value->toArray() : $current_value;
 
+    if($field['name'] === 'universes' && $field['pivot'] === false) {
+        //dd($current_value, $field);
+    }
+
 @endphp
 
 @include('crud::fields.inc.wrapper_start')

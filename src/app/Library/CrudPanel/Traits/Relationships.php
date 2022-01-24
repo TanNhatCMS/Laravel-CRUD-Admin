@@ -2,6 +2,7 @@
 
 namespace Backpack\CRUD\app\Library\CrudPanel\Traits;
 
+use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
@@ -17,19 +18,30 @@ trait Relationships
     {
         $entity = $this->getOnlyRelationEntity($field);
         $possible_method = Str::before($entity, '.');
+       // $entity = isset($field['baseEntity']) ? $field['baseEntity'].'.'.$entity : $entity;
+        
+        
         $model = isset($field['baseModel']) ? app($field['baseModel']) : $this->model;
-
+        
         if (method_exists($model, $possible_method)) {
-            $parts = explode('.', $entity);
-            // here we are going to iterate through all relation parts to check
-            foreach ($parts as $i => $part) {
-                $relation = $model->$part();
-                $model = $relation->getRelated();
+            $relation = $model->$possible_method();
+           
+            if(Str::contains($entity, '.')) {
+                $parts = explode('.', $entity);
+                // here we are going to iterate through all relation parts
+                foreach ($parts as $i => $part) {
+                
+                        $relation = $model->$part();
+                        //dd($parts);
+                        $model = $relation->getRelated();
+                }
+                return $relation;
             }
-
+            
             return $relation;
         }
-
+        dd($field, $possible_method, $entity, debug_backtrace()[1]['function'], $model);
+        //dd();
         abort(500, 'Did not find a matching relationship. Are you sure that '.get_class($model)." has the {$field['entity']}() relationship on it?");
     }
 
@@ -61,9 +73,10 @@ trait Relationships
 
     public function getOnlyRelationEntity($field)
     {
-        $model = $this->getRelationModel($field['entity'], -1);
+        $entity = isset($field['baseEntity']) ? $field['baseEntity'].'.'.$field['entity'] : $field['entity'];
+        $model = $this->getRelationModel($entity, -1);
         $lastSegmentAfterDot = Str::of($field['entity'])->afterLast('.');
-
+    
         if (! method_exists($model, $lastSegmentAfterDot)) {
             return (string) Str::of($field['entity'])->beforeLast('.');
         }
