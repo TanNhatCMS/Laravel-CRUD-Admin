@@ -31,10 +31,8 @@
     if(isset($field['baseModel']) || isset($pivotSelectorField['baseModel'])) {
         $pivotSelectorField['baseModel'] = $pivotSelectorField['baseModel'] ?? $field['baseModel'];
     }
-    //dd($pivotSelectorField);
-
-    if($field['name'] === 'dummyproducts') {
-      //  dd($field);
+    if(isset($field['baseEntity']) || isset($pivotSelectorField['baseEntity'])) {
+        $pivotSelectorField['baseEntity'] = $pivotSelectorField['baseEntity'] ?? $field['baseEntity'];
     }
     
     switch ($field['relation_type']) {
@@ -45,11 +43,6 @@
         case 'MorphMany':
         case 'HasMany':
             if(isset($entry)) {
-                if($field['entity'] === 'postalboxes') {
-                    //dd($field);
-                }
-                //$entity = isset($field['baseEntity']) ? $field['baseEntity'].'.'.$field['entity'];
-                //$relation = CRUD::getRelationInstance(['entity' => $entity]);
                 $field['subfields'] = Arr::prepend($field['subfields'], [
                     'name' => (new $field['model'])->getKeyName(),
                     'type' => 'hidden',
