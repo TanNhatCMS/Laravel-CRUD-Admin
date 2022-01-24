@@ -96,7 +96,6 @@ trait Create
      */
     private function createRelationsForItem($item, $formattedRelations)
     {
-        dd($formattedRelations);
         if (! isset($formattedRelations['relations'])) {
             return false;
         }
@@ -310,7 +309,6 @@ trait Create
     }
 
     private function geFieldDetailsForRelationSaving($field, $input, $relationDetails, $parent = false) {
-            Log::info('getting relation details for : ' . $field['name']);
             // we split the entity into relations, eg: user.accountDetails.address
             // (user -> HasOne accountDetails -> BelongsTo address)
             // we specifically use only the relation entity because relations like
@@ -322,7 +320,6 @@ trait Create
             if(!$parent) {
                 $key = implode('.relations.', explode('.', $this->getOnlyRelationEntity($field)));
                 $fieldDetails = Arr::get($relationDetails, 'relations.'.$key, []);
-                // relation.fiel or relation [field]
                 if($field['relation_type'] === 'HasOne' || $field['relation_type'] === 'MorphOne') {
                     if(!isset($field['subfields'])) {
                         $fieldDetails['values'][$attributeName] = is_array(Arr::get($input, $relationEntity)) ? current(Arr::get($input, $relationEntity)) : Arr::get($input, $relationEntity);
@@ -339,7 +336,6 @@ trait Create
                     if($belongsToKey !== $relation->getForeignKeyName()) {
                         $entity = 'relations.'.Str::beforeLast($field['name'], '.').'.values.'.$relation->getForeignKeyName();
                         Arr::set($relationDetails, $entity, Arr::get($input, $relationEntity));
-                        //dd($relationDetails);
                         return $relationDetails;
                     }
                 }
@@ -348,12 +344,11 @@ trait Create
                 }
             }else{
                 $key = implode('.relations.', explode('.', $this->getOnlyRelationEntity(['entity' => $parent['entity'].'.'.$field['entity']])));
-                //dd($key);
+                
                 $fieldDetails = Arr::get($relationDetails, 'relations.'.$key, []);
                 $related_field = $this->getCleanStateFields()[$parent['name']];
                 $parent_value = is_array(Arr::get($input, $parent['name'])) ? current(Arr::get($input, $parent['name'])) : Arr::get($input, $parent['name']);
-                //$relationEntity = $parent['entity'].'.'.$field['entity'];
-                //dd(Arr::get($parent_value, $relationEntity), $relationEntity, $input, $field, $parent_value);
+               
                 switch($field['relation_type']) {
                     case 'HasOne':
                     case 'MorphOne':
@@ -380,21 +375,15 @@ trait Create
                     case 'MorphOne':
                         
                         if($field['relation_type'] === 'BelongsTo') {
-                            Log::info('belongsto details for : ' . $field['name']);
-                            //dd($related_field, $field);
                                 $relation = $this->getRelationInstance(['entity' => $related_field['entity'].'.'.$field['entity']]);
                                 $belongsToKey = $field['name'];
                                 if(Str::contains($field['name'], '.')) {
                                     $belongsToKey = Str::afterLast($field['name'], '.');
                                 }
                                 if($belongsToKey !== $relation->getForeignKeyName()) {
-                                    //dd($key, $belongsToKey, $relation->getForeignKeyName());
                                     $key = 'relations.'.Str::beforeLast($key, '.relations').'.values.'. $relation->getForeignKeyName();
-                                    //dd($key);
                                     Arr::set($relationDetails, $key, Arr::get($parent_value, $relationEntity));
-                                    //$relationDetails['relations'][$parent['name']]['values'][$relation->getForeignKeyName()] = ;
                                     unset($relationDetails['relations'][$parent['name']]['values'][$field['name']]);
-                                    //dd('hey', $relationDetails);
                                     return $relationDetails;
                                 }
                             }
@@ -420,9 +409,6 @@ trait Create
             }
         
             Arr::set($relationDetails, 'relations.'.$key, $fieldDetails);
-            if($field['name'] === 'address.country') {
-                //dd($relationDetails);
-            }
             return $relationDetails;
 
     }
