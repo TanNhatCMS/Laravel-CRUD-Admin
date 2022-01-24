@@ -79,7 +79,7 @@ trait Update
         if (isset($field['entity']) && $field['entity'] !== false) {
             return $this->getModelAttributeValueFromRelationship($model, $field);
         }
-        
+
         if (is_string($field['name'])) {
             return $model->{$field['name']};
         }
@@ -97,7 +97,7 @@ trait Update
     private function getModelAttributeValueFromRelationship($model, $field)
     {
         [$related_model, $relation_method] = $this->getModelAndMethodFromEntity($model, $field);
-        
+
         if (! method_exists($related_model, $relation_method)) {
             return $related_model->{$relation_method};
         }
@@ -149,12 +149,12 @@ trait Update
                 if (! $related_entry) {
                     return;
                 }
-                
+
                 // if `entity` contains a dot here it means developer added a main HasOne/MorphOne relation with dot notation
                 if (Str::contains($field['entity'], '.')) {
                     return $related_entry->{Str::afterLast($field['entity'], '.')};
                 }
-               
+
                 // when subfields exists developer used the repeatable interface to manage this relation
                 if ($field['subfields']) {
                     $result = [];
@@ -162,27 +162,27 @@ trait Update
                         $name = is_string($subfield) ? $subfield : $subfield['name'];
                         // if the subfield name does not contain a dot we just need to check
                         // if it has subfields and return the result accordingly.
-                        if(!Str::contains($name, '.')) {
+                        if (! Str::contains($name, '.')) {
                             // when subfields are present, $related_entry->{$name} returns a model instance
                             // otherwise returns the model attribute.
-                            if(isset($subfield['subfields'])) {
+                            if (isset($subfield['subfields'])) {
                                 $result[$name] = [$related_entry->{$name}->only(array_column($subfield['subfields'], 'name'))];
-                            }else{
+                            } else {
                                 $result[$name] = $related_entry->{$name};
                             }
-                        }else{
+                        } else {
                             // if the subfield name contains a dot, we are going to iterate through
                             // those parts to get the last connected part and parse it for returning.
                             // we get either a string (the attribute in model, eg: street) or a model instance (eg: AddressModel)
                             $iterator = $related_entry;
-                            foreach(explode('.', $name) as $part) {               
-                                $iterator = $iterator->$part;                   
+                            foreach (explode('.', $name) as $part) {
+                                $iterator = $iterator->$part;
                             }
-                            
-                            Arr::set($result, $name, (!is_string($iterator) ? $iterator->getAttributes() : $iterator));
-                            
+
+                            Arr::set($result, $name, (! is_string($iterator) ? $iterator->getAttributes() : $iterator));
                         }
                     }
+
                     return [$result];
                 }
 

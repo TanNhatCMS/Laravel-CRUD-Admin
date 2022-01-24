@@ -8,7 +8,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphOne;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 trait Create
@@ -37,7 +36,7 @@ trait Create
         $item = $this->model->create(Arr::except($input, $field_names_to_exclude));
 
         $relation_input = $this->getRelationDetailsFromInput($input);
-        
+
         // handle the creation of the model relations after the main entity is created.
         $this->createRelationsForItem($item, $relation_input);
 
@@ -84,7 +83,8 @@ trait Create
                 }
             }
         }
-        return $relationFields; 
+
+        return $relationFields;
     }
 
     /**
@@ -113,9 +113,9 @@ trait Create
                             $relation->delete();
                             break;
                         }
-                
+
                         $modelInstance = $relation->updateOrCreate([], $relationDetails['values']);
-                       
+
                     break;
                 case 'HasMany':
                 case 'MorphMany':
@@ -138,7 +138,7 @@ trait Create
 
                     if (is_multidimensional_array($values)) {
                         foreach ($values as $value) {
-                            if(isset($value[$relationMethod])) {
+                            if (isset($value[$relationMethod])) {
                                 $relationValues[$value[$relationMethod]] = Arr::except($value, $relationMethod);
                             }
                         }
@@ -146,7 +146,7 @@ trait Create
 
                     // if there is no relation data, and the values array is single dimensional we have
                     // an array of keys with no aditional pivot data. sync those.
-                    if (empty($relationValues) && !is_multidimensional_array($values)) {
+                    if (empty($relationValues) && ! is_multidimensional_array($values)) {
                         $relationValues = array_values($values);
                     }
 
@@ -188,7 +188,7 @@ trait Create
         // otherwise (it's a MorphMany) we need to update the morphs keys too
         $toUpdate[$relationForeignKey] = $item->{$relationLocalKey};
 
-        if($relationDetails['relation_type'] === 'MorphMany') {
+        if ($relationDetails['relation_type'] === 'MorphMany') {
             $toUpdate[$relation->getQualifiedMorphType()] = $relation->getMorphClass();
         }
 
@@ -201,9 +201,9 @@ trait Create
         // if none of the above we delete the model from database
         $removed_entries = $modelInstance->whereNotIn($modelInstance->getKeyName(), $relation_values)
                             ->where($relationForeignKey, $item->{$relationLocalKey});
-        
-        // if relation is MorphMany we also match by morph type.                    
-        if($relationDetails['relation_type'] === 'MorphMany') {
+
+        // if relation is MorphMany we also match by morph type.
+        if ($relationDetails['relation_type'] === 'MorphMany') {
             $removed_entries->where($relation->getQualifiedMorphType(), $relation->getMorphClass());
         }
 
@@ -240,8 +240,6 @@ trait Create
      */
     private function createManyEntries($entry, $relation, $relationMethod, $relationDetails)
     {
-
-        
         $items = $relationDetails['values'];
 
         $relation_local_key = $relation->getLocalKeyName();
@@ -286,9 +284,8 @@ trait Create
      */
     private function getRelationDetailsFromInput($input)
     {
-
         $relationFields = $this->getRelationFields();
-        
+
         // exclude the already attached belongs to relations in the main entry but include nested belongs to.
         $relationFields = Arr::where($relationFields, function ($field, $key) {
             return $field['relation_type'] !== 'BelongsTo' || ($field['relation_type'] === 'BelongsTo' && Str::contains($field['name'], '.'));
@@ -298,76 +295,78 @@ trait Create
         $relationFields = array_filter($relationFields, function ($field) use ($input) {
             return Arr::has($input, $field['name']);
         });
-        
+
         $relationDetails = [];
         foreach ($relationFields as $field) {
             $relationDetails = $this->geFieldDetailsForRelationSaving($field, $input, $relationDetails);
 
-            if(isset($field['subfields'])) {
-                foreach($field['subfields'] as $subfield) {
+            if (isset($field['subfields'])) {
+                foreach ($field['subfields'] as $subfield) {
                     $subfield['baseModel'] = $field['model'];
                     $subfield['baseEntity'] = $field['entity'];
                     $subfield = $this->makeSureFieldHasNecessaryAttributes($subfield);
-                    if(isset($subfield['relation_type'])) {
+                    if (isset($subfield['relation_type'])) {
                         $relationDetails = $this->geFieldDetailsForRelationSaving($subfield, $input, $relationDetails, $field);
                     }
                 }
             }
         }
+
         return $relationDetails;
     }
 
-    private function geFieldDetailsForRelationSaving($field, $input, $relationDetails, $parent = false) {
-            // we split the entity into relations, eg: user.accountDetails.address
-            // (user -> HasOne accountDetails -> BelongsTo address)
-            // we specifically use only the relation entity because relations like
-            // HasOne and MorphOne use the attribute in the relation string
-            
-            $relationEntity = $field['entity'];
-            $attributeName = (string) Str::of($field['name'])->afterLast('.');
-           
-            if(!$parent) {
-                $key = implode('.relations.', explode('.', $this->getOnlyRelationEntity($field)));
-                $fieldDetails = Arr::get($relationDetails, 'relations.'.$key, []);
-                if($field['relation_type'] === 'HasOne' || $field['relation_type'] === 'MorphOne') {
-                    if(!isset($field['subfields'])) {
-                        $fieldDetails['values'][$attributeName] = is_array(Arr::get($input, $relationEntity)) ? current(Arr::get($input, $relationEntity)) : Arr::get($input, $relationEntity);
-                    }else{
-                        
-                        $fieldDetails['values'] = is_array(Arr::get($input, $relationEntity)) ? current(Arr::get($input, $relationEntity)) : Arr::get($input, $relationEntity);
-                    }
-                }elseif($field['relation_type'] === 'BelongsTo') {
-                    $relation = $this->getRelationInstance(['entity' => $field['entity']]);
-                    $belongsToKey = $field['name'];
-                    if(Str::contains($field['name'], '.')) {
-                        $belongsToKey = Str::afterLast($field['name'], '.');
-                    }
-                    if($belongsToKey !== $relation->getForeignKeyName()) {
-                        $entity = 'relations.'.Str::beforeLast($field['name'], '.').'.values.'.$relation->getForeignKeyName();
-                        Arr::set($relationDetails, $entity, Arr::get($input, $relationEntity));
-                        return $relationDetails;
-                    }
+    private function geFieldDetailsForRelationSaving($field, $input, $relationDetails, $parent = false)
+    {
+        // we split the entity into relations, eg: user.accountDetails.address
+        // (user -> HasOne accountDetails -> BelongsTo address)
+        // we specifically use only the relation entity because relations like
+        // HasOne and MorphOne use the attribute in the relation string
+
+        $relationEntity = $field['entity'];
+        $attributeName = (string) Str::of($field['name'])->afterLast('.');
+
+        if (! $parent) {
+            $key = implode('.relations.', explode('.', $this->getOnlyRelationEntity($field)));
+            $fieldDetails = Arr::get($relationDetails, 'relations.'.$key, []);
+            if ($field['relation_type'] === 'HasOne' || $field['relation_type'] === 'MorphOne') {
+                if (! isset($field['subfields'])) {
+                    $fieldDetails['values'][$attributeName] = is_array(Arr::get($input, $relationEntity)) ? current(Arr::get($input, $relationEntity)) : Arr::get($input, $relationEntity);
+                } else {
+                    $fieldDetails['values'] = is_array(Arr::get($input, $relationEntity)) ? current(Arr::get($input, $relationEntity)) : Arr::get($input, $relationEntity);
                 }
-                if(!isset($fieldDetails['values'])) {
-                    $fieldDetails['values'] = Arr::get($input, $relationEntity);
+            } elseif ($field['relation_type'] === 'BelongsTo') {
+                $relation = $this->getRelationInstance(['entity' => $field['entity']]);
+                $belongsToKey = $field['name'];
+                if (Str::contains($field['name'], '.')) {
+                    $belongsToKey = Str::afterLast($field['name'], '.');
                 }
-            }else{
-                $key = implode('.relations.', explode('.', $this->getOnlyRelationEntity(['entity' => $parent['entity'].'.'.$field['entity']])));
-                
-                $fieldDetails = Arr::get($relationDetails, 'relations.'.$key, []);
-                $related_field = $this->getCleanStateFields()[$parent['name']];
-                $parent_value = is_array(Arr::get($input, $parent['name'])) ? current(Arr::get($input, $parent['name'])) : Arr::get($input, $parent['name']);
-               
-                switch($field['relation_type']) {
+                if ($belongsToKey !== $relation->getForeignKeyName()) {
+                    $entity = 'relations.'.Str::beforeLast($field['name'], '.').'.values.'.$relation->getForeignKeyName();
+                    Arr::set($relationDetails, $entity, Arr::get($input, $relationEntity));
+
+                    return $relationDetails;
+                }
+            }
+            if (! isset($fieldDetails['values'])) {
+                $fieldDetails['values'] = Arr::get($input, $relationEntity);
+            }
+        } else {
+            $key = implode('.relations.', explode('.', $this->getOnlyRelationEntity(['entity' => $parent['entity'].'.'.$field['entity']])));
+
+            $fieldDetails = Arr::get($relationDetails, 'relations.'.$key, []);
+            $related_field = $this->getCleanStateFields()[$parent['name']];
+            $parent_value = is_array(Arr::get($input, $parent['name'])) ? current(Arr::get($input, $parent['name'])) : Arr::get($input, $parent['name']);
+
+            switch ($field['relation_type']) {
                     case 'HasOne':
                     case 'MorphOne':
-                        if(isset($field['subfields'])) {
+                        if (isset($field['subfields'])) {
                             $fieldDetails['values'] = array_merge($fieldDetails['values'] ?? [], Arr::get($parent_value, $relationEntity) ?? []);
-                        }else{
+                        } else {
                             $fieldDetails['values'][$attributeName] = Arr::get($parent_value, $relationEntity);
                         }
                     break;
-                    
+
                     case 'BelongsTo':
                         $fieldDetails['values'] = Arr::get($parent_value, $relationEntity);
                     break;
@@ -379,47 +378,46 @@ trait Create
                     break;
                 }
 
-                switch($related_field['relation_type']) {
+            switch ($related_field['relation_type']) {
                     case 'HasOne':
                     case 'MorphOne':
-                        
-                        if($field['relation_type'] === 'BelongsTo') {
-                                $relation = $this->getRelationInstance(['entity' => $related_field['entity'].'.'.$field['entity']]);
-                                $belongsToKey = $field['name'];
-                                if(Str::contains($field['name'], '.')) {
-                                    $belongsToKey = Str::afterLast($field['name'], '.');
-                                }
-                                if($belongsToKey !== $relation->getForeignKeyName()) {
-                                    $key = 'relations.'.Str::beforeLast($key, '.relations').'.values.'. $relation->getForeignKeyName();
-                                    Arr::set($relationDetails, $key, Arr::get($parent_value, $relationEntity));
-                                    unset($relationDetails['relations'][$parent['name']]['values'][$field['name']]);
-                                    return $relationDetails;
-                                }
+
+                        if ($field['relation_type'] === 'BelongsTo') {
+                            $relation = $this->getRelationInstance(['entity' => $related_field['entity'].'.'.$field['entity']]);
+                            $belongsToKey = $field['name'];
+                            if (Str::contains($field['name'], '.')) {
+                                $belongsToKey = Str::afterLast($field['name'], '.');
                             }
+                            if ($belongsToKey !== $relation->getForeignKeyName()) {
+                                $key = 'relations.'.Str::beforeLast($key, '.relations').'.values.'.$relation->getForeignKeyName();
+                                Arr::set($relationDetails, $key, Arr::get($parent_value, $relationEntity));
+                                unset($relationDetails['relations'][$parent['name']]['values'][$field['name']]);
+
+                                return $relationDetails;
+                            }
+                        }
                             break;
                         }
 
-                $relationEntity = $this->getOnlyRelationEntity(['entity' => $parent['entity'].'.'.$field['entity']]);
-                        
-            }
-            
-            
-            $fieldDetails['model'] = $field['model'];
-            $fieldDetails['parent'] = $this->getRelationModel($relationEntity, -1);
-            $fieldDetails['entity'] = $relationEntity;
-            $fieldDetails['attribute'] = $field['attribute'];
-            $fieldDetails['relation_type'] = $field['relation_type'];
+            $relationEntity = $this->getOnlyRelationEntity(['entity' => $parent['entity'].'.'.$field['entity']]);
+        }
 
-            if (isset($field['fallback_id'])) {
-                $fieldDetails['fallback_id'] = $field['fallback_id'];
-            }
-            if (isset($field['force_delete'])) {
-                $fieldDetails['force_delete'] = $field['force_delete'];
-            }
-        
-            Arr::set($relationDetails, 'relations.'.$key, $fieldDetails);
-            return $relationDetails;
+        $fieldDetails['model'] = $field['model'];
+        $fieldDetails['parent'] = $this->getRelationModel($relationEntity, -1);
+        $fieldDetails['entity'] = $relationEntity;
+        $fieldDetails['attribute'] = $field['attribute'];
+        $fieldDetails['relation_type'] = $field['relation_type'];
 
+        if (isset($field['fallback_id'])) {
+            $fieldDetails['fallback_id'] = $field['fallback_id'];
+        }
+        if (isset($field['force_delete'])) {
+            $fieldDetails['force_delete'] = $field['force_delete'];
+        }
+
+        Arr::set($relationDetails, 'relations.'.$key, $fieldDetails);
+
+        return $relationDetails;
     }
 
     /**
