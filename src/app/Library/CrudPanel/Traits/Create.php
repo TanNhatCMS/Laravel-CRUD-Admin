@@ -322,14 +322,9 @@ trait Create
 
             if(isset($field['subfields'])) {
                 foreach($field['subfields'] as $subfield) {
-                    //dd($subfield);
                     $subfield['baseModel'] = $field['model'];
                     $subfield['baseEntity'] = $field['entity'];
-                    $subfield = $this->makeSureFieldHasNecessaryAttributes($subfield);
-                    //dd($subfield);
-                    if($subfield['name'] === 'address.country') {
-                        //dd($subfield);
-                    }
+                    
                     if(isset($subfield['relation_type'])) {
                         $relationDetails = $this->geFieldDetailsForRelationSaving($subfield, $input, $relationDetails, $field);
                     }

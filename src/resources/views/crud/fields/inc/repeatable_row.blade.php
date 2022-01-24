@@ -17,34 +17,25 @@
     </div>
     @foreach($field['subfields'] as $subfield)
         @php
-            // make sure the field definition is an array
-            if (is_string($subfield)) {
-                $subfield = ['name' => $subfield];
-            }
-
-            if (!isset($field['model'])) {
-                // we're inside a simple 'repeatable' with no model/relationship, so
-                // we assume all subfields are supposed to be text fields
-                $subfield['type'] = $subfield['type'] ?? 'text';
-                $subfield['entity'] = $subfield['entity'] ?? false;
-            } else {
-                // we should use 'model' as the `baseModel` for all subfields, so that when
-                // we look if `category()` relationship exists on the model, we look on
-                // the model this repeatable represents, not the main CRUD model
-                $subfield['baseModel'] = $subfield['baseModel'] ?? $field['model'];
-                $subfield['baseEntity'] = $subfield['baseEntity'] ?? $field['entity'];
-            }
-            $subfield = $crud->makeSureFieldHasNecessaryAttributes($subfield);
+            
             $fieldViewNamespace = $subfield['view_namespace'] ?? 'crud::fields';
+    
             $fieldViewPath = $fieldViewNamespace.'.'.$subfield['type'];
+            
 
             if(isset($row)) {
                 if(!is_array($subfield['name'])) {
-                    // this is a fix for 4.1 repeatable names that when the field was multiple, saved the keys with `[]` in the end. Eg: `tags[]` instead of `tags`
-                    if(isset($row[$subfield['name']]) || isset($row[$subfield['name'].'[]'])) {
-                        $subfield['value'] = $row[$subfield['name']] ?? $row[$subfield['name'].'[]'];
+                    if(!Str::contains($subfield['name'], '.')) {
+                        // this is a fix for 4.1 repeatable names that when the field was multiple, saved the keys with `[]` in the end. Eg: `tags[]` instead of `tags`
+                        if(isset($row[$subfield['name']]) || isset($row[$subfield['name'].'[]'])) {
+                            $subfield['value'] = $row[$subfield['name']] ?? $row[$subfield['name'].'[]'];
+                        }
+                        $subfield['name'] = $field['name'].'['.$repeatable_row_key.']['.$subfield['name'].']';
+                    }else{
+                        $subfield['value'] = \Arr::get($row, $subfield['name']);
+
+                        $subfield['name'] = $field['name'].'['.$repeatable_row_key.']['.Str::replace('.', '][', $subfield['name']).']';
                     }
-                    $subfield['name'] = $field['name'].'['.$repeatable_row_key.']['.$subfield['name'].']';
                 }else{
                     foreach ($subfield['name'] as $k => $item) {
                         $subfield['name'][$k] = $field['name'].'['.$repeatable_row_key.']['.$item.']';
