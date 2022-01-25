@@ -18,7 +18,9 @@
     @foreach($field['subfields'] as $subfield)
         @php
             $fieldViewNamespace = $subfield['view_namespace'] ?? 'crud::fields';
+    
             $fieldViewPath = $fieldViewNamespace.'.'.$subfield['type'];
+            
 
             if(isset($row)) {
                 if(!is_array($subfield['name'])) {
@@ -38,7 +40,6 @@
 
                         $subfield['name'] = $field['name'].'['.$repeatable_row_key.']['.Str::replace('.', '][', $subfield['name']).']';
                     }
-                    $subfield['name'] = $field['name'].'['.$repeatable_row_key.']['.$subfield['name'].']';
                 }else{
                     foreach ($subfield['name'] as $k => $item) {
                         $subfield['name'][$k] = $field['name'].'['.$repeatable_row_key.']['.$item.']';
