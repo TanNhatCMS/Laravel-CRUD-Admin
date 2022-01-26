@@ -61,7 +61,8 @@ trait Relationships
 
     public function getOnlyRelationEntity($field)
     {
-        $model = $this->getRelationModel($field['entity'], -1);
+        $entity = isset($field['baseEntity']) ? $field['baseEntity'].'.'.$field['entity'] : $field['entity'];
+        $model = $this->getRelationModel($entity, -1);
         $lastSegmentAfterDot = Str::of($field['entity'])->afterLast('.');
 
         if (! method_exists($model, $lastSegmentAfterDot)) {
