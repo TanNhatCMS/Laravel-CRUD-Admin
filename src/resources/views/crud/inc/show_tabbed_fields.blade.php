@@ -24,6 +24,16 @@
     </style>
 @endpush
 
+@push('crud_fields_scripts')
+    <script>
+        // Fixes issue of select2 fields not showing placeholder correctly if not in the first tab
+        // https://github.com/select2/select2/issues/3817
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+            $('select').trigger('change');
+        })
+    </script>
+@endpush
+
 @if ($crud->getFieldsWithoutATab()->filter(function ($value, $key) { return $value['type'] != 'hidden'; })->count())
 <div class="card">
     <div class="card-body row">
