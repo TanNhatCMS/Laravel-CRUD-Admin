@@ -6,6 +6,7 @@
     $column['suffix'] = $column['suffix'] ?? '';
     $column['limit'] = $column['limit'] ?? 32;
     $column['attribute'] = $column['attribute'] ?? (new $column['model'])->identifiableAttribute();
+    $column['separator'] = $column['separator'] ?? ',';
 
     if($column['value'] instanceof \Closure) {
         $column['value'] = $column['value']($entry);
@@ -39,9 +40,15 @@
                         {!! $text !!}
                     @endif
                 @includeWhen(!empty($column['wrapper']), 'crud::columns.inc.wrapper_end')
-
-                @if(!$loop->last), @endif
             </span>
+
+            @if(!$loop->last)
+                @if($column['escaped'])
+                    {{ $column['separator'] }}
+                @else
+                    {!! $column['separator'] !!}
+                @endif
+            @endif
         @endforeach
         {{ $column['suffix'] }}
     @else
