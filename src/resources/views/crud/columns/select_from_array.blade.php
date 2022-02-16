@@ -5,7 +5,6 @@
     $column['prefix'] = $column['prefix'] ?? '';
     $column['suffix'] = $column['suffix'] ?? '';
     $column['separator'] = $column['separator'] ?? ',';
-    $column['escape_separator'] = $column['escape_separator'] ?? false;
 
     if($column['value'] instanceof \Closure) {
         $column['value'] = $column['value']($entry);
@@ -44,11 +43,7 @@
             </span>
 
             @if(!$loop->last)
-                @if($column['escape_separator'])
-                    {{ $column['separator'] }}
-                @else
-                    {!! $column['separator'] !!}
-                @endif
+                {!! $column['separator'] !!}
             @endif
         @endforeach
         {{ $column['suffix'] }}
