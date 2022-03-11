@@ -14,6 +14,7 @@ return [
 
     'show_translatable_field_icon'     => true,
     'translatable_field_icon_position' => 'right', // left or right
+    'show_original_text_for_non_translated_keys' => true,
 
     'locales' => [
         // "af_NA" => "Afrikaans (Namibia)",

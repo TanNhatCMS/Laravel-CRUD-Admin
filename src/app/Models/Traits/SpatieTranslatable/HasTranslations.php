@@ -32,8 +32,8 @@ trait HasTranslations
             return parent::getAttributeValue($key);
         }
 
-        $translation = $this->getTranslation($key, $this->locale ?: config('app.locale'));
-
+        $translation = $this->getBackpackTranslation($key, $this->locale ?: config('app.locale'), false);
+    
         // if it's a fake field, json_encode it
         if (is_array($translation)) {
             return json_encode($translation, JSON_UNESCAPED_UNICODE);
@@ -42,9 +42,11 @@ trait HasTranslations
         return $translation;
     }
 
-    public function getTranslation(string $key, string $locale, bool $useFallbackLocale = true)
+    public function getBackpackTranslation(string $key, string $locale, $useFallbackLocale = true)
     {
-        $locale = $this->normalizeLocale($key, $locale, $useFallbackLocale);
+        if($useFallbackLocale) {
+            $locale = $this->normalizeLocale($key, $locale, $useFallbackLocale);
+        }
 
         $translations = $this->getTranslations($key);
 
