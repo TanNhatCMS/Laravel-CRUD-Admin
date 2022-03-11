@@ -33,7 +33,7 @@ trait HasTranslations
         }
 
         $translation = $this->getBackpackTranslation($key, $this->locale ?: config('app.locale'), false);
-    
+
         // if it's a fake field, json_encode it
         if (is_array($translation)) {
             return json_encode($translation, JSON_UNESCAPED_UNICODE);
@@ -44,7 +44,7 @@ trait HasTranslations
 
     public function getBackpackTranslation(string $key, string $locale, $useFallbackLocale = true)
     {
-        if($useFallbackLocale) {
+        if ($useFallbackLocale) {
             $locale = $this->normalizeLocale($key, $locale, $useFallbackLocale);
         }
 

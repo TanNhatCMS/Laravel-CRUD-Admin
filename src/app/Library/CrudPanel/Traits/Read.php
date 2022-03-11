@@ -61,6 +61,7 @@ trait Read
         }
         $locale = request('_locale') ?? app()->getLocale();
         $this->entry->setlocale($locale);
+
         return $this->entry;
     }
 
