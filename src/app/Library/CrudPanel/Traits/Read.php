@@ -59,8 +59,10 @@ trait Read
             $this->entry = $this->query->findOrFail($id);
             $this->entry = $this->entry->withFakes();
         }
-        $locale = request('_locale') ?? app()->getLocale();
-        $this->entry->setlocale($locale);
+        if($this->entry->translationEnabled()) {
+            $locale = request('_locale') ?? app()->getLocale();
+            $this->entry->setLocale($locale);
+        }
 
         return $this->entry;
     }
