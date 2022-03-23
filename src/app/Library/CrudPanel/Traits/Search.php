@@ -62,7 +62,6 @@ trait Search
 
         // sensible fallback search logic, if none was explicitly given
         if ($column['tableColumn']) {
-
             $like = 'like';
 
             if ($query->getGrammar() instanceof PostgresGrammar) {
