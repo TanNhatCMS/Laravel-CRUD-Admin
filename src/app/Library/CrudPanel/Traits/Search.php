@@ -3,6 +3,7 @@
 namespace Backpack\CRUD\app\Library\CrudPanel\Traits;
 
 use Carbon\Carbon;
+use Illuminate\Database\Query\Grammars\PostgresGrammar;
 use Validator;
 
 trait Search
@@ -61,11 +62,18 @@ trait Search
 
         // sensible fallback search logic, if none was explicitly given
         if ($column['tableColumn']) {
+
+            $like = 'like';
+
+            if ($query->getGrammar() instanceof PostgresGrammar) {
+                $like = 'ilike';
+            }
+
             switch ($columnType) {
                 case 'email':
                 case 'text':
                 case 'textarea':
-                    $query->orWhere($this->getColumnWithTableNamePrefixed($query, $column['name']), 'like', '%'.$searchTerm.'%');
+                    $query->orWhere($this->getColumnWithTableNamePrefixed($query, $column['name']), $like, '%'.$searchTerm.'%');
                     break;
 
                 case 'date':
@@ -82,7 +90,7 @@ trait Search
                 case 'select':
                 case 'select_multiple':
                     $query->orWhereHas($column['entity'], function ($q) use ($column, $searchTerm) {
-                        $q->where($this->getColumnWithTableNamePrefixed($q, $column['attribute']), 'like', '%'.$searchTerm.'%');
+                        $q->where($this->getColumnWithTableNamePrefixed($q, $column['attribute']), $like, '%'.$searchTerm.'%');
                     });
                     break;
 
