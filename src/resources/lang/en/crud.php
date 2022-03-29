@@ -42,6 +42,8 @@ return [
     'actions'                   => 'Actions',
     'preview'                   => 'Preview',
     'delete'                    => 'Delete',
+    'forceDelete'               => 'Permanently Delete',
+    'restore'                   => 'Restore',
     'admin'                     => 'Admin',
     'details_row'               => 'This is the details row. Modify as you please.',
     'details_row_loading_error' => 'There was an error loading the details. Please retry.',
@@ -57,6 +59,22 @@ return [
     'delete_confirmation_not_message'             => "There's been an error. Your item might not have been deleted.",
     'delete_confirmation_not_deleted_title'       => 'Not deleted',
     'delete_confirmation_not_deleted_message'     => 'Nothing happened. Your item is safe.',
+
+     'force_delete_confirm'                             => 'Are you sure you want to force to delete this item permanently?',
+    'force_delete_confirmation_title'                   => 'Item Permanently Deleted',
+    'force_delete_confirmation_message'                 => 'The item has been permanently deleted successfully.',
+    'force_delete_confirmation_not_title'               => 'NOT deleted',
+    'force_delete_confirmation_not_message'             => "There's been an error. Your item might not have been deleted.",
+    'force_delete_confirmation_not_deleted_title'       => 'Not deleted',
+    'force_delete_confirmation_not_deleted_message'     => 'Nothing happened. Your item is not permanently deleted.',
+
+    'restore_confirm'                              => 'Are you sure you want to restore this item?',
+    'restore_confirmation_title'                   => 'Item Is Restored',
+    'restore_confirmation_message'                 => 'The item has been restored successfully.',
+    'restore_confirmation_not_title'               => 'NOT restored',
+    'restore_confirmation_not_message'             => "There's been an error. Your item might not have been restored.",
+    'restore_confirmation_not_deleted_title'       => 'Not restored',
+    'restore_confirmation_not_deleted_message'     => 'Nothing happened. Your item is not restored.',
 
     // Bulk actions
     'bulk_no_entries_selected_title'   => 'No entries selected',

@@ -109,6 +109,10 @@ class CrudController extends Controller
          */
         $this->crud->applyConfigurationFromSettings($operationName);
 
+        if ($this->crud->hasAccess('forceDelete')) {
+            $this->crud->addClause('withTrashedFiltered');
+        }
+        
         /*
          * THEN, run the corresponding setupXxxOperation if it exists.
          */
