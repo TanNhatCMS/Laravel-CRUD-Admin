@@ -1,6 +1,6 @@
 <?php
 
-namespace Siberfx\CRUD\app\Http\Controllers\Operations;
+namespace Backpack\CRUD\app\Http\Controllers\Operations;
 
 use Illuminate\Support\Facades\Route;
 
