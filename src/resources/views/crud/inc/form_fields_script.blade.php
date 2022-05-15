@@ -7,19 +7,40 @@
      * too, by exposing the main components (name, wrapper, input).
      */
     class CrudField {
-        constructor(fieldName) {
+        constructor(fieldName, subfieldHolder = false, rowNumber = false) {
+            this.isSubfield = false;
             this.name = fieldName;
-            this.wrapper = $('[bp-field-name="'+ this.name +'"]');
-            this.input = this.wrapper.closest("[bp-field-main-input");
+            let wrapperSearchString = '[data-repeatable-identifier="'+subfieldHolder+'"]';
+            wrapperSearchString = rowNumber ? wrapperSearchString+'[data-row-number="'+rowNumber+'"]' : wrapperSearchString;
+
+            if(subfieldHolder) {
+                this.wrapper = $(wrapperSearchString).children('[bp-field-wrapper][bp-field-name$="'+this.name+'"]');
+                this.subfieldHolder = subfieldHolder;
+                this.isSubfield = true;
+            }
+            
+            this.wrapper = this.wrapper ?? $('[bp-field-name="'+ this.name +'"]');
+            this.input = this.wrapper.closest("[bp-field-main-input]");
             // if no bp-field-main-input has been declared in the field itself,
             // assume it's the first input in that wrapper, whatever it is
             if (this.input.length == 0) {
-                this.input = $('[bp-field-name="'+ this.name +'"] input, [bp-field-name="'+ this.name +'"] textarea, [bp-field-name="'+ this.name +'"] select').first();
+                this.input = this.wrapper.find('[data-row-number="'+rowNumber+'"][data-repeatable-input-name$="'+this.name+'"], input, textarea, select').first();
             }
+            
             this.value = this.input.val();
         }
 
         change(closure) {
+
+            if(this.isSubfield) {
+                window.crud.subfieldsCallbacks =  window.crud.subfieldsCallbacks ?? new Array();
+                window.crud.subfieldsCallbacks[this.subfieldHolder] = window.crud.subfieldsCallbacks[this.subfieldHolder] ?? new Array();
+                if(!window.crud.subfieldsCallbacks[this.subfieldHolder].some( callbacks => callbacks['fieldName'] === this.name )) {
+                    window.crud.subfieldsCallbacks[this.subfieldHolder].push({fieldName:  this.name, closure: closure});
+                }
+                return this;
+            }
+
             this.input.change(function(event) {
                 var fieldWrapper = $(this).closest('[bp-field-wrapper=true]');
                 var fieldName = fieldWrapper.attr('bp-field-name');
@@ -95,6 +116,15 @@
             return fieldNamesArray.map(function(fieldName) {
                 return new CrudField(fieldName);
             });
+        },
+        repeatable: function(fields, repeatableName, rowNumber = false) {
+            if(Array.isArray(fields)) {
+                return fields.map(function(fieldName) {
+                    return new CrudField(fieldName, repeatableName, rowNumber);
+                });  
+            }else{
+                return new CrudField(fields, repeatableName, rowNumber);
+            }
         }
     }
 </script>
