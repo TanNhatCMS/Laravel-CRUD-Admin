@@ -62,7 +62,6 @@
         show(value = true) {
             this.wrapper.classList.toggle('d-none', !value);
             this.input.dispatchEvent(new CustomEvent(`backpack:field.${value ? 'show' : 'hide'}`, { bubbles: true }));
-            // $(this.input).trigger(`backpack:field.${value ? 'show' : 'hide'}`);
             return this;
         }
 
@@ -77,7 +76,6 @@
                 this.input.setAttribute('disabled', 'disabled');
             }
             this.input.dispatchEvent(new CustomEvent(`backpack:field.${value ? 'enable' : 'disable'}`, { bubbles: true }));
-            // $(this.input).trigger(`backpack:field.${value ? 'enable' : 'disable'}`);
             return this;
         }
 
@@ -88,7 +86,6 @@
         require(value = true) {
             this.wrapper.classList.toggle('required', value);
             this.input.dispatchEvent(new CustomEvent(`backpack:field.${value ? 'require' : 'unrequire'}`, { bubbles: true }));
-            // $(this.input).trigger(`backpack:field.${value ? 'require' : 'unrequire'}`);
             return this;
         }
 
