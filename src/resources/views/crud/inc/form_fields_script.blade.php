@@ -117,14 +117,13 @@
                 return new CrudField(fieldName);
             });
         },
-        repeatable: function(fields, repeatableName, rowNumber = false) {
-            if(Array.isArray(fields)) {
-                return fields.map(function(fieldName) {
-                    return new CrudField(fieldName, repeatableName, rowNumber);
-                });  
-            }else{
-                return new CrudField(fields, repeatableName, rowNumber);
-            }
+        subfield: function(field, repeatableName, rowNumber = false) {
+            return new CrudField(fields, repeatableName, rowNumber);
+        },
+        subfields: function(fields, repeatableName, rowNumber = false) {
+            return fields.map(function(fieldName) {
+                return new CrudField(fieldName, repeatableName, rowNumber);
+            });  
         }
     }
 </script>
