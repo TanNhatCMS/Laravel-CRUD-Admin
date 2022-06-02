@@ -9,10 +9,19 @@
     class CrudField {
         constructor(name) {
             this.name = name;
-            this.wrapper = document.querySelector(`[bp-field-name="${this.name}"]`);
-            // if no bp-field-main-input has been declared in the field itself,
-            // assume it's the first input in that wrapper, whatever it is
-            this.input = this.wrapper?.querySelector('[bp-field-main-input], input, textarea, select');
+            this.wrapper = document.querySelector(`[bp-field-name*="${this.name}"][bp-field-wrapper]`);
+
+            // search input in ancestors
+            this.input = this.wrapper?.closest('[bp-field-main-input]');
+
+            // search input in children
+            this.input ??= this.wrapper?.querySelector('[bp-field-main-input]');
+
+            // if no bp-field-main-input has been declared in the field itself, try to find an input with that name inside wraper
+            this.input ??= this.wrapper?.querySelector(`input[bp-field-name="${this.name}"], textarea[bp-field-name="${this.name}"], select[bp-field-name="${this.name}"]`);
+
+            // if nothing works, use the first input found in field wrapper.
+            this.input ??= this.wrapper?.querySelector('input, textarea, select');
 
             // Validate that the field has been found
             if(!this.wrapper || !this.input) {
@@ -50,6 +59,17 @@
                 this.input.addEventListener('input', fieldChanged, false);
             }
 
+            if(this.isSubfield) {
+                window.crud.subfieldsCallbacks ??= [];
+                window.crud.subfieldsCallbacks[this.subfieldHolder] ??= [];
+
+                if(!window.crud.subfieldsCallbacks[this.subfieldHolder].some(callback => callback['fieldName'] === this.name)) {
+                    window.crud.subfieldsCallbacks[this.subfieldHolder].push({fieldName: this.name, closure: closure, field: this});
+                }
+                return this;
+            }
+
+            $(this.input).change(fieldChanged);
             fieldChanged();
 
             return this;
@@ -61,7 +81,7 @@
 
         show(value = true) {
             this.wrapper.classList.toggle('d-none', !value);
-            this.input.dispatchEvent(new CustomEvent(`backpack:field.${value ? 'show' : 'hide'}`, { bubbles: true }));
+            $(this.input).trigger(`backpack:field.${value ? 'show' : 'hide'}`);
             return this;
         }
 
@@ -75,7 +95,7 @@
             } else {
                 this.input.setAttribute('disabled', 'disabled');
             }
-            this.input.dispatchEvent(new CustomEvent(`backpack:field.${value ? 'enable' : 'disable'}`, { bubbles: true }));
+            $(this.input).trigger(`backpack:field.${value ? 'enable' : 'disable'}`);
             return this;
         }
 
@@ -85,7 +105,7 @@
 
         require(value = true) {
             this.wrapper.classList.toggle('required', value);
-            this.input.dispatchEvent(new CustomEvent(`backpack:field.${value ? 'require' : 'unrequire'}`, { bubbles: true }));
+            $(this.input).trigger(`backpack:field.${value ? 'require' : 'unrequire'}`);
             return this;
         }
 
@@ -102,6 +122,25 @@
 
         uncheck() {
             return this.check(false);
+        }
+
+        subfield(name, rowNumber = false) {
+            let subfield = new CrudField(name);
+
+            if(!rowNumber) {
+                subfield.isSubfield = true;
+                subfield.subfieldHolder = this.name;
+            } else {
+                subfield.wrapper = $(`[data-repeatable-identifier="${this.name}"][data-row-number="${rowNumber}"]`);
+                subfield.input = subfield.wrapper.closest(`[data-repeatable-input-name$="${name}"][bp-field-main-input]`);
+
+                // if no bp-field-main-input has been declared in the field itself,
+                // assume it's the first input in that wrapper, whatever it is
+                if (subfield.input.length === 0) {
+                    subfield.input = subfield.wrapper.find(`input[data-repeatable-input-name$="${name}"], textarea[data-repeatable-input-name$="${name}"], select[data-repeatable-input-name$="${name}"]`).first();
+                }
+            }
+            return subfield;
         }
     }
 
