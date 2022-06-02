@@ -50,6 +50,17 @@
                 closure(event, value, name, type);
             };
 
+            // Subfields
+            if(this.parent) {
+                window.crud.subfieldsCallbacks[this.parent.name] ??= [];
+
+                if(!window.crud.subfieldsCallbacks[this.parent.name].some(callback => callback.field.name === this.name)) {
+                    window.crud.subfieldsCallbacks[this.parent.name].push({ field: this, closure: closure });
+                }
+
+                return this;
+            }
+
             // Change event Listeners
             new MutationObserver(fieldChanged).observe(this.input, { attributes: true });
             this.input.addEventListener('change', fieldChanged, false);
@@ -59,17 +70,6 @@
                 this.input.addEventListener('input', fieldChanged, false);
             }
 
-            if(this.isSubfield) {
-                window.crud.subfieldsCallbacks ??= [];
-                window.crud.subfieldsCallbacks[this.subfieldHolder] ??= [];
-
-                if(!window.crud.subfieldsCallbacks[this.subfieldHolder].some(callback => callback['fieldName'] === this.name)) {
-                    window.crud.subfieldsCallbacks[this.subfieldHolder].push({fieldName: this.name, closure: closure, field: this});
-                }
-                return this;
-            }
-
-            $(this.input).change(fieldChanged);
             fieldChanged();
 
             return this;
@@ -127,19 +127,19 @@
         subfield(name, rowNumber = false) {
             let subfield = new CrudField(name);
 
-            if(!rowNumber) {
-                subfield.isSubfield = true;
-                subfield.subfieldHolder = this.name;
-            } else {
-                subfield.wrapper = $(`[data-repeatable-identifier="${this.name}"][data-row-number="${rowNumber}"]`);
+            // set the subfield parent field
+            subfield.parent = this;
+
+            if(rowNumber) {
+                subfield.wrapper = document.querySelector(`[data-repeatable-identifier="${this.name}"][data-row-number="${rowNumber}"] [bp-field-name$="${name}"]`);
+
+                // search input in ancestors
                 subfield.input = subfield.wrapper.closest(`[data-repeatable-input-name$="${name}"][bp-field-main-input]`);
 
-                // if no bp-field-main-input has been declared in the field itself,
-                // assume it's the first input in that wrapper, whatever it is
-                if (subfield.input.length === 0) {
-                    subfield.input = subfield.wrapper.find(`input[data-repeatable-input-name$="${name}"], textarea[data-repeatable-input-name$="${name}"], select[data-repeatable-input-name$="${name}"]`).first();
-                }
+                // if no bp-field-main-input has been declared in the field itself, try to find an input with that name inside wraper
+                subfield.input ??= subfield.wrapper.querySelector(`input[data-repeatable-input-name$="${name}"], textarea[data-repeatable-input-name$="${name}"], select[data-repeatable-input-name$="${name}"]`);
             }
+
             return subfield;
         }
     }
@@ -149,6 +149,8 @@
      */
     window.crud = {
         ...window.crud,
+
+        subfieldsCallbacks: {},
 
         // Create a field from a given name
         field: name => new CrudField(name),
