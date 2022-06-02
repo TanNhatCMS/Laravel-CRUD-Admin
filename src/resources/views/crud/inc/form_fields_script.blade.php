@@ -9,7 +9,10 @@
     class CrudField {
         constructor(name) {
             this.name = name;
-            this.wrapper = document.querySelector(`[bp-field-name*="${this.name}"][bp-field-wrapper]`);
+            this.wrapper = document.querySelector(`[bp-field-name="${this.name}"][bp-field-wrapper]`);
+
+            // search wrapper not directly
+            this.wrapper ??= document.querySelector(`[bp-field-name*="${this.name}"][bp-field-wrapper]`);
 
             // search input in ancestors
             this.input = this.wrapper?.closest('[bp-field-main-input]');
