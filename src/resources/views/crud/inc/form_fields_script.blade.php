@@ -85,7 +85,7 @@
         }
 
         onChange(closure, initialize = null) {
-            this.change(closure, initialize);
+            return this.change(closure, initialize);
         }
 
         show(value = true) {
