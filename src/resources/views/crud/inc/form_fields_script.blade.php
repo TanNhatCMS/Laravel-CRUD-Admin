@@ -60,8 +60,7 @@
             return input;
         }
 
-        change(closure, initialize) {
-            initialize ??= window.crud.initializeFields;
+        change(closure, initialize = false) {
             const bindedClosure = closure.bind(this);
             const fieldChanged = (event, values) => bindedClosure(this, event, values);
 
@@ -84,7 +83,7 @@
             return this;
         }
 
-        onChange(closure, initialize = null) {
+        onChange(closure, initialize = false) {
             return this.change(closure, initialize);
         }
 
@@ -150,8 +149,6 @@
      */
     window.crud = {
         ...window.crud,
-
-        initializeFields: true,
 
         // Create a field from a given name
         field: name => new CrudField(name),
