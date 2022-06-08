@@ -235,7 +235,7 @@ class CrudField
     {
         $this->attributes['entity'] = $entity;
 
-        if($entity !== false) {
+        if ($entity !== false) {
             $this->attributes = $this->crud()->makeSureFieldHasRelationType($this->attributes);
             $this->attributes = $this->crud()->makeSureFieldHasModel($this->attributes);
             $this->attributes = $this->crud()->makeSureFieldHasAttribute($this->attributes);
@@ -243,6 +243,7 @@ class CrudField
             $this->attributes = $this->crud()->makeSureFieldHasPivot($this->attributes);
             $this->attributes = $this->crud()->makeSureFieldHasType($this->attributes);
         }
+
         return $this->save();
     }
 
