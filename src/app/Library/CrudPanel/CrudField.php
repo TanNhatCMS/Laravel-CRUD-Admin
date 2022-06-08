@@ -235,13 +235,14 @@ class CrudField
     {
         $this->attributes['entity'] = $entity;
 
-        $this->attributes = $this->crud()->makeSureFieldHasRelationType($this->attributes);
-        $this->attributes = $this->crud()->makeSureFieldHasModel($this->attributes);
-        $this->attributes = $this->crud()->makeSureFieldHasAttribute($this->attributes);
-        $this->attributes = $this->crud()->makeSureFieldHasMultiple($this->attributes);
-        $this->attributes = $this->crud()->makeSureFieldHasPivot($this->attributes);
-        $this->attributes = $this->crud()->makeSureFieldHasType($this->attributes);
-
+        if($entity !== false) {
+            $this->attributes = $this->crud()->makeSureFieldHasRelationType($this->attributes);
+            $this->attributes = $this->crud()->makeSureFieldHasModel($this->attributes);
+            $this->attributes = $this->crud()->makeSureFieldHasAttribute($this->attributes);
+            $this->attributes = $this->crud()->makeSureFieldHasMultiple($this->attributes);
+            $this->attributes = $this->crud()->makeSureFieldHasPivot($this->attributes);
+            $this->attributes = $this->crud()->makeSureFieldHasType($this->attributes);
+        }
         return $this->save();
     }
 
