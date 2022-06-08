@@ -80,7 +80,7 @@ trait Fields
     }
 
     /**
-     * Set the attribute in the field that will be shown to the users
+     * Set the attribute in the field that will be shown to the users.
      *
      * @param  array  $field  Field definition array.
      * @return array Field definition array that contains type too.
@@ -118,6 +118,7 @@ trait Fields
     public function makeSureFieldHasModel($field)
     {
         $field['model'] = $field['model'] ?? $this->inferFieldModelFromRelationship($field);
+
         return $field;
     }
 
