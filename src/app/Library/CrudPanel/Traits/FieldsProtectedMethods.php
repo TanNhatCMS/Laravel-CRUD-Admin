@@ -88,17 +88,6 @@ trait FieldsProtectedMethods
         return $field;
     }
 
-    protected function makeSureFieldHasAttribute($field)
-    {
-        // if there's a model defined, but no attribute
-        // guess an attribute using the identifiableAttribute functionality in CrudTrait
-        if (isset($field['model']) && ! isset($field['attribute']) && method_exists($field['model'], 'identifiableAttribute')) {
-            $field['attribute'] = call_user_func([(new $field['model']()), 'identifiableAttribute']);
-        }
-
-        return $field;
-    }
-
     /**
      * Set the label of a field, if it's missing, by capitalizing the name and replacing
      * underscores with spaces.
@@ -112,22 +101,6 @@ trait FieldsProtectedMethods
             $name = is_array($field['name']) ? $field['name'][0] : $field['name'];
             $name = str_replace('_id', '', $name);
             $field['label'] = mb_ucfirst(str_replace('_', ' ', $name));
-        }
-
-        return $field;
-    }
-
-    /**
-     * Set the type of a field, if it's missing, by inferring it from the
-     * db column type.
-     *
-     * @param  array  $field  Field definition array.
-     * @return array Field definition array that contains type too.
-     */
-    protected function makeSureFieldHasType($field)
-    {
-        if (! isset($field['type'])) {
-            $field['type'] = isset($field['relation_type']) ? $this->inferFieldTypeFromRelationType($field['relation_type']) : $this->inferFieldTypeFromDbColumnType($field['name']);
         }
 
         return $field;
