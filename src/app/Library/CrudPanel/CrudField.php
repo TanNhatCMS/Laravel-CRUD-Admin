@@ -231,6 +231,19 @@ class CrudField
         return $this;
     }
 
+    public function entity(string $entity) {
+        $this->attributes['entity'] = $entity;
+        
+        $this->attributes = $this->crud()->makeSureFieldHasRelationType($this->attributes);
+        $this->attributes = $this->crud()->makeSureFieldHasModel($this->attributes);
+        $this->attributes = $this->crud()->makeSureFieldHasAttribute($this->attributes);
+        $this->attributes = $this->crud()->makeSureFieldHasMultiple($this->attributes);
+        $this->attributes = $this->crud()->makeSureFieldHasPivot($this->attributes);
+        $this->attributes = $this->crud()->makeSureFieldHasType($this->attributes);
+
+        return $this->save();
+    }
+
     // ---------------
     // PRIVATE METHODS
     // ---------------
