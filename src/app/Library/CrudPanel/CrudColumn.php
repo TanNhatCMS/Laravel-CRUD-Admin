@@ -150,7 +150,7 @@ class CrudColumn
      */
     public function getAttributeValue($attribute)
     {
-        return $this->attributes[$attribute];
+        return $this->attributes[$attribute] ?? null;
     }
 
     // -----------------
