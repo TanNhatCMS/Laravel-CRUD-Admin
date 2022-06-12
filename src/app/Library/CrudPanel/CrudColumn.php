@@ -146,7 +146,7 @@ class CrudColumn
     /**
      * Get the value for a certain attribute on the CrudColumn object.
      *
-     * @param string $attribute name of the attribute
+     * @param  string  $attribute  name of the attribute
      */
     public function getAttributeValue($attribute)
     {
