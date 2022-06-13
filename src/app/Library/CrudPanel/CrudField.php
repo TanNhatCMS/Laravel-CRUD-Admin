@@ -27,6 +27,7 @@ namespace Backpack\CRUD\app\Library\CrudPanel;
  * @method self store_in(string $value)
  * @method self validationRules(string $value)
  * @method self validationMessages(array $value)
+ * @method self entity(string $value)
  */
 class CrudField
 {
@@ -231,17 +232,17 @@ class CrudField
         return $this;
     }
 
-    public function entity(string $entity)
+    /**
+     * When defining the entity, make sure Backpack guesses the relationship attributes if needed.
+     * @param  string|bool  $entity
+     * @return self
+     */
+    public function entity($entity)
     {
         $this->attributes['entity'] = $entity;
 
         if ($entity !== false) {
-            $this->attributes = $this->crud()->makeSureFieldHasRelationType($this->attributes);
-            $this->attributes = $this->crud()->makeSureFieldHasModel($this->attributes);
-            $this->attributes = $this->crud()->makeSureFieldHasAttribute($this->attributes);
-            $this->attributes = $this->crud()->makeSureFieldHasMultiple($this->attributes);
-            $this->attributes = $this->crud()->makeSureFieldHasPivot($this->attributes);
-            $this->attributes = $this->crud()->makeSureFieldHasType($this->attributes);
+            $this->attributes = $this->crud()->makeSureFieldHasRelationshipAttributes($this->attributes);
         }
 
         return $this->save();

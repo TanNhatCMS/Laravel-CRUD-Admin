@@ -46,13 +46,9 @@ trait Fields
         $field = $this->makeSureFieldHasName($field);
         $field = $this->makeSureFieldHasEntity($field);
         $field = $this->makeSureFieldHasLabel($field);
-
+        
         if (isset($field['entity']) && $field['entity'] !== false) {
-            $field = $this->makeSureFieldHasRelationType($field);
-            $field = $this->makeSureFieldHasModel($field);
-            $field = $this->makeSureFieldHasAttribute($field);
-            $field = $this->makeSureFieldHasMultiple($field);
-            $field = $this->makeSureFieldHasPivot($field);
+            $field = $this->makeSureFieldHasRelationshipAttributes($field);
         }
 
         $field = $this->makeSureFieldHasType($field);
@@ -63,90 +59,14 @@ trait Fields
         return $field;
     }
 
-    /**
-     * Set the type of a field, if it's missing, by inferring it from the
-     * db column type.
-     *
-     * @param  array  $field  Field definition array.
-     * @return array Field definition array that contains type too.
-     */
-    public function makeSureFieldHasType($field)
+    public function makeSureFieldHasRelationshipAttributes($field) 
     {
-        if (! isset($field['type'])) {
-            $field['type'] = isset($field['relation_type']) ? $this->inferFieldTypeFromRelationType($field['relation_type']) : $this->inferFieldTypeFromDbColumnType($field['name']);
-        }
-
-        return $field;
-    }
-
-    /**
-     * Set the attribute in the field that will be shown to the users.
-     *
-     * @param  array  $field  Field definition array.
-     * @return array Field definition array that contains type too.
-     */
-    public function makeSureFieldHasAttribute($field)
-    {
-        // if there's a model defined, but no attribute
-        // guess an attribute using the identifiableAttribute functionality in CrudTrait
-        if (isset($field['model']) && ! isset($field['attribute']) && method_exists($field['model'], 'identifiableAttribute')) {
-            $field['attribute'] = call_user_func([(new $field['model']()), 'identifiableAttribute']);
-        }
-
-        return $field;
-    }
-
-    /**
-     * If field has entity we want to get the relation type from it.
-     *
-     * @param  array  $field
-     * @return array
-     */
-    public function makeSureFieldHasRelationType($field)
-    {
-        $field['relation_type'] = $field['relation_type'] ?? $this->inferRelationTypeFromRelationship($field);
-
-        return $field;
-    }
-
-    /**
-     * If field has entity we want to make sure it also has a model for that relation.
-     *
-     * @param  array  $field
-     * @return array
-     */
-    public function makeSureFieldHasModel($field)
-    {
-        $field['model'] = $field['model'] ?? $this->inferFieldModelFromRelationship($field);
-
-        return $field;
-    }
-
-    /**
-     * Based on relation type we can guess if pivot is set.
-     *
-     * @param  array  $field
-     * @return array
-     */
-    public function makeSureFieldHasPivot($field)
-    {
-        $field['pivot'] = $field['pivot'] ?? $this->guessIfFieldHasPivotFromRelationType($field['relation_type']);
-
-        return $field;
-    }
-
-    /**
-     * Based on relation type we can try to guess if it is a multiple field.
-     *
-     * @param  array  $field
-     * @return array
-     */
-    public function makeSureFieldHasMultiple($field)
-    {
-        if (isset($field['relation_type'])) {
-            $field['multiple'] = $field['multiple'] ?? $this->guessIfFieldHasMultipleFromRelationType($field['relation_type']);
-        }
-
+        $field = $this->makeSureFieldHasRelationType($field);
+        $field = $this->makeSureFieldHasModel($field);
+        $field = $this->makeSureFieldHasAttribute($field);
+        $field = $this->makeSureFieldHasMultiple($field);
+        $field = $this->makeSureFieldHasPivot($field);
+        $field = $this->makeSureFieldHasType($field);
         return $field;
     }
 
