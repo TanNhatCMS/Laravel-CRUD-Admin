@@ -234,6 +234,7 @@ class CrudField
 
     /**
      * When defining the entity, make sure Backpack guesses the relationship attributes if needed.
+     *
      * @param  string|bool  $entity
      * @return self
      */

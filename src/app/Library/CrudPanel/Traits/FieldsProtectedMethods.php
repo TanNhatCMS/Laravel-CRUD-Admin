@@ -76,7 +76,7 @@ trait FieldsProtectedMethods
         // we can probably use it as an entity
         if (Str::endsWith($field['name'], '_id')) {
             $possibleMethodName = Str::replaceLast('_id', '', $field['name']);
-            
+
             if (method_exists($model, $possibleMethodName)) {
                 // check model method for possibility of being a relationship
                 $field['entity'] = $this->modelMethodIsRelationship($model, $possibleMethodName);

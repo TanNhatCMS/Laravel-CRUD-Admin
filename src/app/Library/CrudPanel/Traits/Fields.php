@@ -46,7 +46,7 @@ trait Fields
         $field = $this->makeSureFieldHasName($field);
         $field = $this->makeSureFieldHasEntity($field);
         $field = $this->makeSureFieldHasLabel($field);
-        
+
         if (isset($field['entity']) && $field['entity'] !== false) {
             $field = $this->makeSureFieldHasRelationshipAttributes($field);
         }
@@ -59,7 +59,7 @@ trait Fields
         return $field;
     }
 
-    public function makeSureFieldHasRelationshipAttributes($field) 
+    public function makeSureFieldHasRelationshipAttributes($field)
     {
         $field = $this->makeSureFieldHasRelationType($field);
         $field = $this->makeSureFieldHasModel($field);
@@ -67,6 +67,7 @@ trait Fields
         $field = $this->makeSureFieldHasMultiple($field);
         $field = $this->makeSureFieldHasPivot($field);
         $field = $this->makeSureFieldHasType($field);
+
         return $field;
     }
 
