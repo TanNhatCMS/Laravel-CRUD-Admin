@@ -144,6 +144,16 @@ class CrudColumn
     }
 
     /**
+     * Check if the CrudColumn object has a certain attribute defined.
+     *
+     * @param  bool  $attribute  name of the attribute
+     */
+    public function hasAttribute($attribute)
+    {
+        return isset($this->attributes[$attribute]);
+    }
+
+    /**
      * Get the value for a certain attribute on the CrudColumn object.
      *
      * @param  string  $attribute  name of the attribute
