@@ -26,6 +26,7 @@ namespace Backpack\CRUD\app\Library\CrudPanel;
  * @method self visibleInShow(bool $value)
  * @method self priority(int $value)
  * @method self key(string $value)
+ * @method self hint(string $value)
  */
 class CrudColumn
 {

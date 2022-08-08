@@ -54,6 +54,10 @@
 		            <tr>
 		                <td>
 		                    <strong>{!! $column['label'] !!}:</strong>
+                            {{-- HINT --}}
+                            @if (isset($column['hint']))
+                                <p class="help-block">{!! $column['hint'] !!}</p>
+                            @endif
 		                </td>
                         <td>
                         	@php
