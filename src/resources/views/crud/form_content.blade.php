@@ -81,7 +81,7 @@
      */
     function handleFocusOnSelect2Field(firstField){
         $('.select2-search__field').remove();
-        firstField.select2('open');
+        firstField.select2('focus');
     }
 
     /*
