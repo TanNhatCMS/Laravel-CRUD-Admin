@@ -112,7 +112,7 @@ class CrudPanel
         }
 
         $this->model = new $model_namespace();
-        $this->query = $this->model->select('*');
+        $this->query = $this->model->newQuery();
         $this->entry = null;
     }
 
