@@ -2,6 +2,14 @@
 @php
     $column['value'] = $entry->{$column['function_name']}(...($column['function_parameters'] ?? []));
     $column['escaped'] = $column['escaped'] ?? true;
+    $column['limit'] = $column['limit'] ?? 999;
+    $column['prefix'] = $column['prefix'] ?? '';
+    $column['suffix'] = $column['suffix'] ?? '';
+    $column['text'] = $column['default'] ?? '-';
+
+    if(!empty($column['value'])) {
+        $column['text'] = $column['prefix'].Str::limit($column['value'], $column['limit'], "…").$column['suffix'];
+    }
 @endphp
 
 <span>
