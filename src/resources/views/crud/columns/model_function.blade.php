@@ -2,7 +2,7 @@
 @php
     $column['value'] = $entry->{$column['function_name']}(...($column['function_parameters'] ?? []));
     $column['escaped'] = $column['escaped'] ?? true;
-    $column['limit'] = $column['limit'] ?? 999;
+    $column['limit'] = $column['limit'] ?? 40;
     $column['prefix'] = $column['prefix'] ?? '';
     $column['suffix'] = $column['suffix'] ?? '';
     $column['text'] = $column['default'] ?? '-';
