@@ -227,8 +227,7 @@ trait Query
             return 0;
         }
 
-        return  $this->getRequest()->input('totalEntryCount') ??
-                $this->getOperationSetting('totalEntryCount') ??
+        return  $this->getOperationSetting('totalEntryCount') ??
                 $this->getCurrentEntryCount();
     }
 

@@ -71,9 +71,6 @@ trait ListOperation
     {
         $this->crud->hasAccessOrFail('list');
 
-        // how many total entries there is applying the controller/model constrains, before any filtering or search
-        $this->crud->setOperationSetting('totalEntryCount', $this->crud->getTotalEntryCount());
-
         $this->crud->applyUnappliedFilters();
 
         $start = (int) request()->input('start');
@@ -100,13 +97,16 @@ trait ListOperation
 
         // if show entry count is disabled we use the "simplePagination" technique to move between pages.
         if ($this->crud->getOperationSetting('showEntryCount')) {
+            $totalEntryCount = request()->input('totalEntryCount') ?? $this->crud->getTotalEntryCount();
             $filteredEntryCount = $this->crud->getCurrentEntryCount();
         } else {
-            $this->crud->setOperationSetting('totalEntryCount', $length);
+            $totalEntryCount = $length;
             $filteredEntryCount = $entries->count() < $length ? 0 : $length + $start + 1;
         }
 
-        $totalEntryCount = $this->crud->getOperationSetting('totalEntryCount');
+        // store totalEntryCount as a setting, for datatables to then pass it as a parameter
+        // to the next request - that way this doesn't get calculated on each request
+        $this->crud->setOperationSetting('totalEntryCount', $totalEntryCount);
 
         return $this->crud->getEntriesAsJsonForDatatables($entries, $totalEntryCount, $filteredEntryCount, $start);
     }
