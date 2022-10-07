@@ -2,9 +2,8 @@
 
 namespace Backpack\CRUD\app\Models\Traits;
 
-use Backpack\CRUD\app\Library\CrudPanel\CrudPanelFacade as CRUD;
+use Backpack\CRUD\app\Library\Database\TableSchema;
 use DB;
-use Illuminate\Database\Eloquent\Model;
 
 /*
 |--------------------------------------------------------------------------
@@ -13,6 +12,8 @@ use Illuminate\Database\Eloquent\Model;
 */
 trait HasRelationshipFields
 {
+    protected static $schema;
+
     /**
      * Register aditional types in doctrine schema manager for the current connection.
      *
@@ -49,8 +50,8 @@ trait HasRelationshipFields
     /**
      * Get the column type for a certain db column.
      *
-     * @param  string $columnName Name of the column in the db table.
-     * @return string             Db column type.
+     * @param  string  $columnName  Name of the column in the db table.
+     * @return string Db column type.
      */
     public function getColumnType($columnName)
     {
@@ -66,31 +67,57 @@ trait HasRelationshipFields
     /**
      * Checks if the given column name is nullable.
      *
-     * @param string $column_name The name of the db column.
+     * @param  string  $column_name  The name of the db column.
      * @return bool
      */
-    public static function isColumnNullable($column_name)
+    public static function isColumnNullable($columnName)
     {
-        // create an instance of the model to be able to get the table name
-        $instance = new static();
+        return self::getDbTableSchema()->columnIsNullable($columnName);
+    }
 
+    /**
+     * Checks if the given column name has default value set.
+     *
+     * @param  string  $columnName  The name of the db column.
+     * @return bool
+     */
+    public static function dbColumnHasDefault($columnName)
+    {
+        return self::getDbTableSchema()->columnHasDefault($columnName);
+    }
+
+    /**
+     * Return the db column default value.
+     *
+     * @param  string  $column_name  The name of the db column.
+     * @return bool
+     */
+    public static function getDbColumnDefault($columnName)
+    {
+        return self::getDbTableSchema()->getColumnDefault($columnName);
+    }
+
+    /**
+     * Return the current model connection and table name.
+     */
+    private static function getConnectionAndTable()
+    {
+        $instance = new static();
         $conn = $instance->getConnectionWithExtraTypeMappings();
         $table = $instance->getTableWithPrefix();
 
-        // MongoDB columns are alway nullable
-        if (! in_array($conn->getConfig()['driver'], CRUD::getSqlDriverList())) {
-            return true;
+        return [$conn, $table];
+    }
+
+    public static function getDbTableSchema()
+    {
+        if (self::$schema) {
+            return self::$schema;
         }
 
-        try {
-            // check if the column exists in the database
-            $column = $conn->getDoctrineColumn($table, $column_name);
-            // check for NOT NULL
-            $notNull = $column->getNotnull();
-            // return the value of nullable (aka the inverse of NOT NULL)
-            return ! $notNull;
-        } catch (\Exception $e) {
-            return true;
-        }
+        [$connection, $table] = self::getConnectionAndTable();
+        self::$schema = new TableSchema($connection->getName(), $table);
+
+        return self::$schema;
     }
 }

@@ -18,11 +18,19 @@ class CreateAccountDetailsTable extends Migration
             $table->integer('user_id')->length(10)->unsigned();
             $table->string('nickname');
             $table->string('profile_picture');
+            $table->bigInteger('article_id')->nullable();
+            $table->date('start_date')->nullable();
+            $table->date('end_date')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')
                 ->references('id')
                 ->on('users')
+                ->onDelete('cascade');
+
+            $table->foreign('article_id')
+                ->references('id')
+                ->on('articles')
                 ->onDelete('cascade');
         });
     }

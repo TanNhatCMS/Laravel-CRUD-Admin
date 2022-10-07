@@ -30,7 +30,14 @@
 			      success: function(result) {
 			          if (result == 1) {
 						  // Redraw the table
-						  crud.table.draw(false);
+						  if (typeof crud != 'undefined' && typeof crud.table != 'undefined') {
+							  // Move to previous page in case of deleting the only item in table
+							  if(crud.table.rows().count() === 1) {
+							    crud.table.page("previous");
+							  }
+
+							  crud.table.draw(false);
+						  }
 
 			          	  // Show a success notification bubble
 			              new Noty({
