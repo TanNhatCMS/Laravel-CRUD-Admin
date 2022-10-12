@@ -13,6 +13,8 @@ use Illuminate\Support\Facades\DB;
 */
 trait HasRelationshipFields
 {
+    protected static $schema;
+
     /**
      * Register aditional types in doctrine schema manager for the current connection.
      *
@@ -127,9 +129,14 @@ trait HasRelationshipFields
 
     public static function getDbTableSchema()
     {
-        [$connection, $table] = self::getConnectionAndTable();
+        if (self::$schema) {
+            return self::$schema;
+        }
 
-        return new TableSchema($connection->getName(), $table);
+        [$connection, $table] = self::getConnectionAndTable();
+        self::$schema = new TableSchema($connection->getName(), $table);
+
+        return self::$schema;
     }
 
     private static function isSqlConnection()
