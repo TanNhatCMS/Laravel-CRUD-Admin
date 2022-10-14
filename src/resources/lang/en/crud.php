@@ -42,6 +42,8 @@ return [
     'actions'                   => 'Actions',
     'preview'                   => 'Preview',
     'delete'                    => 'Delete',
+    'delete_permanently'        => 'Delete Permanently',
+    'restore'                   => 'Restore',
     'admin'                     => 'Admin',
     'details_row'               => 'This is the details row. Modify as you please.',
     'details_row_loading_error' => 'There was an error loading the details. Please retry.',
@@ -50,13 +52,22 @@ return [
     'clone_failure'             => '<strong>Cloning failed</strong><br>The new entry could not be created. Please try again.',
 
     // Confirmation messages and bubbles
-    'delete_confirm'                              => 'Are you sure you want to delete this item?',
+    'delete_confirm'                              => 'Are you sure you want to delete this item?',    
+    'permanently_delete_confirm'                  => 'Are you sure you want to permanently delete this item?',
     'delete_confirmation_title'                   => 'Item Deleted',
     'delete_confirmation_message'                 => 'The item has been deleted successfully.',
     'delete_confirmation_not_title'               => 'NOT deleted',
     'delete_confirmation_not_message'             => "There's been an error. Your item might not have been deleted.",
     'delete_confirmation_not_deleted_title'       => 'Not deleted',
     'delete_confirmation_not_deleted_message'     => 'Nothing happened. Your item is safe.',
+    
+    'restore_confirm'                             => 'Are you sure you want to restore this item?',
+    'restore_confirmation_title'                   => 'Item Restored',
+    'restore_confirmation_message'                 => 'The item has been restore successfully.',
+    'restore_confirmation_not_title'               => 'NOT restore',
+    'restore_confirmation_not_message'             => "There's been an error. Your item might not have been restored.",
+    'restore_confirmation_not_deleted_title'       => 'Not restored',
+    'restore_confirmation_not_deleted_message'     => 'Nothing happened. Your item is in trash.',
 
     // Bulk actions
     'bulk_no_entries_selected_title'   => 'No entries selected',
