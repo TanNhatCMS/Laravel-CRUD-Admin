@@ -10,9 +10,9 @@ trait TrashOperation
     /**
      * Define which routes are needed for this operation.
      *
-     * @param string $segment    Name of the current entity (singular). Used as first URL segment.
-     * @param string $routeName  Prefix of the route name.
-     * @param string $controller Name of the current CrudController.
+     * @param  string  $segment  Name of the current entity (singular). Used as first URL segment.
+     * @param  string  $routeName  Prefix of the route name.
+     * @param  string  $controller  Name of the current CrudController.
      */
     protected function setupTrashRoutes($segment, $routeName, $controller)
     {
@@ -44,16 +44,15 @@ trait TrashOperation
             $this->crud->addFilter([
                 'type'  => 'simple',
                 'name'  => 'trashed',
-                'label' => 'Trashed'
-              ],
+                'label' => 'Trashed',
+            ],
               false,
-              function() { // if the filter is active
-                $this->crud->query->onlyTrashed();
-                $this->crud->removeAllButtons();
-                CRUD::addButton('line', 'restore', 'view', 'crud::buttons.restore');
-                CRUD::addButton('line', 'delete_permanently', 'view', 'crud::buttons.delete_permanently');
-              } );
-
+              function () { // if the filter is active
+                  $this->crud->query->onlyTrashed();
+                  $this->crud->removeAllButtons();
+                  CRUD::addButton('line', 'restore', 'view', 'crud::buttons.restore');
+                  CRUD::addButton('line', 'delete_permanently', 'view', 'crud::buttons.delete_permanently');
+              });
         });
     }
 
@@ -66,9 +65,9 @@ trait TrashOperation
     public function deletePermanently($id)
     {
         $this->crud->hasAccessOrFail('delete_permanently');
-        
+
         $id = $this->crud->getCurrentEntryId() ?? $id;
-        
+
         return $this->crud->query->onlyTrashed()->find($id)->forceDelete();
     }
 
@@ -83,7 +82,7 @@ trait TrashOperation
         $this->crud->hasAccessOrFail('restore');
 
         $id = $this->crud->getCurrentEntryId() ?? $id;
-        
+
         return $this->crud->query->onlyTrashed()->find($id)->restore();
     }
 }

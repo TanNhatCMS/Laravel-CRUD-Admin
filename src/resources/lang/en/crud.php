@@ -52,7 +52,7 @@ return [
     'clone_failure'             => '<strong>Cloning failed</strong><br>The new entry could not be created. Please try again.',
 
     // Confirmation messages and bubbles
-    'delete_confirm'                              => 'Are you sure you want to delete this item?',    
+    'delete_confirm'                              => 'Are you sure you want to delete this item?',
     'permanently_delete_confirm'                  => 'Are you sure you want to permanently delete this item?',
     'delete_confirmation_title'                   => 'Item Deleted',
     'delete_confirmation_message'                 => 'The item has been deleted successfully.',
@@ -60,7 +60,7 @@ return [
     'delete_confirmation_not_message'             => "There's been an error. Your item might not have been deleted.",
     'delete_confirmation_not_deleted_title'       => 'Not deleted',
     'delete_confirmation_not_deleted_message'     => 'Nothing happened. Your item is safe.',
-    
+
     'restore_confirm'                             => 'Are you sure you want to restore this item?',
     'restore_confirmation_title'                   => 'Item Restored',
     'restore_confirmation_message'                 => 'The item has been restore successfully.',
