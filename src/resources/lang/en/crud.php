@@ -35,6 +35,7 @@ return [
     'language'          => 'Language',
 
     // CRUD table view
+    'test'                      => 'Test',
     'all'                       => 'All ',
     'in_the_database'           => 'in the database',
     'list'                      => 'List',
