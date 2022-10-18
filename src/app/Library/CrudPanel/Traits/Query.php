@@ -218,28 +218,34 @@ trait Query
         $wheresColumns = [];
         foreach ($query->wheres as $where) {
             switch ($where['type']) {
-                // case it's a basic where, we just want to select that column.
                 case 'Basic':
+                    // case it's a basic where, we just want to select that column.
                     $wheresColumns[] = $where['column'];
-                break;
-                // when it's a nested query we will get the columns that link
-                // to the main table from the nested query wheres.
+                    
+                    break;
                 case 'Nested':
-                    $wheresColumns = $nested ?: array_merge($wheresColumns, $this->getNestedQueryColumns($where['query']));
-                break;
-                // when Column get the "first" key that represent the base table column to link with
+                    // when it's a nested query we will get the columns that link
+                    // to the main table from the nested query wheres.
+                    if ($nested) {
+                        $wheresColumns = array_merge($wheresColumns, $this->getNestedQueryColumns($where['query']));
+                    }
+                    
+                    break;
                 case 'Column':
+                    // when Column get the "first" key that represent the base table column to link with
                     $wheresColumns[] = $where['first'];
-                break;
-                // in case of Exists, we will find in the subquery the query type Column where it links to the main table
+                    
+                    break;
                 case 'Exists':
+                    // in case of Exists, we will find in the subquery the query type Column where it links to the main table
                     $wheres = $where['query']->wheres;
                     foreach ($wheres as $subWhere) {
                         if ($subWhere['type'] === 'Column') {
                             $wheresColumns[] = $subWhere['first'];
                         }
                     }
-                break;
+                    
+                    break;
             }
         }
 
