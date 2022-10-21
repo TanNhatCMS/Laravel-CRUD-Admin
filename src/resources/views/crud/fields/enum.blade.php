@@ -15,18 +15,9 @@
             return array_combine($options, $options);
         }
 
-        // developer can provide the enum class so that we extract the available options from it
-        if(isset($field['enum_class'])) {
-            if($field['enum_class'] instanceof \BackedEnum) {
-                $options = array_column($field['enum_class']::cases(), 'value', 'name');
-            }
-            $options = array_column($field['enum_class']::cases(), 'name');
-            $options = array_combine($options, $options);
-        }
-
-        // check for model casting, in this case it must be a BakedEnum to work with Laravel casting
-        $possibleEnumCast = (new $entity_model)->getCasts()[$field['name']] ?? false;
-        if(!isset($options) && $possibleEnumCast && class_exists($possibleEnumCast)) {
+        // check for model casting, in this case it must be a BackedEnum to work with Laravel casting
+        $possibleEnumCast = $field['enum_class'] ?? ((new $entity_model)->getCasts()[$field['name']] ?? false);
+        if($possibleEnumCast && class_exists($possibleEnumCast)) {
             $field['enum_class'] = $possibleEnumCast;
             $options = array_column($possibleEnumCast::cases(), 'name', 'value');
         }
