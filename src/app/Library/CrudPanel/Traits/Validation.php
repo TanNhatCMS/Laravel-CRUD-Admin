@@ -2,6 +2,7 @@
 
 namespace Backpack\CRUD\app\Library\CrudPanel\Traits;
 
+use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
 
 trait Validation
@@ -202,38 +203,67 @@ trait Validation
                 return app($formRequest);
             }
 
-            // create an alias of the provided FormRequest so we can create a new class that extends it.
-            // we can't use $variables to extend classes.
-            class_alias(get_class(new $formRequest), 'DeveloperProvidedFormRequest');
-
             // create a new anonymous class that will extend the provided developer FormRequest
             // in this class we will merge the FormRequest rules() and messages() with the ones provided by developer in fields.
-            $extendedRequest = new class($rules, $messages) extends \DeveloperProvidedFormRequest
-            {
+            $extendedRequest = new class(new $formRequest, $rules, $messages) extends FormRequest {
+                private $_originalFormRequest;
+
                 private $_rules;
 
                 private $_messages;
 
-                public function __construct($rules, $messages)
+                public function __construct($originalFormRequest, $rules, $messages)
                 {
                     parent::__construct();
-                    $this->_rules = $rules;
-                    $this->_messages = $messages;
+                    $this->_originalFormRequest = $originalFormRequest;
+                    $this->_rules               = $rules;
+                    $this->_messages            = $messages;
+                }
+
+                public function __call($name, $arguments)
+                {
+                    return call_user_func(
+                        [$this->_originalFormRequest, $name],
+                        $arguments,
+                    );
+                }
+
+                public function __get($name) {
+                    return $this->_originalFormRequest->$name;
+                }
+
+                public function __set($name, $value) {
+                    $this->_originalFormRequest->$name = $value;
+                }
+
+                public function __isset($name) {
+                    return isset($this->_originalFormRequest->$name);
+                }
+
+                public function __unset($name) {
+                    unset($this->_originalFormRequest->$name);
                 }
 
                 public function rules()
                 {
-                    return array_merge(parent::rules(), $this->_rules);
+                    return array_merge($this->_originalFormRequest->rules(), $this->_rules);
                 }
 
                 public function messages()
                 {
-                    return array_merge(parent::messages(), $this->_messages);
+                    return array_merge($this->_originalFormRequest->messages(), $this->_messages);
                 }
             };
 
             // validate the complete request with FormRequest + controller validation + field validation (our anonymous class)
-            return app(get_class($extendedRequest), ['rules' => $rules, 'messages' => $messages]);
+            return app(
+                get_class($extendedRequest),
+                [
+                    'originalFormRequest' => new $formRequest,
+                    'rules'               => $rules,
+                    'messages'            => $messages,
+                ],
+            );
         }
 
         return ! empty($rules) ? $this->checkRequestValidity($rules, $messages) : $this->getRequest();
