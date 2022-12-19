@@ -205,7 +205,8 @@ trait Validation
 
             // create a new anonymous class that will extend the provided developer FormRequest
             // in this class we will merge the FormRequest rules() and messages() with the ones provided by developer in fields.
-            $extendedRequest = new class(new $formRequest, $rules, $messages) extends FormRequest {
+            $extendedRequest = new class(new $formRequest, $rules, $messages) extends FormRequest
+            {
                 private $_originalFormRequest;
 
                 private $_rules;
@@ -216,8 +217,8 @@ trait Validation
                 {
                     parent::__construct();
                     $this->_originalFormRequest = $originalFormRequest;
-                    $this->_rules               = $rules;
-                    $this->_messages            = $messages;
+                    $this->_rules = $rules;
+                    $this->_messages = $messages;
                 }
 
                 public function __call($name, $arguments)
@@ -228,19 +229,23 @@ trait Validation
                     );
                 }
 
-                public function __get($name) {
+                public function __get($name)
+                {
                     return $this->_originalFormRequest->$name;
                 }
 
-                public function __set($name, $value) {
+                public function __set($name, $value)
+                {
                     $this->_originalFormRequest->$name = $value;
                 }
 
-                public function __isset($name) {
+                public function __isset($name)
+                {
                     return isset($this->_originalFormRequest->$name);
                 }
 
-                public function __unset($name) {
+                public function __unset($name)
+                {
                     unset($this->_originalFormRequest->$name);
                 }
 
