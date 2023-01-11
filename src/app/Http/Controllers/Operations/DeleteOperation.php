@@ -33,9 +33,11 @@ trait DeleteOperation
             $this->crud->loadDefaultOperationSettingsFromConfig();
         });
 
-        $this->crud->operation(['list', 'show'], function () {
-            $this->crud->addButton('line', 'delete', 'view', 'crud::buttons.delete', 'end');
-        });
+        if (! in_array('Backpack\Pro\Http\Controllers\Operations\TrashOperation', class_uses_recursive($this))) {
+            $this->crud->operation(['list', 'show'], function () {
+                $this->crud->addButton('line', 'delete', 'view', 'crud::buttons.delete', 'end');
+            });
+        }
     }
 
     /**
@@ -51,6 +53,10 @@ trait DeleteOperation
         // get entry ID from Request (makes sure its the last ID for nested resources)
         $id = $this->crud->getCurrentEntryId() ?? $id;
 
-        return $this->crud->delete($id);
+        $isSoftDeleted = $this->crud->model->isSoftDeleted();
+
+        $deleteQuery = $isSoftDeleted ? $this->crud->query->onlyTrashed() : $this->crud->query;
+
+        return $deleteQuery->findOrFail($id)->forceDelete();
     }
 }

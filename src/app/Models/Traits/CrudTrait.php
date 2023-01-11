@@ -15,4 +15,9 @@ trait CrudTrait
     {
         return true;
     }
+
+    public function isSoftDeleted()
+    {
+        return in_array(\Illuminate\Database\Eloquent\SoftDeletes::class, class_uses_recursive($this));
+    }
 }
