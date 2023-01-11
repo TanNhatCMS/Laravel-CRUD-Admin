@@ -53,7 +53,7 @@ trait DeleteOperation
         // get entry ID from Request (makes sure its the last ID for nested resources)
         $id = $this->crud->getCurrentEntryId() ?? $id;
 
-        $usingSoftDeletes = $this->crud->model->isSoftDeleted() && 
+        $usingSoftDeletes = $this->crud->model->isSoftDeleted() &&
                             (in_array(TrashOperation::class, class_uses_recursive($this)) ||
                             in_array(BulkTrashOperation::class, class_uses_recursive($this)));
 
