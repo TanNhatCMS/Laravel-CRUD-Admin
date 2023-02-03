@@ -315,6 +315,6 @@ if (! function_exists('backpack_pro')) {
             return false;
         }
 
-        return \PackageVersions\Versions::getVersion('backpack/pro');
+        return \Composer\InstalledVersions::getVersion('backpack/pro');
     }
 }
