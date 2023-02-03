@@ -2,6 +2,8 @@
 
 namespace Backpack\CRUD\app\Library\CrudPanel;
 
+use Backpack\CRUD\app\Exceptions\BackpackProRequiredException;
+use Backpack\CRUD\ViewNamespaces;
 use Closure;
 use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -9,21 +11,36 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 class CrudFilter
 {
     public $name; // the name of the filtered variable (db column name)
+
     public $type = 'select2'; // the name of the filter view that will be loaded
+
     public $key; //camelCased version of filter name to use in internal ids, js functions and css classes.
+
     public $label;
+
     public $placeholder;
+
     public $values;
+
     public $options;
+
     public $logic;
+
     public $fallbackLogic;
+
     public $currentValue;
+
     public $view;
+
     public $viewNamespace = 'crud::filters';
+
     public $applied = false;
 
     public function __construct($options, $values, $logic, $fallbackLogic)
     {
+        if (! backpack_pro()) {
+            throw new BackpackProRequiredException('Filter');
+        }
         // if filter exists
         if ($this->crud()->hasFilterWhere('name', $options['name'])) {
             $properties = get_object_vars($this->crud()->firstFilterWhere('name', $options['name']));
@@ -36,7 +53,7 @@ class CrudFilter
             $this->key = Str::camel($options['name']);
             $this->type = $options['type'] ?? $this->type;
             $this->label = $options['label'] ?? $this->crud()->makeLabel($this->name);
-            $this->viewNamespace = $options['view_namespace'] ?? $this->viewNamespace;
+            $this->viewNamespace = $options['viewNamespace'] ?? $options['view_namespace'] ?? $this->viewNamespace;
             $this->view = $this->type;
             $this->placeholder = $options['placeholder'] ?? '';
 
@@ -46,8 +63,8 @@ class CrudFilter
             $this->fallbackLogic = $fallbackLogic;
         }
 
-        if (\Request::has($this->name)) {
-            $this->currentValue = \Request::input($this->name);
+        if ($this->crud()->getRequest()->has($this->name)) {
+            $this->currentValue = $this->crud()->getRequest()->input($this->name);
         }
     }
 
@@ -59,7 +76,7 @@ class CrudFilter
      */
     public function isActive()
     {
-        if (\Request::has($this->name)) {
+        if ($this->crud()->getRequest()->has($this->name)) {
             return true;
         }
 
@@ -91,7 +108,7 @@ class CrudFilter
      * Run the filter logic, default logic and/or fallback logic so that from this point on
      * the CRUD query has its results filtered, according to the Request.
      *
-     * @param  array $input The GET parameters for which the filter should be applied.
+     * @param  array  $input  The GET parameters for which the filter should be applied.
      * @return void
      */
     public function apply($input = null)
@@ -132,6 +149,26 @@ class CrudFilter
         return $this->viewNamespace.'.'.$this->view;
     }
 
+    /**
+     * Get an array of full paths to the filter view, including fallbacks
+     * as configured in the backpack/config/crud.php file.
+     *
+     * @return array
+     */
+    public function getNamespacedViewWithFallbacks()
+    {
+        $type = $this->type;
+        $namespaces = ViewNamespaces::getFor('filters');
+
+        if ($this->viewNamespace != 'crud::filters') {
+            $namespaces = array_merge([$this->viewNamespace], $namespaces);
+        }
+
+        return array_map(function ($item) use ($type) {
+            return $item.'.'.$type;
+        }, $namespaces);
+    }
+
     // ---------------------
     // FLUENT SYNTAX METHODS
     // ---------------------
@@ -139,12 +176,14 @@ class CrudFilter
     /**
      * Create a CrudFilter object with the parameter as its name.
      *
-     * @param  string $name Name of the column in the db, or model attribute.
+     * @param  string  $name  Name of the column in the db, or model attribute.
      * @return CrudPanel
      */
     public static function name($name)
     {
-        return new static(compact('name'), null, null, null);
+        $filter = new static(compact('name'), null, null, null);
+
+        return $filter->save();
     }
 
     /**
@@ -160,7 +199,7 @@ class CrudFilter
     /**
      * Remove an attribute from the current filter definition array.
      *
-     * @param  string $attribute Name of the attribute being removed.
+     * @param  string  $attribute  Name of the attribute being removed.
      * @return CrudFilter
      */
     public function forget($attribute)
@@ -180,8 +219,14 @@ class CrudFilter
 
     /**
      * Remove an attribute from one field's definition array.
-     * @param  string $field     The name of the field.
-     * @param  string $attribute The name of the attribute being removed.
+     * (ununsed function).
+     *
+     * @param  string  $field  The name of the field.
+     * @param  string  $attribute  The name of the attribute being removed.
+     *
+     * @codeCoverageIgnore
+     *
+     * @deprecated
      */
     public function removeFilterAttribute($filter, $attribute)
     {
@@ -195,7 +240,7 @@ class CrudFilter
     /**
      * Move the current filter after another filter.
      *
-     * @param  string $destination Name of the destination filter.
+     * @param  string  $destination  Name of the destination filter.
      * @return CrudFilter
      */
     public function after($destination)
@@ -208,7 +253,7 @@ class CrudFilter
     /**
      * Move the current field before another field.
      *
-     * @param  string $destination Name of the destination field.
+     * @param  string  $destination  Name of the destination field.
      * @return CrudFilter
      */
     public function before($destination)
@@ -250,7 +295,7 @@ class CrudFilter
     /**
      * Set the type of the filter.
      *
-     * @param  string $value Name of blade view that shows the field.
+     * @param  string  $value  Name of blade view that shows the field.
      * @return CrudFilter
      */
     public function type($value)
@@ -265,7 +310,7 @@ class CrudFilter
      * Set the label of the filter - the element that the end-user can see and click
      * to activate the filter or an input that will activate the filter.
      *
-     * @param  string $value A name for this filter that the end-user will understand.
+     * @param  string  $value  A name for this filter that the end-user will understand.
      * @return CrudFilter
      */
     public function label($value)
@@ -280,7 +325,7 @@ class CrudFilter
      * For example, the dropdown, select2 and select2 filters let the user select
      * pre-determined values to filter with. This is how to set those values that will be picked up.
      *
-     * @param  array|function $value Key-value array with values for the user to pick from, or a function which also return a Key-value array.
+     * @param  array|function  $value  Key-value array with values for the user to pick from, or a function which also return a Key-value array.
      * @return CrudFilter
      */
     public function values($value)
@@ -297,7 +342,7 @@ class CrudFilter
      *
      * Alias of the values() method.
      *
-     * @param  array|function $value Key-value array with values for the user to pick from, or a function which also return a Key-value array.
+     * @param  array|function  $value  Key-value array with values for the user to pick from, or a function which also return a Key-value array.
      * @return CrudFilter
      */
     public function options($value)
@@ -309,7 +354,7 @@ class CrudFilter
      * Set the blade view that will be used by the filter.
      * Should NOT include the namespace, that's defined separately using 'viewNamespace'.
      *
-     * @param  string $value Path to the blade file, after the view namespace.
+     * @param  string  $value  Path to the blade file, after the view namespace.
      * @return CrudFilter
      */
     public function view($value)
@@ -323,7 +368,7 @@ class CrudFilter
      * The path to the blade views directory where the filter file will be found. Ex: 'crud::filters'
      * Useful to load filters from a different package or directory.
      *
-     * @param  string $value Blade path to the directory.
+     * @param  string  $value  Blade path to the directory.
      * @return CrudFilter
      */
     public function viewNamespace($value)
@@ -336,7 +381,7 @@ class CrudFilter
     /**
      * Define what happens when the filter is active, through a closure.
      *
-     * @param  Closure $value Closure that will be called when Request has this name as GET parameter.
+     * @param  Closure  $value  Closure that will be called when Request has this name as GET parameter.
      * @return CrudFilter
      */
     public function logic($value)
@@ -349,7 +394,7 @@ class CrudFilter
     /**
      * Define what happens when the filter is NOT active, through a closure.
      *
-     * @param  Closure $value Closure that will be called when Request does NOT have this name as GET parameter.
+     * @param  Closure  $value  Closure that will be called when Request does NOT have this name as GET parameter.
      * @return CrudFilter
      */
     public function fallbackLogic($value)
@@ -362,7 +407,7 @@ class CrudFilter
     /**
      * Define if the filter has already been applied (logic or fallbackLogic called).
      *
-     * @param  bool $value Whether the filter has been run.
+     * @param  bool  $value  Whether the filter has been run.
      * @return CrudFilter
      */
     public function applied($value)
@@ -425,8 +470,8 @@ class CrudFilter
     /**
      * Set the value for a certain attribute on the CrudFilter object.
      *
-     * @param string $attribute Name of the attribute.
-     * @param string $value     Value of that attribute.
+     * @param  string  $attribute  Name of the attribute.
+     * @param  string  $value  Value of that attribute.
      */
     private function setOptionValue($attribute, $value)
     {
@@ -437,7 +482,7 @@ class CrudFilter
      * Replace all field options on the CrudFilter object
      * with the given array of attribute-value pairs.
      *
-     * @param array $array Array of options and their values.
+     * @param  array  $array  Array of options and their values.
      */
     private function setAllOptionsValues($array)
     {
@@ -463,9 +508,9 @@ class CrudFilter
     }
 
     /**
-     * @param string $name
-     * @param string $operator
-     * @param array  $input
+     * @param  string  $name
+     * @param  string  $operator
+     * @param  array  $input
      */
     private function applyDefaultLogic($name, $operator, $input = null)
     {
@@ -482,21 +527,21 @@ class CrudFilter
                 $this->crud()->addClause($operator);
                 break;
 
-            // TODO:
-            // whereBetween
-            // whereNotBetween
-            // whereIn
-            // whereNotIn
-            // whereNull
-            // whereNotNull
-            // whereDate
-            // whereMonth
-            // whereDay
-            // whereYear
-            // whereColumn
-            // like
+                // TODO:
+                // whereBetween
+                // whereNotBetween
+                // whereIn
+                // whereNotIn
+                // whereNull
+                // whereNotNull
+                // whereDate
+                // whereMonth
+                // whereDay
+                // whereYear
+                // whereColumn
+                // like
 
-            // sql comparison operators
+                // sql comparison operators
             case '=':
             case '<=>':
             case '<>':
@@ -522,6 +567,8 @@ class CrudFilter
      * Dump the current object to the screen,
      * so that the developer can see its contents.
      *
+     * @codeCoverageIgnore
+     *
      * @return CrudFilter
      */
     public function dump()
@@ -535,6 +582,8 @@ class CrudFilter
      * Dump and die. Duumps the current object to the screen,
      * so that the developer can see its contents, then stops
      * the execution.
+     *
+     * @codeCoverageIgnore
      *
      * @return CrudFilter
      */
@@ -556,9 +605,8 @@ class CrudFilter
      *
      * Eg: type('number') will set the "type" attribute to "number"
      *
-     * @param  string $method     The method being called that doesn't exist.
-     * @param  array $parameters  The arguments when that method was called.
-     *
+     * @param  string  $method  The method being called that doesn't exist.
+     * @param  array  $parameters  The arguments when that method was called.
      * @return CrudFilter
      */
     public function __call($method, $parameters)

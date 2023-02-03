@@ -6,7 +6,6 @@ No documentation can be 100% complete and Backpack's is no different, sorry for 
 - (C) what happened
 - (D) what have you already tried to fix it?
 
-
 # Idea for a new feature?
 
 **[Open an issue](https://github.com/laravel-backpack/crud) and tell the community you are willing to submit a PR.** We usually end up with better solutions when we talk about it and everybody pitches in with their opinion. Plus, some features might be better presented as a separate package, a tutorial or a code snippet.
@@ -31,7 +30,7 @@ If you have a solution for it and want to help, you can submit a Pull Request. T
 - you'll become one of the Backpack contributors; [welcome to the party! :-)](https://media.giphy.com/media/l0MYt5jPR6QX5pnqM/giphy.gif);
 - you'll not just be helping yourself and the maintainers of Backpack, you'd be helping thousants of Backpack developers;
 
-If you've never submitted a PR before, don't worry, it's not that difficult. Read [this tutoral](https://mattstauffer.co/blog/how-to-contribute-to-an-open-source-github-project-using-your-own-fork) and the rules above. I promise, you'll enjoy sending PRs after a while :-)
+If you've never submitted a PR before, don't worry, it's not that difficult. Read [this tutoral](https://mattstauffer.com/blog/how-to-contribute-to-an-open-source-github-project-using-your-own-fork) and the rules above. I promise, you'll enjoy sending PRs after a while :-)
 
 
 # Want to help out?
