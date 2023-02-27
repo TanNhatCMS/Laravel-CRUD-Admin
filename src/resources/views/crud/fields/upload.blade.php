@@ -16,7 +16,12 @@
         @if (isset($field['temporary']))
             <a target="_blank" href="{{ (asset(\Storage::disk($field['disk'])->temporaryUrl(Arr::get($field, 'prefix', '').$field['value'], Carbon\Carbon::now()->addMinutes($field['temporary'])))) }}">
         @else
-            <a target="_blank" href="{{ (asset(\Storage::disk($field['disk'])->url(Arr::get($field, 'prefix', '').$field['value']))) }}">
+            @if (Str::contains($field['value'], 'http'))
+            <a target="_blank" href="{{ asset(Arr::get($field, 'prefix', '') . $field['value']) }}">
+            @else
+              <a target="_blank"
+                href="{{ asset(\Storage::disk($field['disk'])->url(Arr::get($field, 'prefix', '') . $field['value'])) }}">
+          @endif
         @endif
         @else
             <a target="_blank" href="{{ (asset(Arr::get($field, 'prefix', '').$field['value'])) }}">
