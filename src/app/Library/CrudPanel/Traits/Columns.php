@@ -321,9 +321,9 @@ trait Columns
      * Set actions column as dropdown
      * in the CRUD table view.
      */
-    public function displayActionsColumnAsDropdown(): self
+    public function displayActionsColumnAsDropdown(bool $value): self
     {
-        $this->setOperationSetting('actionsColumnAsDropdown', true);
+        $this->setOperationSetting('actionsColumnAsDropdown', $value);
 
         return $this;
     }
