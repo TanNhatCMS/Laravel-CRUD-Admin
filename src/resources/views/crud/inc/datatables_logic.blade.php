@@ -360,6 +360,20 @@
          crud.functionsToRunOnDataTablesDrawEvent.forEach(function(functionName) {
             crud.executeFunctionByName(functionName);
          });
+          @if($crud->getOperationSetting('actionsColumnAsDropdown'))
+          // Transform actions buttons into a dropdown
+          $('#crudTable').find('td:last-child').map((index, el) => {
+              const cell = $(el);
+              const buttons = $(cell).find('a');
+              cell.wrapInner('<div class="nav-item dropdown"></div>');
+              cell.wrapInner('<div class="dropdown-menu dropdown-menu-left"></div>');
+              buttons.map((index, action) => {
+                  $(action).addClass('dropdown-item').removeClass('btn btn-sm btn-link');
+                  $(action).find('i').addClass('me-2');
+              });
+              cell.prepend('<a class="nav-link dropdown-toggle actions-buttons-column" href="#" data-toggle="dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">{{ trans('backpack::crud.actions') }}</a>');
+          });
+          @endif
       } ).dataTable();
 
       // when datatables-colvis (column visibility) is toggled
