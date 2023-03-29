@@ -371,7 +371,7 @@
                   $(action).addClass('dropdown-item').removeClass('btn btn-sm btn-link');
                   $(action).find('i').addClass('me-2');
               });
-              cell.prepend('<a class="nav-link dropdown-toggle actions-buttons-column" href="#" data-toggle="dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">{{ trans('backpack::crud.actions') }}</a>');
+              cell.prepend('<a class="btn bg-light dropdown-toggle actions-buttons-column" href="#" data-toggle="dropdown" data-bs-toggle="dropdown" data-bs-auto-close="outside" aria-expanded="false">{{ trans('backpack::crud.actions') }}</a>');
           });
           @endif
       } ).dataTable();
