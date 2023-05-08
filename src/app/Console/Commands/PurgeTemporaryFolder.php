@@ -33,7 +33,7 @@ class PurgeTemporaryFolder extends Command
         $purgeFilesOlderThan = $this->option('older-than') ?? config('backpack.base.purge_temporary_files_older_than');
         collect(Storage::disk($temporaryDisk)->listContents($temporaryFolder, true))
         ->each(function ($file) use ($temporaryDisk, $purgeFilesOlderThan) {
-            if ($file['type'] == 'file' && $file['timestamp'] < now()->subHours($purgeFilesOlderThan)->getTimestamp()) {
+            if ($file['type'] == 'file' && $file['lastModified'] < now()->subHours($purgeFilesOlderThan)->getTimestamp()) {
                 Storage::disk($temporaryDisk)->delete($file['path']);
             }
         });

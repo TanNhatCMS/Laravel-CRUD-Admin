@@ -28,6 +28,7 @@ class BackpackServiceProvider extends ServiceProvider
         \Backpack\CRUD\app\Console\Commands\Addons\RequireEditableColumns::class,
         \Backpack\CRUD\app\Console\Commands\Addons\RequirePro::class,
         \Backpack\CRUD\app\Console\Commands\Fix::class,
+        \Backpack\CRUD\app\Console\Commands\PurgeTemporaryFolder::class,
     ];
 
     // Indicates if loading of the provider is deferred.
@@ -256,7 +257,7 @@ class BackpackServiceProvider extends ServiceProvider
             [
                 'backpack' => [
                     'driver' => 'eloquent',
-                    'model' => config('backpack.base.user_model_fqn'),
+                    'model'  => config('backpack.base.user_model_fqn'),
                 ],
             ];
 
@@ -275,7 +276,7 @@ class BackpackServiceProvider extends ServiceProvider
         app()->config['auth.guards'] = app()->config['auth.guards'] +
             [
                 'backpack' => [
-                    'driver' => 'session',
+                    'driver'   => 'session',
                     'provider' => 'backpack',
                 ],
             ];
