@@ -6,7 +6,9 @@ use Backpack\CRUD\app\Library\Validation\Rules\Support\HasFiles;
 use Closure;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Contracts\Validation\ValidationRule;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 abstract class ValidFileArray extends BackpackCustomRule
 {
@@ -46,10 +48,42 @@ abstract class ValidFileArray extends BackpackCustomRule
 
     protected function validateItems(string $attribute, array $items, Closure $fail): void
     {
+        if (is_multidimensional_array($items)) {
+            $this->validateNestedItems($attribute, $items, $fail);
+
+            return;
+        }
         foreach ($items as $file) {
             $validator = Validator::make([$attribute => $file], [
                 $attribute => $this->getFileRules(),
             ], $this->validator->customMessages, $this->validator->customAttributes);
+
+            if ($validator->fails()) {
+                foreach ($validator->errors()->messages() ?? [] as $attr => $message) {
+                    foreach ($message as $messageText) {
+                        $fail($messageText)->translate();
+                    }
+                }
+            }
+        }
+    }
+
+    private function validateNestedItems(string $attribute, array $items, Closure $fail)
+    {
+        $items = array_values(Arr::dot($items));
+        $parent = Str::before($attribute, '.');
+        $field = Str::afterLast($attribute, '.');
+
+        foreach ($items as $key => $item) {
+            if (! is_file($item)) {
+                continue;
+            }
+            $validate = [$parent => [
+                [
+                    $field => $item,
+                ],
+            ]];
+            $validator = Validator::make($validate, [$parent.'.*.'.$field => $this->getFileRules()], $this->validator->customMessages, $this->validator->customAttributes);
 
             if ($validator->fails()) {
                 foreach ($validator->errors()->messages() ?? [] as $attr => $message) {
