@@ -149,7 +149,7 @@ return [
     'root_disk_name' => 'root',
 
     // the disk where temporary files will be stored, eg: temporary uploaded files.
-    'temporary_disk' => 'local',
+    'temporary_disk' => 'public',
 
     // the folder inside the disk to store the files.
     'temporary_folder' => 'backpack/temp',
