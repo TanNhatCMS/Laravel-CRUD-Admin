@@ -280,7 +280,7 @@ class CrudButton implements Arrayable
      *
      * @return array
      */
-    private function getViewPathsWithFallbacks()
+    protected function getViewPathsWithFallbacks()
     {
         $type = $this->name;
         $paths = array_map(function ($item) use ($type) {
@@ -290,7 +290,7 @@ class CrudButton implements Arrayable
         return array_merge([$this->content], $paths);
     }
 
-    private function getFinalViewPath()
+    protected function getFinalViewPath()
     {
         foreach ($this->getViewPathsWithFallbacks() as $path) {
             if (view()->exists($path)) {
@@ -441,7 +441,7 @@ class CrudButton implements Arrayable
      *
      * @return CrudButton
      */
-    private function save()
+    protected function save()
     {
         if ($this->collection()->isEmpty()) {
             $this->crud()->addCrudButton($this);
