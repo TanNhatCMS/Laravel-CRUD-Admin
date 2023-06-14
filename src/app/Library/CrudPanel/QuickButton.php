@@ -18,7 +18,7 @@ class QuickButton extends CrudButton
     /**
      * Only show the button if there's access to this operation.
      *
-     * @param string|bool $access
+     * @param  string|bool  $access
      * @return QuickButton
      */
     public function access(string|bool $access)
@@ -31,7 +31,7 @@ class QuickButton extends CrudButton
     /**
      * Set the url of the button (eg. url('home')).
      *
-     * @param string $url
+     * @param  string  $url
      * @return QuickButton
      */
     public function url(string $url)
@@ -44,7 +44,7 @@ class QuickButton extends CrudButton
     /**
      * Set the CSS classes of the button (eg. btn btn-outline-primary).
      *
-     * @param string $classes
+     * @param  string  $classes
      * @return QuickButton
      */
     public function classes(string $classes)
@@ -57,7 +57,7 @@ class QuickButton extends CrudButton
     /**
      * Set the icon class of the button (eg. la la-home).
      *
-     * @param string $icon
+     * @param  string  $icon
      * @return QuickButton
      */
     public function icon(string $icon)
@@ -70,7 +70,7 @@ class QuickButton extends CrudButton
     /**
      * Set the text of the button (eg. Moderate).
      *
-     * @param string $text
+     * @param  string  $text
      * @return QuickButton
      */
     public function text(string $text)
@@ -106,8 +106,8 @@ class QuickButton extends CrudButton
     protected function getDefaultUrl($entry)
     {
         $id = ($entry != null) ? $entry->getKey() : false;
-        $idUrlSegment = ($id ? '/'.$id .'/' : '/');
+        $idUrlSegment = ($id ? '/'.$id.'/' : '/');
 
-        return url($this->crud()->route . $idUrlSegment . Str::of($this->name)->kebab());
+        return url($this->crud()->route.$idUrlSegment.Str::of($this->name)->kebab());
     }
 }
