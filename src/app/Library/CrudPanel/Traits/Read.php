@@ -4,6 +4,7 @@ namespace Backpack\CRUD\app\Library\CrudPanel\Traits;
 
 use Backpack\CRUD\app\Exceptions\BackpackProRequiredException;
 use Exception;
+use Illuminate\Support\Str;
 
 /**
  * Properties and methods used by the List operation.
@@ -57,7 +58,8 @@ trait Read
     public function getEntry($id)
     {
         if (! $this->entry) {
-            $this->entry = $this->getModelWithCrudPanelQuery()->findOrFail($id);
+            $this->eagerLoadRelationships('fields');
+            $this->entry = $this->query->findOrFail($id);
             $this->entry = $this->entry->withFakes();
         }
 
@@ -85,6 +87,52 @@ trait Read
         }
 
         return $this->entry;
+    }
+
+    /**
+     * Make the query JOIN all relationships used in the definitions (fields, columns).
+     * So there will be less database queries overall.
+     */
+    public function eagerLoadRelationships(string $definitions)
+    {
+        $definitions = $this->{$definitions}();
+        $relationStrings = [];
+        // dd($definitions);
+        foreach ($definitions as $definitionName => $definition) {
+            $relationString = isset($definition['entity']) && $definition['entity'] !== false ? $definition['entity'] : '';
+            if (strpos($definition['entity'], '.') !== false) {
+                $definitionAttribute = $definition['attribute'] ?? null;
+                if ($definitionAttribute) {
+                    $relationString = Str::endsWith($relationString, $definitionAttribute) ? Str::beforeLast($relationString, '.') : $relationString;
+
+                    $relationStrings[] = $relationString;
+
+                    continue;
+                }
+
+                $parts = explode('.', $relationString);
+                $model = $this->model;
+
+                // Iterate over each relation part to find the valid relations without attributes
+                // We should eager load the relation but not the attribute
+                foreach ($parts as $i => $part) {
+                    try {
+                        $model = $model->$part()->getRelated();
+                    } catch (Exception $e) {
+                        $relationString = implode('.', array_slice($parts, 0, $i));
+                    }
+                }
+
+                $relationStrings[] = $relationString;
+
+                continue;
+            }
+            if ($relationString) {
+                $relationStrings[] = $relationString;
+            }
+        }
+
+        $this->with(array_unique($relationStrings));
     }
 
     /**
@@ -127,7 +175,7 @@ trait Read
                     try {
                         $model = $model->$part()->getRelated();
                     } catch (Exception $e) {
-                        $relation = join('.', array_slice($parts, 0, $i));
+                        $relation = implode('.', array_slice($parts, 0, $i));
                     }
                 }
             }
