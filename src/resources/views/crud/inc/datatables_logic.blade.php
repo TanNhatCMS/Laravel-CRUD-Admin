@@ -269,6 +269,9 @@
               "data": {
                 "totalEntryCount": "{{$crud->getOperationSetting('totalEntryCount') ?? false}}"
             },
+            "headers": {
+                'X-CSRF-TOKEN': '<?php echo e(csrf_token()); ?>'
+            },
           },
           dom:
             "<'row hidden'<'col-sm-6'i><'col-sm-6 d-print-none'f>>" +
