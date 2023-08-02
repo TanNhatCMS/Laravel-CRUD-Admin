@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
-use Exception;
 
 class Install extends Command
 {
@@ -95,7 +94,6 @@ class Install extends Command
 
         // Install Backpack Basset
         $this->call('basset:install');
-       
 
         // Optional commands
         if (! $this->option('no-interaction')) {
