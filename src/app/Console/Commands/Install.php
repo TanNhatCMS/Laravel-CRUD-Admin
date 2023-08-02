@@ -9,10 +9,12 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Process\Process;
+use Exception;
 
 class Install extends Command
 {
     use Traits\PrettyCommandOutput;
+    use \Backpack\Basset\Console\Commands\Helpers\BassetNotWorkingMessage;
 
     protected $progressBar;
 
@@ -92,9 +94,8 @@ class Install extends Command
         $this->closeProgressBlock();
 
         // Install Backpack Basset
-        $this->progressBlock('Installing Basset');
-        $this->executeArtisanProcess('basset:install --no-interaction');
-        $this->closeProgressBlock();
+        $this->call('basset:install');
+       
 
         // Optional commands
         if (! $this->option('no-interaction')) {
