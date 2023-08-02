@@ -13,7 +13,6 @@ use Symfony\Component\Process\Process;
 class Install extends Command
 {
     use Traits\PrettyCommandOutput;
-    use \Backpack\Basset\Console\Commands\Helpers\BassetNotWorkingMessage;
 
     protected $progressBar;
 
