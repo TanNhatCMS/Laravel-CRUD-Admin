@@ -117,7 +117,7 @@ class CrudPanel
             throw new \Exception('Please use CrudTrait on the model.', 500);
         }
 
-        $this->model = new $model_namespace();
+        $this->model = app($model_namespace);
         $this->query = clone $this->totalQuery = $this->model->select('*');
         $this->entry = null;
     }
