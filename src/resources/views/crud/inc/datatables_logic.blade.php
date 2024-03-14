@@ -138,7 +138,7 @@
             newUrl = params_arr.length ? tmpUrl + "?" + params_arr.join("&") : tmpUrl;
         }
         window.history.pushState({}, '', newUrl);
-        localStorage.setItem('{{ Str::slug($crud->getRoute()) }}_list_url', newUrl);
+        localStorage.setItem('{{ Str::slug(url($crud->getRoute())) }}_list_url', newUrl);
       },
       dataTableConfiguration: {
         bInfo: {{ var_export($crud->getOperationSetting('showEntryCount') ?? true) }},
@@ -191,7 +191,7 @@
 
         stateSaveParams: function(settings, data) {
 
-            localStorage.setItem('{{ Str::slug($crud->getRoute()) }}_list_url_time', data.time);
+            localStorage.setItem('{{ Str::slug(url($crud->getRoute())) }}_list_url_time', data.time);
 
             data.columns.forEach(function(item, index) {
                 var columnHeading = crud.table.columns().header()[index];
@@ -345,11 +345,11 @@
         // so in next requests we know if the length changed by user
         // or by developer in the controller.
         $('#crudTable').on( 'length.dt', function ( e, settings, len ) {
-            localStorage.setItem('DataTables_crudTable_/{{$crud->getRoute()}}_pageLength', len);
+            localStorage.setItem('DataTables_crudTable_/{{Str::slug(url($crud->getRoute()))}}_pageLength', len);
         });
 
         $('#crudTable').on( 'page.dt', function () {
-            localStorage.setItem('page_changed', true);
+            localStorage.setItem('{{Str::slug(url($crud->getRoute()))}}_page_changed', true);
         });
 
       // on DataTable draw event run all functions in the queue
