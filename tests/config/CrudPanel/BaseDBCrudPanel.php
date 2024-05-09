@@ -28,7 +28,7 @@ abstract class BaseDBCrudPanel extends BaseCrudPanel
         // call migrations specific to our tests
         $this->loadMigrationsFrom([
             '--database' => 'testing',
-            '--path' => realpath(__DIR__.'/../../config/database/migrations'),
+            '--path'     => realpath(__DIR__.'/../../config/database/migrations'),
         ]);
 
         $this->seed('Backpack\CRUD\Tests\config\database\seeds\UsersRolesTableSeeder');
@@ -46,6 +46,17 @@ abstract class BaseDBCrudPanel extends BaseCrudPanel
     protected function getEnvironmentSetUp($app)
     {
         $app['config']->set('database.default', 'testing');
+        $app['config']->set('backpack.base.route_prefix', 'admin');
+
+        $app->bind('App\Http\Middleware\CheckIfAdmin', function () {
+            return new class
+            {
+                public function handle($request, $next)
+                {
+                    return $next($request);
+                }
+            };
+        });
     }
 
     /**
