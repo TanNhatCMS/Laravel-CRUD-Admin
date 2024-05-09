@@ -12,6 +12,5 @@ class TestsServiceProvider extends \Illuminate\Support\ServiceProvider
         $loader = \Illuminate\Foundation\AliasLoader::getInstance();
         $loader->alias('Basset', \Backpack\Basset\Facades\Basset::class);
         $loader->alias('Alert', \Prologue\Alerts\Facades\Alert::class);
-        
     }
 }
