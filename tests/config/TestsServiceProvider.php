@@ -6,6 +6,7 @@ class TestsServiceProvider extends \Illuminate\Support\ServiceProvider
 {
     public function register()
     {
+        // register theme views as coreuiv2, the default ui.namespace.
         $this->loadViewsFrom(__DIR__.'/Views', 'backpack.theme-coreuiv2');
 
         // Register the  facade alias for basset
