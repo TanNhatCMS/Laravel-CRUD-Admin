@@ -140,9 +140,10 @@ trait Create
                     $relationValues = [];
 
                     if (is_array($values) && is_multidimensional_array($values)) {
-                        foreach ($values as $value) {
+                        foreach ($values as $key => $value) {
                             if (isset($value[$relationMethod])) {
-                                $relationValues[$value[$relationMethod]] = Arr::except($value, $relationMethod);
+                                $relationValues[$key] = Arr::except($value, $relationMethod);
+                                $relationValues[$key][$item->{$relationMethod}()->getRelatedPivotKeyName()] = $value[$relationMethod];
                             }
                         }
                     }
@@ -152,7 +153,7 @@ trait Create
                     if (empty($relationValues)) {
                         $relationValues = array_values($values);
                     }
-
+                    $item->{$relationMethod}()->detach();
                     $item->{$relationMethod}()->sync($relationValues);
                     break;
             }
