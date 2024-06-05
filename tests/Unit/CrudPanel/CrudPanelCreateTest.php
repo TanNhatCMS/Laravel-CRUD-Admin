@@ -510,6 +510,66 @@ class CrudPanelCreateTest extends \Backpack\CRUD\Tests\config\CrudPanel\BaseDBCr
         $this->assertEquals('my first article note', $entry->fresh()->superArticles->first()->pivot->notes);
     }
 
+    public function testBelongsToManyWithMultipleSameRelationIdAndPivotDataRelationship()
+    {
+        $this->crudPanel->setModel(User::class);
+        $this->crudPanel->addFields($this->userInputFieldsNoRelationships);
+        $this->crudPanel->addField([
+            'name' => 'superArticles',
+            'subfields' => [
+                [
+                    'name' => 'notes',
+                ],
+            ],
+        ]);
+
+        $faker = Factory::create();
+        $articleData = [
+            'content' => $faker->text(),
+            'tags' => $faker->words(3, true),
+            'user_id' => 1,
+        ];
+
+        $article = Article::create([
+            'content' => $faker->text(),
+            'tags' => $faker->words(3, true),
+            'user_id' => 1,
+        ]);
+        $article2 = Article::create([
+            'content' => $faker->text(),
+            'tags' => $faker->words(3, true),
+            'user_id' => 1,
+        ]);
+        $inputData = [
+            'name' => $faker->name,
+            'email' => $faker->safeEmail,
+            'password' => Hash::make($faker->password()),
+            'remember_token' => null,
+            'superArticles' => [
+                [
+                    'superArticles' => $article->id,
+                    'notes' => 'my first article note',
+                ],
+                [
+                    'superArticles' => $article->id,
+                    'notes' => 'my second article note',
+                ],
+                [
+                    'superArticles' => $article2->id,
+                    'notes' => 'my first article2 note',
+                ],
+            ],
+        ];
+
+        $entry = $this->crudPanel->create($inputData);
+        $updateFields = $this->crudPanel->getUpdateFields($entry->id);
+
+        $this->assertCount(3, $entry->fresh()->superArticles);
+        $this->assertEquals('my first article note', $entry->fresh()->superArticles->first()->pivot->notes);
+        $this->assertEquals('my second article note', $entry->fresh()->superArticles[1]->pivot->notes);
+        $this->assertEquals('my first article2 note', $entry->fresh()->superArticles[2]->pivot->notes);
+    }
+
     public function testCreateHasOneWithNestedRelationsRepeatableInterface()
     {
         $this->crudPanel->setModel(User::class);
