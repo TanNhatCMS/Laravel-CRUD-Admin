@@ -122,7 +122,15 @@ trait Update
             case 'HasMany':
             case 'BelongsToMany':
             case 'MorphToMany':
-                $relationModels = $relatedModel->{$relationMethod};
+                if (
+                    ($relationType == 'BelongsToMany' || $relationType == 'MorphToMany') &&
+                    $relatedModel->{$relationMethod}->count() > 0 &&
+                    $relatedModel->{$relationMethod}[0]->{$relatedModel->{$relationMethod}()->getRelatedPivotKeyName()}) {
+                    $key = $relatedModel->{$relationMethod}[0]->{$relatedModel->{$relationMethod}()->getRelatedPivotKeyName()}->getKeyName();
+                    $relationModels = $relatedModel->{$relationMethod}()->withPivot($key)->get();
+                } else {
+                    $relationModels = $relatedModel->{$relationMethod};
+                }
                 $result = collect();
 
                 foreach ($relationModels as $model) {

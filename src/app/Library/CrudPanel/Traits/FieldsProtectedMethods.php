@@ -303,6 +303,15 @@ trait FieldsProtectedMethods
             switch ($field['relation_type']) {
                 case 'MorphToMany':
                 case 'BelongsToMany':
+                    $entity = isset($field['baseEntity']) ? $field['baseEntity'].'.'.$field['entity'] : $field['entity'];
+
+                    $relationInstance = $this->getRelationInstance(['entity' => $entity]);
+
+                    $field['subfields'] = Arr::prepend($field['subfields'], [
+                        'name' => $relationInstance->getRelated()->getKeyName(),
+                        'type' => 'hidden',
+
+                    ]);
                     $pivotSelectorField = static::getPivotFieldStructure($field);
 
                     $pivot = Arr::where($field['subfields'], function ($item) use ($pivotSelectorField) {

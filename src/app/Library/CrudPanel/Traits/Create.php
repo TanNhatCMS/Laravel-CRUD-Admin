@@ -140,10 +140,11 @@ trait Create
                     $relationValues = [];
 
                     if (is_array($values) && is_multidimensional_array($values)) {
-                        foreach ($values as $key => $value) {
+                        foreach ($values as $value) {
                             if (isset($value[$relationMethod])) {
-                                $relationValues[$key] = Arr::except($value, $relationMethod);
-                                $relationValues[$key][$item->{$relationMethod}()->getRelatedPivotKeyName()] = $value[$relationMethod];
+                                $array = Arr::except($value, $relationMethod);
+                                $array[$item->{$relationMethod}()->getRelatedPivotKeyName()] = $value[$relationMethod];
+                                $relationValues[] = $array;
                             }
                         }
                     }
@@ -153,8 +154,29 @@ trait Create
                     if (empty($relationValues)) {
                         $relationValues = array_values($values);
                     }
-                    $item->{$relationMethod}()->detach();
-                    $item->{$relationMethod}()->sync($relationValues);
+                    if ($item->{$relationMethod}->count() > 0 && is_multidimensional_array($values)) {
+                        // get the key name of the pivot table (usually id, but could be something else if the dev has set it in the model
+                        $keyName = $item->{$relationMethod}[0]->pivot->getKeyName();
+                        $items = $item->{$relationMethod}()->withPivot($keyName)->get();
+                        $items->each(function ($item) use (&$relationValues, $keyName) {
+                            if ($item->pivot) {
+                                $keys = array_column($relationValues, $keyName);
+                                $key = $item->pivot->{$keyName};
+                                if (! in_array((int) $key, $keys)) {
+                                    $item->pivot->delete();
+                                } else {
+                                    $index = array_search($key, $keys);
+                                    $item->pivot->update($relationValues[$index]);
+                                    unset($relationValues[$index]);
+                                    $relationValues = array_values($relationValues);
+                                }
+                            }
+                        });
+                        $item->{$relationMethod}()->attach($relationValues);
+                    } else {
+                        $item->{$relationMethod}()->sync($relationValues);
+                    }
+                    $item->refresh();
                     break;
             }
         }
