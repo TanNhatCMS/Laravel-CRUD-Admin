@@ -46,7 +46,7 @@ trait HasForm
 
         BackpackHooks::register(OperationHooks::BEFORE_OPERATION_SETUP, $operationName, function () use ($operationName) {
             $this->crud->addSaveAction([
-                'name'    => 'save_and_back',
+                'name' => 'save_and_back',
                 'visible' => function ($crud) use ($operationName) {
                     return $crud->hasAccess($operationName);
                 },
