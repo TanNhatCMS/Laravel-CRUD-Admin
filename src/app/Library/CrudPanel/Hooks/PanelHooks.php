@@ -13,7 +13,7 @@ final class PanelHooks
 
     public array $hooks = [];
 
-    public  function register(string $hook, callable $callback): void
+    public function register(string $hook, callable $callback): void
     {
         $this->hooks[$hook][] = $callback;
     }

@@ -43,7 +43,7 @@ class CrudController extends Controller
             $this->crud = app('crud');
 
             $this->crud->setRequest($request);
-            
+
             PanelHook::run(PanelHooks::BEFORE_SETUP_DEFAULTS, [$this]);
             $this->setupDefaults();
             PanelHook::run(PanelHooks::AFTER_SETUP_DEFAULTS, [$this]);
