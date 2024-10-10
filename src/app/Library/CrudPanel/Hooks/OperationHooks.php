@@ -16,7 +16,7 @@ final class OperationHooks
 
     public array $hooks = [];
 
-    public  function register(string $hook, string|array $operations, callable $callback): void
+    public function register(string $hook, string|array $operations, callable $callback): void
     {
         $operations = is_array($operations) ? $operations : [$operations];
 
