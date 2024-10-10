@@ -2,6 +2,9 @@
 
 namespace Backpack\CRUD\app\Library\CrudPanel\Traits;
 
+use Backpack\CRUD\app\Library\CrudPanel\Hooks\BackpackHooks;
+use Backpack\CRUD\app\Library\CrudPanel\Hooks\OperationHooks;
+
 trait Operations
 {
     /*
@@ -59,20 +62,22 @@ trait Operations
      * @param  string|array  $operation  Operation name in string form
      * @param  bool|\Closure  $closure  Code that calls CrudPanel methods.
      * @return void
+     * @deprecated use BackpackHooks::register(OperationHooks::BEFORE_OPERATION_SETUP, $operation, $closure) instead
      */
     public function operation($operations, $closure = false)
     {
-        return $this->configureOperation($operations, $closure);
+        BackpackHooks::register(OperationHooks::BEFORE_OPERATION_SETUP, $operations, $closure);
     }
 
     /**
      * Store a closure which configures a certain operation inside settings.
-     * Allc configurations are put inside that operation's namespace.
+     * All configurations are put inside that operation's namespace.
      * Ex: show.configuration.
      *
      * @param  string|array  $operation  Operation name in string form
      * @param  bool|\Closure  $closure  Code that calls CrudPanel methods.
      * @return void
+     * @deprecated use BackpackHooks::register(OperationHooks::BEFORE_OPERATION_SETUP, $operation, $closure) instead
      */
     public function configureOperation($operations, $closure = false)
     {
@@ -93,6 +98,7 @@ trait Operations
      *
      * @param  string|array  $operations  [description]
      * @return void
+     * @deprecated use BackpackHooks::register(OperationHooks::BEFORE_OPERATION_SETUP, $operation, $closure) instead
      */
     public function applyConfigurationFromSettings($operations)
     {

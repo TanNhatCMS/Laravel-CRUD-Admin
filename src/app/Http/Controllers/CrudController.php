@@ -3,6 +3,8 @@
 namespace Backpack\CRUD\app\Http\Controllers;
 
 use Backpack\CRUD\app\Library\Attributes\DeprecatedIgnoreOnRuntime;
+use Backpack\CRUD\app\Library\CrudPanel\Hooks\BackpackHooks;
+use Backpack\CRUD\app\Library\CrudPanel\Hooks\OperationHooks;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller;
@@ -116,13 +118,22 @@ class CrudController extends Controller
          * you'd like the defaults to be applied before anything you write. That way, anything you
          * write is done after the default, so you can remove default settings, etc;
          */
-        $this->crud->applyConfigurationFromSettings($operationName);
+        if (! BackpackHooks::has(OperationHooks::SETUP_OPERATION_FROM_CONFIG, $operationName)) {
+            BackpackHooks::register(OperationHooks::SETUP_OPERATION_FROM_CONFIG, $operationName, function () {
+                $this->crud->loadDefaultOperationSettingsFromConfig();
+            });
+        }
 
+        $this->crud->loadDefaultOperationSettingsFromConfig(BackpackHooks::run(OperationHooks::SETUP_OPERATION_FROM_CONFIG, $operationName, [$this]));
+
+        BackpackHooks::run(OperationHooks::BEFORE_OPERATION_SETUP, $operationName, [$this]);
         /*
          * THEN, run the corresponding setupXxxOperation if it exists.
          */
         if (method_exists($this, $setupClassName)) {
             $this->{$setupClassName}();
         }
+
+        BackpackHooks::run(OperationHooks::AFTER_OPERATION_SETUP, $operationName, [$this]);
     }
 }
