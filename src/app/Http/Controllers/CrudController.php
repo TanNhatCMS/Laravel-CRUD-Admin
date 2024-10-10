@@ -4,7 +4,9 @@ namespace Backpack\CRUD\app\Http\Controllers;
 
 use Backpack\CRUD\app\Library\Attributes\DeprecatedIgnoreOnRuntime;
 use Backpack\CRUD\app\Library\CrudPanel\Hooks\Contracts\OperationHook;
+use Backpack\CRUD\app\Library\CrudPanel\Hooks\Contracts\PanelHook;
 use Backpack\CRUD\app\Library\CrudPanel\Hooks\OperationHooks;
+use Backpack\CRUD\app\Library\CrudPanel\Hooks\PanelHooks;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller;
@@ -41,9 +43,15 @@ class CrudController extends Controller
             $this->crud = app('crud');
 
             $this->crud->setRequest($request);
-
+            
+            PanelHook::run(PanelHooks::BEFORE_SETUP_DEFAULTS, [$this]);
             $this->setupDefaults();
+            PanelHook::run(PanelHooks::AFTER_SETUP_DEFAULTS, [$this]);
+
+            PanelHook::run(PanelHooks::BEFORE_CONTROLLER_SETUP, [$this]);
             $this->setup();
+            PanelHook::run(PanelHooks::AFTER_CONTROLLER_SETUP, [$this]);
+
             $this->setupConfigurationForCurrentOperation();
 
             return $next($request);

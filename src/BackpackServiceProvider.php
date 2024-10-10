@@ -95,6 +95,10 @@ class BackpackServiceProvider extends ServiceProvider
             return new \Backpack\CRUD\app\Library\CrudPanel\Hooks\OperationHooks();
         });
 
+        $this->app->scoped('panel-hook', function ($app) {
+            return new \Backpack\CRUD\app\Library\CrudPanel\Hooks\PanelHooks();
+        });
+
         $this->app->singleton('BackpackViewNamespaces', function ($app) {
             return new ViewNamespaces();
         });
