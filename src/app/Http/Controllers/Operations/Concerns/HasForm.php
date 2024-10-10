@@ -2,7 +2,7 @@
 
 namespace Backpack\CRUD\app\Http\Controllers\Operations\Concerns;
 
-use Backpack\CRUD\app\Library\CrudPanel\Hooks\BackpackHooks;
+use Backpack\CRUD\app\Library\CrudPanel\Hooks\Contracts\OperationHook;
 use Backpack\CRUD\app\Library\CrudPanel\Hooks\OperationHooks;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -40,11 +40,11 @@ trait HasForm
         // Access
         $this->crud->allowAccess($operationName);
 
-        BackpackHooks::register(OperationHooks::SETUP_OPERATION_FROM_CONFIG, $operationName, function () use ($operationName) {
+        OperationHook::register(OperationHooks::SETUP_OPERATION_FROM_CONFIG, $operationName, function () use ($operationName) {
             return config()->has('backpack.operations.'.$operationName) ? 'backpack.operations.'.$operationName : 'backpack.operations.form';
         });
 
-        BackpackHooks::register(OperationHooks::BEFORE_OPERATION_SETUP, $operationName, function () use ($operationName) {
+        OperationHook::register(OperationHooks::BEFORE_OPERATION_SETUP, $operationName, function () use ($operationName) {
             $this->crud->addSaveAction([
                 'name' => 'save_and_back',
                 'visible' => function ($crud) use ($operationName) {
@@ -57,7 +57,7 @@ trait HasForm
             ]);
         });
 
-        BackpackHooks::register(OperationHooks::BEFORE_OPERATION_SETUP, ['list', 'show'], function () use ($operationName, $buttonStack, $buttonMeta) {
+        OperationHook::register(OperationHooks::BEFORE_OPERATION_SETUP, ['list', 'show'], function () use ($operationName, $buttonStack, $buttonMeta) {
             $this->crud->button($operationName)->view('crud::buttons.quick')->stack($buttonStack)->meta($buttonMeta);
         });
     }

@@ -3,7 +3,7 @@
 namespace Backpack\CRUD\app\Http\Controllers;
 
 use Backpack\CRUD\app\Library\Attributes\DeprecatedIgnoreOnRuntime;
-use Backpack\CRUD\app\Library\CrudPanel\Hooks\BackpackHooks;
+use Backpack\CRUD\app\Library\CrudPanel\Hooks\Contracts\OperationHook;
 use Backpack\CRUD\app\Library\CrudPanel\Hooks\OperationHooks;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -118,15 +118,15 @@ class CrudController extends Controller
          * you'd like the defaults to be applied before anything you write. That way, anything you
          * write is done after the default, so you can remove default settings, etc;
          */
-        if (! BackpackHooks::has(OperationHooks::SETUP_OPERATION_FROM_CONFIG, $operationName)) {
-            BackpackHooks::register(OperationHooks::SETUP_OPERATION_FROM_CONFIG, $operationName, function () {
-                $this->crud->loadDefaultOperationSettingsFromConfig();
+        if (! OperationHook::has(OperationHooks::SETUP_OPERATION_FROM_CONFIG, $operationName)) {
+            OperationHook::register(OperationHooks::SETUP_OPERATION_FROM_CONFIG, $operationName, function () use ($operationName) {
+                return 'backpack.operations.'.$operationName;
             });
         }
 
-        $this->crud->loadDefaultOperationSettingsFromConfig(BackpackHooks::run(OperationHooks::SETUP_OPERATION_FROM_CONFIG, $operationName, [$this]));
+        $this->crud->loadDefaultOperationSettingsFromConfig(OperationHook::run(OperationHooks::SETUP_OPERATION_FROM_CONFIG, $operationName, [$this]));
 
-        BackpackHooks::run(OperationHooks::BEFORE_OPERATION_SETUP, $operationName, [$this]);
+        OperationHook::run(OperationHooks::BEFORE_OPERATION_SETUP, $operationName, [$this]);
         /*
          * THEN, run the corresponding setupXxxOperation if it exists.
          */
@@ -134,6 +134,6 @@ class CrudController extends Controller
             $this->{$setupClassName}();
         }
 
-        BackpackHooks::run(OperationHooks::AFTER_OPERATION_SETUP, $operationName, [$this]);
+        OperationHook::run(OperationHooks::AFTER_OPERATION_SETUP, $operationName, [$this]);
     }
 }

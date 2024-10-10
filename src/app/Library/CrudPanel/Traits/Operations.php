@@ -2,7 +2,7 @@
 
 namespace Backpack\CRUD\app\Library\CrudPanel\Traits;
 
-use Backpack\CRUD\app\Library\CrudPanel\Hooks\BackpackHooks;
+use Backpack\CRUD\app\Library\CrudPanel\Hooks\Contracts\OperationHook;
 use Backpack\CRUD\app\Library\CrudPanel\Hooks\OperationHooks;
 
 trait Operations
@@ -63,11 +63,11 @@ trait Operations
      * @param  bool|\Closure  $closure  Code that calls CrudPanel methods.
      * @return void
      *
-     * @deprecated use BackpackHooks::register(OperationHooks::BEFORE_OPERATION_SETUP, $operation, $closure) instead
+     * @deprecated use OperationHook::register(OperationHooks::BEFORE_OPERATION_SETUP, $operation, $closure) instead
      */
     public function operation($operations, $closure = false)
     {
-        BackpackHooks::register(OperationHooks::BEFORE_OPERATION_SETUP, $operations, $closure);
+        OperationHook::register(OperationHooks::BEFORE_OPERATION_SETUP, $operations, $closure);
     }
 
     /**
@@ -79,18 +79,13 @@ trait Operations
      * @param  bool|\Closure  $closure  Code that calls CrudPanel methods.
      * @return void
      *
-     * @deprecated use BackpackHooks::register(OperationHooks::BEFORE_OPERATION_SETUP, $operation, $closure) instead
+     * @deprecated use OperationHook::register(OperationHooks::BEFORE_OPERATION_SETUP, $operation, $closure) instead
      */
     public function configureOperation($operations, $closure = false)
     {
         $operations = (array) $operations;
 
-        foreach ($operations as $operation) {
-            $configuration = (array) $this->get($operation.'.configuration');
-            $configuration[] = $closure;
-
-            $this->set($operation.'.configuration', $configuration);
-        }
+        OperationHook::register(OperationHooks::BEFORE_OPERATION_SETUP, $operations, $closure);
     }
 
     /**
@@ -101,23 +96,12 @@ trait Operations
      * @param  string|array  $operations  [description]
      * @return void
      *
-     * @deprecated use BackpackHooks::register(OperationHooks::BEFORE_OPERATION_SETUP, $operation, $closure) instead
+     * @deprecated use OperationHook::register(OperationHooks::BEFORE_OPERATION_SETUP, $operation, $closure) instead
      */
     public function applyConfigurationFromSettings($operations)
     {
         $operations = (array) $operations;
 
-        foreach ($operations as $operation) {
-            $configuration = (array) $this->get($operation.'.configuration');
-
-            if (count($configuration)) {
-                foreach ($configuration as $closure) {
-                    if (is_callable($closure)) {
-                        // apply the closure
-                        ($closure)();
-                    }
-                }
-            }
-        }
+        OperationHook::run(OperationHooks::BEFORE_OPERATION_SETUP, $operations, []);
     }
 }
