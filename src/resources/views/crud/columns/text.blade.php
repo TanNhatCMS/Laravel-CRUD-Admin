@@ -15,6 +15,10 @@
         $column['value'] = json_encode($column['value']);
     }
 
+    if ($column['value'] instanceof \UnitEnum) {
+        $column['value'] = $column['value']->value;
+    }
+
     if(!empty($column['value'])) {
         $column['text'] = $column['prefix'].Str::limit($column['value'], $column['limit'], '…').$column['suffix'];
     }
