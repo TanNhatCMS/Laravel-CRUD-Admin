@@ -91,12 +91,8 @@ class BackpackServiceProvider extends ServiceProvider
             return new DatabaseSchema();
         });
 
-        $this->app->scoped('operation-hook', function ($app) {
-            return new \Backpack\CRUD\app\Library\CrudPanel\Hooks\OperationHooks();
-        });
-
-        $this->app->scoped('panel-hook', function ($app) {
-            return new \Backpack\CRUD\app\Library\CrudPanel\Hooks\PanelHooks();
+        $this->app->scoped('lifecycle-hook', function ($app) {
+            return new app\Library\CrudPanel\Hooks\LifecycleHooks();
         });
 
         $this->app->singleton('BackpackViewNamespaces', function ($app) {
@@ -262,7 +258,7 @@ class BackpackServiceProvider extends ServiceProvider
         // add the root disk to filesystem configuration
         app()->config['filesystems.disks.'.config('backpack.base.root_disk_name')] = [
             'driver' => 'local',
-            'root' => base_path(),
+            'root'   => base_path(),
         ];
 
         /*
@@ -281,7 +277,7 @@ class BackpackServiceProvider extends ServiceProvider
             [
                 'backpack' => [
                     'driver' => 'eloquent',
-                    'model' => config('backpack.base.user_model_fqn'),
+                    'model'  => config('backpack.base.user_model_fqn'),
                 ],
             ];
 
@@ -299,8 +295,8 @@ class BackpackServiceProvider extends ServiceProvider
         [
             'backpack' => [
                 'provider' => 'backpack',
-                'table' => $backpackPasswordBrokerTable,
-                'expire' => config('backpack.base.password_recovery_token_expiration', 60),
+                'table'    => $backpackPasswordBrokerTable,
+                'expire'   => config('backpack.base.password_recovery_token_expiration', 60),
                 'throttle' => config('backpack.base.password_recovery_throttle_notifications'),
             ],
         ];
@@ -309,7 +305,7 @@ class BackpackServiceProvider extends ServiceProvider
         app()->config['auth.guards'] = app()->config['auth.guards'] +
             [
                 'backpack' => [
-                    'driver' => 'session',
+                    'driver'   => 'session',
                     'provider' => 'backpack',
                 ],
             ];

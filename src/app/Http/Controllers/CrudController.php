@@ -3,10 +3,7 @@
 namespace Backpack\CRUD\app\Http\Controllers;
 
 use Backpack\CRUD\app\Library\Attributes\DeprecatedIgnoreOnRuntime;
-use Backpack\CRUD\app\Library\CrudPanel\Hooks\Contracts\OperationHook;
-use Backpack\CRUD\app\Library\CrudPanel\Hooks\Contracts\PanelHook;
-use Backpack\CRUD\app\Library\CrudPanel\Hooks\OperationHooks;
-use Backpack\CRUD\app\Library\CrudPanel\Hooks\PanelHooks;
+use Backpack\CRUD\app\Library\CrudPanel\Hooks\Facadees\LifecycleHook;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller;
@@ -23,6 +20,7 @@ class CrudController extends Controller
     use DispatchesJobs, ValidatesRequests;
 
     public $crud;
+
     public $data = [];
 
     public function __construct()
@@ -44,13 +42,13 @@ class CrudController extends Controller
 
             $this->crud->setRequest($request);
 
-            PanelHook::run(PanelHooks::BEFORE_SETUP_DEFAULTS, [$this]);
+            LifecycleHook::trigger('crud:before_setup_defaults', [$this]);
             $this->setupDefaults();
-            PanelHook::run(PanelHooks::AFTER_SETUP_DEFAULTS, [$this]);
+            LifecycleHook::trigger('crud:after_setup_defaults', [$this]);
 
-            PanelHook::run(PanelHooks::BEFORE_CONTROLLER_SETUP, [$this]);
+            LifecycleHook::trigger('crud:before_setup', [$this]);
             $this->setup();
-            PanelHook::run(PanelHooks::AFTER_CONTROLLER_SETUP, [$this]);
+            LifecycleHook::trigger('crud:after_setup', [$this]);
 
             $this->setupConfigurationForCurrentOperation();
 
@@ -126,15 +124,15 @@ class CrudController extends Controller
          * you'd like the defaults to be applied before anything you write. That way, anything you
          * write is done after the default, so you can remove default settings, etc;
          */
-        if (! OperationHook::has(OperationHooks::SETUP_OPERATION_FROM_CONFIG, $operationName)) {
-            OperationHook::register(OperationHooks::SETUP_OPERATION_FROM_CONFIG, $operationName, function () use ($operationName) {
+        if (! LifecycleHook::has($operationName.':setup_operation_config')) {
+            LifecycleHook::hookInto($operationName.':setup_operation_config', function () use ($operationName) {
                 return 'backpack.operations.'.$operationName;
             });
         }
 
-        $this->crud->loadDefaultOperationSettingsFromConfig(OperationHook::run(OperationHooks::SETUP_OPERATION_FROM_CONFIG, $operationName, [$this]));
+        $this->crud->loadDefaultOperationSettingsFromConfig(LifecycleHook::trigger($operationName.':setup_operation_config', [$this, $operationName]));
 
-        OperationHook::run(OperationHooks::BEFORE_OPERATION_SETUP, $operationName, [$this]);
+        LifecycleHook::trigger($operationName.':before_setup', [$this]);
         /*
          * THEN, run the corresponding setupXxxOperation if it exists.
          */
@@ -142,6 +140,6 @@ class CrudController extends Controller
             $this->{$setupClassName}();
         }
 
-        OperationHook::run(OperationHooks::AFTER_OPERATION_SETUP, $operationName, [$this]);
+        LifecycleHook::trigger($operationName.':after_setup'[$this]);
     }
 }

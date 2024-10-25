@@ -2,8 +2,7 @@
 
 namespace Backpack\CRUD\app\Http\Controllers\Operations;
 
-use Backpack\CRUD\app\Library\CrudPanel\Hooks\Contracts\OperationHook;
-use Backpack\CRUD\app\Library\CrudPanel\Hooks\OperationHooks;
+use Backpack\CRUD\app\Library\CrudPanel\Hooks\Facadees\LifecycleHook;
 use Illuminate\Support\Facades\Route;
 
 trait CreateOperation
@@ -18,14 +17,14 @@ trait CreateOperation
     protected function setupCreateRoutes($segment, $routeName, $controller)
     {
         Route::get($segment.'/create', [
-            'as' => $routeName.'.create',
-            'uses' => $controller.'@create',
+            'as'        => $routeName.'.create',
+            'uses'      => $controller.'@create',
             'operation' => 'create',
         ]);
 
         Route::post($segment, [
-            'as' => $routeName.'.store',
-            'uses' => $controller.'@store',
+            'as'        => $routeName.'.store',
+            'uses'      => $controller.'@store',
             'operation' => 'create',
         ]);
     }
@@ -37,11 +36,11 @@ trait CreateOperation
     {
         $this->crud->allowAccess('create');
 
-        OperationHook::register(OperationHooks::BEFORE_OPERATION_SETUP, 'create', function () {
+        LifecycleHook::hookInto('create:before_setup', function () {
             $this->crud->setupDefaultSaveActions();
         });
 
-        OperationHook::register(OperationHooks::BEFORE_OPERATION_SETUP, 'list', function () {
+        LifecycleHook::hookInto('list:before_setup', function () {
             $this->crud->addButton('top', 'create', 'view', 'crud::buttons.create');
         });
     }

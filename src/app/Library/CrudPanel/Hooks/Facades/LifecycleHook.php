@@ -1,6 +1,6 @@
 <?php
 
-namespace Backpack\CRUD\app\Library\CrudPanel\Hooks\Contracts;
+namespace Backpack\CRUD\app\Library\CrudPanel\Hooks\Facadees;
 
 use Illuminate\Support\Facades\Facade;
 
@@ -11,10 +11,10 @@ use Illuminate\Support\Facades\Facade;
  *
  * @see \Backpack\CRUD\app\Library\CrudPanel\Hooks\OperationHooks
  */
-class OperationHook extends Facade
+class LifecycleHook extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'operation-hook';
+        return 'lifecycle-hook';
     }
 }
