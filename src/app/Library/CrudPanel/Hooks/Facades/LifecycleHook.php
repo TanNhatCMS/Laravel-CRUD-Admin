@@ -1,6 +1,6 @@
 <?php
 
-namespace Backpack\CRUD\app\Library\CrudPanel\Hooks\Facadees;
+namespace Backpack\CRUD\app\Library\CrudPanel\Hooks\Facades;
 
 use Illuminate\Support\Facades\Facade;
 

@@ -3,7 +3,7 @@
 namespace Backpack\CRUD\app\Http\Controllers;
 
 use Backpack\CRUD\app\Library\Attributes\DeprecatedIgnoreOnRuntime;
-use Backpack\CRUD\app\Library\CrudPanel\Hooks\Facadees\LifecycleHook;
+use Backpack\CRUD\app\Library\CrudPanel\Hooks\Facades\LifecycleHook;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Routing\Controller;
@@ -140,6 +140,6 @@ class CrudController extends Controller
             $this->{$setupClassName}();
         }
 
-        LifecycleHook::trigger($operationName.':after_setup'[$this]);
+        LifecycleHook::trigger($operationName.':after_setup', [$this]);
     }
 }

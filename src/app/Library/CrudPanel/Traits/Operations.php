@@ -2,8 +2,7 @@
 
 namespace Backpack\CRUD\app\Library\CrudPanel\Traits;
 
-use Backpack\CRUD\app\Library\CrudPanel\Hooks\Contracts\OperationHook;
-use Backpack\CRUD\app\Library\CrudPanel\Hooks\OperationHooks;
+use Backpack\CRUD\app\Library\CrudPanel\Hooks\Facades\LifecycleHook;
 
 trait Operations
 {
@@ -63,11 +62,14 @@ trait Operations
      * @param  bool|\Closure  $closure  Code that calls CrudPanel methods.
      * @return void
      *
-     * @deprecated use OperationHook::register(OperationHooks::BEFORE_OPERATION_SETUP, $operation, $closure) instead
+     * @deprecated use LifecycleHook::hookInto($operation.':before_setup', $closure) instead
      */
     public function operation($operations, $closure = false)
     {
-        OperationHook::register(OperationHooks::BEFORE_OPERATION_SETUP, $operations, $closure);
+        $operations = is_array($operations) ? $operations : [$operations];
+        foreach ($operations as $operation) {
+            LifecycleHook::hookInto($operation.':before_setup', $closure);
+        }
     }
 
     /**
@@ -79,13 +81,15 @@ trait Operations
      * @param  bool|\Closure  $closure  Code that calls CrudPanel methods.
      * @return void
      *
-     * @deprecated use OperationHook::register(OperationHooks::BEFORE_OPERATION_SETUP, $operation, $closure) instead
+     * @deprecated use LifecycleHook::hookInto($operation.':before_setup', $closure) instead
      */
     public function configureOperation($operations, $closure = false)
     {
-        $operations = (array) $operations;
+        $operations = is_array($operations) ? $operations : [$operations];
 
-        OperationHook::register(OperationHooks::BEFORE_OPERATION_SETUP, $operations, $closure);
+        foreach ($operations as $operation) {
+            LifecycleHook::hookInto($operation.':before_setup', $closure);
+        }
     }
 
     /**
@@ -96,12 +100,14 @@ trait Operations
      * @param  string|array  $operations  [description]
      * @return void
      *
-     * @deprecated use OperationHook::register(OperationHooks::BEFORE_OPERATION_SETUP, $operation, $closure) instead
+     * @deprecated use LifecycleHook::hookInto($operation.':before_setup', $closure) instead
      */
     public function applyConfigurationFromSettings($operations)
     {
-        $operations = (array) $operations;
+        $operations = is_array($operations) ? $operations : [$operations];
 
-        OperationHook::run(OperationHooks::BEFORE_OPERATION_SETUP, $operations, []);
+        foreach ($operations as $operation) {
+            LifecycleHook::trigger($operation.':before_setup');
+        }
     }
 }

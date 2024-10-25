@@ -2,7 +2,7 @@
 
 namespace Backpack\CRUD\app\Http\Controllers\Operations;
 
-use Backpack\CRUD\app\Library\CrudPanel\Hooks\Facadees\LifecycleHook;
+use Backpack\CRUD\app\Library\CrudPanel\Hooks\Facades\LifecycleHook;
 use Illuminate\Support\Facades\Route;
 
 trait CreateOperation

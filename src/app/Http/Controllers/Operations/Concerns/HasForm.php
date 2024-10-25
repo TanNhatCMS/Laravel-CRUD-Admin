@@ -2,8 +2,7 @@
 
 namespace Backpack\CRUD\app\Http\Controllers\Operations\Concerns;
 
-use Backpack\CRUD\app\Library\CrudPanel\Hooks\Contracts\OperationHook;
-use Backpack\CRUD\app\Library\CrudPanel\Hooks\OperationHooks;
+use Backpack\CRUD\app\Library\CrudPanel\Hooks\Facades\LifecycleHook;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 
@@ -20,13 +19,13 @@ trait HasForm
         $postFormMethod = 'post'.$operationName.'Form';
 
         Route::get($segment.$secondSegment.$thirdSegment, [
-            'as' => $routeName.'.'.$getFormMethod,
-            'uses' => $controller.'@'.$getFormMethod,
+            'as'        => $routeName.'.'.$getFormMethod,
+            'uses'      => $controller.'@'.$getFormMethod,
             'operation' => $operationName,
         ]);
         Route::post($segment.$secondSegment.$thirdSegment, [
-            'as' => $routeName.'.'.$postFormMethod,
-            'uses' => $controller.'@'.$postFormMethod,
+            'as'        => $routeName.'.'.$postFormMethod,
+            'uses'      => $controller.'@'.$postFormMethod,
             'operation' => $operationName,
         ]);
     }
@@ -40,13 +39,13 @@ trait HasForm
         // Access
         $this->crud->allowAccess($operationName);
 
-        OperationHook::register(OperationHooks::SETUP_OPERATION_FROM_CONFIG, $operationName, function () use ($operationName) {
+        LifecycleHook::hookInto('crud:setup_operation_config', function () use ($operationName) {
             return config()->has('backpack.operations.'.$operationName) ? 'backpack.operations.'.$operationName : 'backpack.operations.form';
         });
 
-        OperationHook::register(OperationHooks::BEFORE_OPERATION_SETUP, $operationName, function () use ($operationName) {
+        LifecycleHook::hookInto($operationName.':before_setup', function () use ($operationName) {
             $this->crud->addSaveAction([
-                'name' => 'save_and_back',
+                'name'    => 'save_and_back',
                 'visible' => function ($crud) use ($operationName) {
                     return $crud->hasAccess($operationName);
                 },
@@ -57,7 +56,7 @@ trait HasForm
             ]);
         });
 
-        OperationHook::register(OperationHooks::BEFORE_OPERATION_SETUP, ['list', 'show'], function () use ($operationName, $buttonStack, $buttonMeta) {
+        LifecycleHook::hookInto(['list:before_setup', 'show:before_setup'], function () use ($operationName, $buttonStack, $buttonMeta) {
             $this->crud->button($operationName)->view('crud::buttons.quick')->stack($buttonStack)->meta($buttonMeta);
         });
     }
