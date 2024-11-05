@@ -14,7 +14,7 @@ final class LifecycleHooks
         }
     }
 
-    public function trigger(string|array $hooks, array $parameters): void
+    public function trigger(string|array $hooks, array $parameters = []): void
     {
         $hooks = is_array($hooks) ? $hooks : [$hooks];
         foreach ($hooks as $hook) {
