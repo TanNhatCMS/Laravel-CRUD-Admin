@@ -97,10 +97,9 @@ trait Operations
      * This is called when an operation does setCurrentOperation().
      *
      *
-     * @param  string|array  $operations  [description]
+     * @param  string|array  $operations 
      * @return void
      *
-     * @deprecated use LifecycleHook::hookInto($operation.':before_setup', $closure) instead
      */
     public function applyConfigurationFromSettings($operations)
     {

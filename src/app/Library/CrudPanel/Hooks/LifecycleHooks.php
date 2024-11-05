@@ -20,7 +20,9 @@ final class LifecycleHooks
         foreach ($hooks as $hook) {
             if (isset($this->hooks[$hook])) {
                 foreach ($this->hooks[$hook] as $callback) {
-                    $callback(...$parameters);
+                    if($callback instanceof \Closure) {
+                        $callback(...$parameters);
+                    }
                 }
             }
         }

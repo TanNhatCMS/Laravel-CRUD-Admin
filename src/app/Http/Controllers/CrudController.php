@@ -117,22 +117,17 @@ class CrudController extends Controller
         /*
          * FIRST, run all Operation Closures for this operation.
          *
-         * It's preferred for this to closures first, because
+         * It's preferred for this to run closures first, because
          * (1) setup() is usually higher in a controller than any other method, so it's more intuitive,
          * since the first thing you write is the first thing that is being run;
          * (2) operations use operation closures themselves, inside their setupXxxDefaults(), and
          * you'd like the defaults to be applied before anything you write. That way, anything you
          * write is done after the default, so you can remove default settings, etc;
          */
-        if (! LifecycleHook::has($operationName.':setup_operation_config')) {
-            LifecycleHook::hookInto($operationName.':setup_operation_config', function () use ($operationName) {
-                return 'backpack.operations.'.$operationName;
-            });
-        }
+         LifecycleHook::trigger($operationName.':before_setup', [$this]);
 
-        $this->crud->loadDefaultOperationSettingsFromConfig(LifecycleHook::trigger($operationName.':setup_operation_config', [$this, $operationName]));
+         $this->crud->applyConfigurationFromSettings($operationName);
 
-        LifecycleHook::trigger($operationName.':before_setup', [$this]);
         /*
          * THEN, run the corresponding setupXxxOperation if it exists.
          */

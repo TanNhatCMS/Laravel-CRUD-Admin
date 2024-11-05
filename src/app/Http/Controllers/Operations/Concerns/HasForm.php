@@ -39,11 +39,16 @@ trait HasForm
         // Access
         $this->crud->allowAccess($operationName);
 
-        LifecycleHook::hookInto('crud:setup_operation_config', function () use ($operationName) {
-            return config()->has('backpack.operations.'.$operationName) ? 'backpack.operations.'.$operationName : 'backpack.operations.form';
-        });
+        LifecycleHook::hookInto($operationName.':before_setup', function() use ($operationName) {
+            // if the backpack.operations.{operationName} config exists, use that one
+            // otherwise, use the generic backpack.operations.form config
+            if (config()->has('backpack.operations.'.$operationName)) {
+                $this->crud->loadDefaultOperationSettingsFromConfig();
+            } else {
+                $this->crud->loadDefaultOperationSettingsFromConfig('backpack.operations.form');
+            }
 
-        LifecycleHook::hookInto($operationName.':before_setup', function () use ($operationName) {
+            // add a reasonable "save and back" save action
             $this->crud->addSaveAction([
                 'name' => 'save_and_back',
                 'visible' => function ($crud) use ($operationName) {
