@@ -2,9 +2,9 @@
 
 namespace Backpack\CRUD\app\Library\CrudPanel;
 
+use Backpack\CRUD\app\Library\CrudPanel\Hooks\Facades\LifecycleHook;
 use Illuminate\Support\Facades\App;
 use ReflectionClass;
-use Backpack\CRUD\app\Library\CrudPanel\Hooks\Facades\LifecycleHook;
 
 final class CrudRouter
 {
@@ -38,7 +38,6 @@ final class CrudRouter
                 LifecycleHook::trigger('crud:before_setup_routes', [$name, $routeName, $controller]);
                 $method->invoke($controllerInstance, $name, $routeName, $controller);
                 LifecycleHook::trigger('crud:after_setup_routes', [$name, $routeName, $controller]);
-
             }
         }
     }

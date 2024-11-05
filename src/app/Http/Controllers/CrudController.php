@@ -124,9 +124,9 @@ class CrudController extends Controller
          * you'd like the defaults to be applied before anything you write. That way, anything you
          * write is done after the default, so you can remove default settings, etc;
          */
-         LifecycleHook::trigger($operationName.':before_setup', [$this]);
+        LifecycleHook::trigger($operationName.':before_setup', [$this]);
 
-         $this->crud->applyConfigurationFromSettings($operationName);
+        $this->crud->applyConfigurationFromSettings($operationName);
 
         /*
          * THEN, run the corresponding setupXxxOperation if it exists.

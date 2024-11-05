@@ -39,7 +39,7 @@ trait HasForm
         // Access
         $this->crud->allowAccess($operationName);
 
-        LifecycleHook::hookInto($operationName.':before_setup', function() use ($operationName) {
+        LifecycleHook::hookInto($operationName.':before_setup', function () use ($operationName) {
             // if the backpack.operations.{operationName} config exists, use that one
             // otherwise, use the generic backpack.operations.form config
             if (config()->has('backpack.operations.'.$operationName)) {

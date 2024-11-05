@@ -97,9 +97,8 @@ trait Operations
      * This is called when an operation does setCurrentOperation().
      *
      *
-     * @param  string|array  $operations 
+     * @param  string|array  $operations
      * @return void
-     *
      */
     public function applyConfigurationFromSettings($operations)
     {
