@@ -30,6 +30,10 @@ trait DeleteOperation
     {
         $this->crud->allowAccess('delete');
 
+        LifecycleHook::hookInto('delete:before_setup', function () {
+            $this->crud->loadDefaultOperationSettingsFromConfig();
+        });
+
         LifecycleHook::hookInto(['list:before_setup', 'show:before_setup'], function () {
             $this->crud->addButton('line', 'delete', 'view', 'crud::buttons.delete', 'end');
         });
