@@ -34,8 +34,8 @@
 {{-- FIELD CSS - will be loaded in the after_styles section --}}
 @push('crud_fields_styles')
     {{-- include summernote css --}}
-    @basset('https://unpkg.com/summernote@0.9.1/dist/summernote-lite.min.css')
-    @basset('https://unpkg.com/summernote@0.9.1/dist/font/summernote.woff2', false)
+    @basset('bp-summernote.css')
+    @basset('bp-summernote-woof', false)
     @bassetBlock('backpack/crud/fields/summernote-field.css')
     <style type="text/css">
         .note-editor.note-frame .note-status-output, .note-editor.note-airframe .note-status-output {
