@@ -22,7 +22,7 @@ class MultipleFiles extends Uploader
         }
 
         $filesToDelete = $this->getFilesToDeleteFromRequest();
-        $value = $value ?? collect(CRUD::getRequest()->file($this->getNameForRequest()))->flatten()->toArray();
+        $value = $value ?? collect($value)->flatten()->toArray();
         $previousFiles = $this->getPreviousFiles($entry) ?? [];
 
         if (is_array($previousFiles) && empty($previousFiles[0] ?? [])) {

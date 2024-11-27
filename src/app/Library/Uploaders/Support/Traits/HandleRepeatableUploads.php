@@ -147,17 +147,7 @@ trait HandleRepeatableUploads
         return $entry->getOriginal($this->getAttributeName());
     }
 
-    protected function shouldUploadFiles($entryValue): bool
-    {
-        return true;
-    }
-
-    protected function hasDeletedFiles($entryValue): bool
-    {
-        return $entryValue === false || $entryValue === null || $entryValue === [null];
-    }
-
-    protected function processRepeatableUploads(Model $entry, Collection $values): array
+    protected function processRepeatableUploads(Model $entry, Collection $values): Collection
     {
         foreach (app('UploadersRepository')->getRepeatableUploadersFor($this->getRepeatableContainerName()) as $uploader) {
             $uploadedValues = $uploader->uploadRepeatableFiles($values->pluck($uploader->getAttributeName())->toArray(), $this->getPreviousRepeatableValues($entry, $uploader));
