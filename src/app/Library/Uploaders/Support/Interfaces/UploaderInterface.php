@@ -66,7 +66,7 @@ interface UploaderInterface
     public function getPreviousFiles(Model $entry): mixed;
 
     /**
-     * Strategy methods
+     * Strategy methods.
      */
     public function shouldDeleteFiles(): bool;
 
