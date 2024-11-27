@@ -75,12 +75,12 @@ class SingleFile extends Uploader
         return is_string($entryValue);
     }
 
-    protected function hasDeletedFiles($entryValue): bool
+    public function hasDeletedFiles($entryValue): bool
     {
         return $entryValue === null;
     }
 
-    protected function shouldUploadFiles($value): bool
+    public function shouldUploadFiles($value): bool
     {
         return is_a($value, 'Illuminate\Http\UploadedFile', true);
     }

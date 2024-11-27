@@ -219,11 +219,6 @@ abstract class Uploader implements UploaderInterface
         return $this->attachedToFakeField;
     }
 
-    public function shouldKeepPreviousValueUnchanged(Model $entry, $entryValue): bool
-    {
-        return $entry->exists && ($entryValue === null || $entryValue === [null]);
-    }
-
     /*******************************
      * Setters - fluently configure the uploader
      *******************************/

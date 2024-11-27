@@ -61,7 +61,7 @@ class SingleBase64Image extends Uploader
         return $values;
     }
 
-    protected function shouldUploadFiles($value): bool
+    public function shouldUploadFiles($value): bool
     {
         return $value && is_string($value) && Str::startsWith($value, 'data:image');
     }
