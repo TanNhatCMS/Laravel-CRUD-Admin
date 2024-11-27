@@ -10,7 +10,6 @@ class SingleFile extends Uploader
 {
     public function uploadFiles(Model $entry, $value = null)
     {
-        $value = $value ?? CrudPanelFacade::getRequest()->file($this->getName());
         $previousFile = $this->getPreviousFiles($entry);
 
         if ($value === false && $previousFile) {

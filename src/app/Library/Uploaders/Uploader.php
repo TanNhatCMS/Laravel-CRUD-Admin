@@ -77,7 +77,7 @@ abstract class Uploader implements UploaderInterface
             return $this->handleRepeatableFiles($entry);
         }
 
-        $values = CRUD::getRequest()->file($this->getNameForRequest());
+        $values = $this->getUploadedFilesFromRequest();
 
         if ($this->attachedToFakeField) {
             $fakeFieldValue = $entry->{$this->attachedToFakeField};
@@ -207,6 +207,11 @@ abstract class Uploader implements UploaderInterface
     public function getValueWithoutPath(?string $value = null): ?string
     {
         return $value ? Str::after($value, $this->path) : null;
+    }
+
+    public function getUploadedFilesFromRequest()
+    {
+        return CRUD::getRequest()->file($this->getNameForRequest());
     }
 
     public function isFake(): bool
