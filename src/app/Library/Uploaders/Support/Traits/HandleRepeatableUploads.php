@@ -62,7 +62,7 @@ trait HandleRepeatableUploads
             return $this->processRelationshipRepeatableUploaders($entry);
         }
 
-        $processedEntryValues = $this->processRepeatableUploads($entry, $value);
+        $processedEntryValues = $this->processRepeatableUploads($entry, $value)->toArray();
 
         if ($this->isFake()) {
             $fakeValues = $entry->{$this->getFakeAttribute()} ?? [];
@@ -159,7 +159,7 @@ trait HandleRepeatableUploads
             });
         }
 
-        return $values->toArray();
+        return $values;
     }
 
     private function retrieveRepeatableFiles(Model $entry): Model
