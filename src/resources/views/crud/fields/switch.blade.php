@@ -3,7 +3,7 @@
     $field['value'] = old_empty_or_null($field['name'], '') ?? $field['value'] ?? $field['default'] ?? '0';
     $field['onLabel'] = $field['onLabel'] ?? '';
     $field['offLabel'] = $field['offLabel'] ?? '';
-    $field['color'] = $field['color'] ?? 'var(--bg-switch-checked-color, black)';
+    $field['color'] = $field['color'] ?? null;
 @endphp
 
 {{-- Wrapper --}}
@@ -14,7 +14,7 @@
 
     <div class="d-inline-flex align-items-center">
         {{-- Switch --}}
-        <label class="form-switch switch switch-sm switch-label switch-pill switch-{{ $field['color'] }} mb-0" @if($field['color'] !== 'var(--bg-switch-checked-color)') style="--bg-switch-checked-color: {{ $field['color'] }};"  @endif>
+        <label class="form-switch switch switch-sm switch-label switch-pill mb-0" @if($field['color'] !== null) style="--bg-switch-checked-color: {{ $field['color'] }};"  @endif>
             <input
                 type="hidden"
                 name="{{ $field['name'] }}"
