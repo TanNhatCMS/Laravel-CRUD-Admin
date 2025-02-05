@@ -5,16 +5,16 @@ namespace Backpack\CRUD\app\Library\CrudPanel\Hooks\Facades;
 use Illuminate\Support\Facades\Facade;
 
 /**
- * @method static void register(string $hook, string|array $operations, callable $callback)
- * @method static void run(string $hook, string|array $operations, array $parameters)
- * @method static bool has(string $hook, string $operation)
+ * @method static void hootInto(string|array $hooks, callable $callback)
+ * @method static void trigger(string|array $hooks, array $parameters)
+ * @method static bool has(string $hook)
  *
- * @see \Backpack\CRUD\app\Library\CrudPanel\Hooks\OperationHooks
+ * @see \Backpack\CRUD\app\Library\CrudPanel\Hooks\LifecycleHooks
  */
 class LifecycleHook extends Facade
 {
     protected static function getFacadeAccessor()
     {
-        return 'lifecycle-hook';
+        return 'BackpackLifecycleHooks';
     }
 }
