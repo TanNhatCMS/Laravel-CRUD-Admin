@@ -12,7 +12,7 @@
 @push('crud_list_scripts')
 <script>
     jQuery(document).ready(function($) {
-        $("li.dropdown[filter-key=role] .dropdown-menu a").click(function(e) {
+        $("li.dropdown[filter-key={{ $filter->name }}] .dropdown-menu a").click(function(e) {
             e.preventDefault();
             var value = $(this).attr('dropdownkey');
             var parameter = $(this).attr('parameter');
@@ -20,20 +20,20 @@
 
             // mark this filter as active in the navbar-filters
             // mark dropdown items active accordingly
-            if (URI(new_url).hasQuery('role', true)) {
-                $("li[filter-key=role]").removeClass('active').addClass('active');
+            if (URI(new_url).hasQuery('{{ $filter->name }}', true)) {
+                $("li[filter-key={{ $filter->name }}]").removeClass('active').addClass('active');
                 $("li[filter-key=role] .dropdown-menu a").removeClass('active');
                 $(this).addClass('active');
             }
             else
             {
-                $("li[filter-key=role]").trigger("filter:clear");
+                $("li[filter-key={{ $filter->name }}]").trigger("filter:clear");
             }
         });
         // clear filter event (used here and by the Remove all filters button)
-        $("li[filter-key=role]").on('filter:clear', function(e) {
-            $("li[filter-key=role]").removeClass('active');
-            $("li[filter-key=role] .dropdown-menu a").removeClass('active');
+        $("li[filter-key={{ $filter->name }}]").on('filter:clear', function(e) {
+            $("li[filter-key={{ $filter->name }}]").removeClass('active');
+            $("li[filter-key={{ $filter->name }}] .dropdown-menu a").removeClass('active');
         });
     });
 </script>
