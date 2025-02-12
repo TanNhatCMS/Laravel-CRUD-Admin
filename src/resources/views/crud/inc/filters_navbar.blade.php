@@ -20,7 +20,7 @@
     			@foreach ($crud->filters() as $filter)
     				@includeFirst($filter->getNamespacedViewWithFallbacks())
     			@endforeach
-          <li class="nav-item mx-2 py-1 align-self-center"><a href="#" id="remove_filters_button" class="nav-link {{ count(Request::input()) != 0 ? '' : 'invisible' }}"><i class="la la-eraser"></i> {{ trans('backpack::crud.remove_filters') }}</a></li>
+          <li class="nav-item"><a href="#" id="remove_filters_button" class="nav-link {{ count(Request::input()) != 0 ? '' : 'invisible' }}"><i class="la la-eraser"></i> {{ trans('backpack::crud.remove_filters') }}</a></li>
         </ul>
       </div>{{-- /.navbar-collapse --}}
   </nav>
