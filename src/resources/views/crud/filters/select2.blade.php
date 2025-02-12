@@ -20,6 +20,38 @@
         </div>
     </div>
 </li>
+@basset(base_path('vendor/backpack/crud/src/resources/assets/css/select2.min.css'))
+@basset(base_path('vendor/backpack/crud/src/resources/assets/css/select2-bootstrap.min.css'))
+@push('crud_fields_styles')
+<style>
+    .form-inline .select2-container {
+        display: inline-block;
+    }
+    .select2-drop-active {
+        border:none;
+    }
+    .select2-container .select2-choices .select2-search-field input, .select2-container .select2-choice, .select2-container .select2-choices {
+        border: none;
+    }
+    .select2-container-active .select2-choice {
+        border: none;
+        box-shadow: none;
+    }
+    .select2-container--bootstrap .select2-dropdown {
+        margin-top: -2px;
+        margin-left: -1px;
+    }
+    .select2-container--bootstrap {
+        position: relative!important;
+        top: 0px!important;
+    }
+</style>
+@endBassetBlock
+@endpush
+
+@push('after_scripts')
+@basset(base_path('vendor/backpack/crud/src/resources/assets/js/select2.full.min.js'))
+@endpush
 @push('crud_list_scripts')
 <script>
     jQuery(document).ready(function ($) {
