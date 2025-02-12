@@ -1,5 +1,5 @@
 {
-    "name": "backpack/crud",
+    "name": "tannhatcms/crud-lms",
     "type": "library",
     "description": "Quickly build admin interfaces using Laravel, Bootstrap and JavaScript.",
     "keywords": [
@@ -24,16 +24,8 @@
         "content management system",
         "content management framework"
     ],
-    "homepage": "https://github.com/laravel-backpack/CRUD",
+    "homepage": "https://github.com/TanNhatCMS",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Cristian Tabacitu",
-            "email": "cristian.tabacitu@backpackforlaravel.com",
-            "homepage": "https://backpackforlaravel.com",
-            "role": "Creator & Maintainer"
-        }
-    ],
     "require": {
         "laravel/framework": "^10.0|^11.0",
         "prologue/alerts": "^1.0",
@@ -46,6 +38,9 @@
         "phpunit/phpunit": "^10.0|^9.0|^11.0",
         "orchestra/testbench": "^8.0|^9.0|^10.0",
         "spatie/laravel-translatable": "^6.0"
+    },
+    "replace": {
+        "backpack/crud": "*"
     },
     "autoload": {
         "psr-4": {

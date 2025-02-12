@@ -60,8 +60,6 @@ class BackpackServiceProvider extends ServiceProvider
         $this->setupRoutes($this->app->router);
         $this->setupCustomRoutes($this->app->router);
         $this->publishFiles();
-        $this->sendUsageStats();
-
         Basset::addViewPath(realpath(__DIR__.'/resources/views'));
     }
 
