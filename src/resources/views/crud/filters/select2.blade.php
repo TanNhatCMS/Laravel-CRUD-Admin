@@ -46,7 +46,6 @@
         top: 0px!important;
     }
 </style>
-@endBassetBlock
 @endpush
 
 @push('after_scripts')
