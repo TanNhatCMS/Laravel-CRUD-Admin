@@ -14,7 +14,7 @@ class AddMenuContent extends Command
      *
      * @var string
      */
-    protected $signature = 'backpack:add-menu-content
+    protected $signature = 'tannhatcms:add-menu-content
                                 {code : HTML/PHP code that shows menu items. Use either single quotes or double quotes. Never both. }';
 
     /**

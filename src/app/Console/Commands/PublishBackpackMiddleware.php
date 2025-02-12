@@ -11,7 +11,7 @@ class PublishBackpackMiddleware extends GeneratorCommand
      *
      * @var string
      */
-    protected $signature = 'backpack:publish-middleware';
+    protected $signature = 'tannhatcms:publish-middleware';
 
     /**
      * The console command description.

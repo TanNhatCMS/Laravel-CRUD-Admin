@@ -12,7 +12,7 @@ class Fix extends Command
      *
      * @var string
      */
-    protected $signature = 'backpack:fix';
+    protected $signature = 'tannhatcms:fix';
 
     /**
      * The console command description.

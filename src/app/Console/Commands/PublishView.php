@@ -11,14 +11,14 @@ class PublishView extends Command
      *
      * @var string
      */
-    protected $name = 'backpack:publish';
+    protected $name = 'tanhatcms:publish';
 
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'backpack:publish
+    protected $signature = 'tannhatcms:publish
                             {subpath : short path to the view file (ex: fields/text)}';
 
     /**

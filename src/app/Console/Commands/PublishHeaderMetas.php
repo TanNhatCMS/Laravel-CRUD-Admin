@@ -13,7 +13,7 @@ class PublishHeaderMetas extends Command
      *
      * @var string
      */
-    protected $signature = 'backpack:publish-header-metas';
+    protected $signature = 'tannhatcms:publish-header-metas';
 
     /**
      * The console command description.

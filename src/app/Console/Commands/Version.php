@@ -46,5 +46,12 @@ class Version extends Command
                 $this->line($package.': '.\Composer\InstalledVersions::getPrettyVersion($package));
             }
         }
+        $this->comment('### TANNHATCMS PACKAGE VERSIONS:');
+        $packages = \Composer\InstalledVersions::getInstalledPackages();
+        foreach ($packages as $package) {
+            if (substr($package, 0, 9) == 'tannhatcms/') {
+                $this->line($package.': '.\Composer\InstalledVersions::getPrettyVersion($package));
+            }
+        }
     }
 }

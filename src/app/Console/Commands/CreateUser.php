@@ -12,7 +12,7 @@ class CreateUser extends Command
      *
      * @var string
      */
-    protected $signature = 'backpack:user
+    protected $signature = 'tannhatcms:user
                             {--N|name= : The name of the new user}
                             {--E|email= : The user\'s email address}
                             {--P|password= : User\'s password}
