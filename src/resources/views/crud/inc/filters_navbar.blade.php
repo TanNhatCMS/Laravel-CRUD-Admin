@@ -20,7 +20,7 @@
     			@foreach ($crud->filters() as $filter)
     				@includeFirst($filter->getNamespacedViewWithFallbacks())
     			@endforeach
-          <li class="nav-item"><a href="#" id="remove_filters_button" class="nav-link {{ count(Request::input()) != 0 ? '' : 'invisible' }}"><i class="la la-eraser"></i> {{ trans('backpack::crud.remove_filters') }}</a></li>
+          <li class="nav-item mx-2 py-1 align-self-center"><a href="#" id="remove_filters_button" class="nav-link {{ count(Request::input()) != 0 ? '' : 'invisible' }}"><i class="la la-eraser"></i> {{ trans('backpack::crud.remove_filters') }}</a></li>
         </ul>
       </div>{{-- /.navbar-collapse --}}
   </nav>
@@ -78,11 +78,11 @@
        * calls the function func once within the within time window.
        * this is a debounce function which actually calls the func as
        * opposed to returning a function that would call func.
-       * 
+       *
        * @param func    the function to call
        * @param within  the time window in milliseconds, defaults to 300
        * @param timerId an optional key, defaults to func
-       * 
+       *
        * FROM: https://stackoverflow.com/questions/27787768/debounce-function-in-jquery
        */
       if(typeof callFunctionOnce !== 'function') {
