@@ -20,8 +20,8 @@
         </div>
     </div>
 </li>
-@basset(base_path('https://unpkg.com/select2@4.0.13/dist/css/select2.min.css'))
-@basset(base_path('https://unpkg.com/select2-bootstrap-theme@0.1.0-beta.10/dist/select2-bootstrap.min.css'))
+@basset('https://unpkg.com/select2@4.0.13/dist/css/select2.min.css')
+@basset('https://unpkg.com/select2-bootstrap-theme@0.1.0-beta.10/dist/select2-bootstrap.min.css')
 @push('crud_fields_styles')
 <style>
     .form-inline .select2-container {
@@ -49,7 +49,7 @@
 @endpush
 
 @push('after_scripts')
-@basset(base_path('https://unpkg.com/select2@4.0.13/dist/js/select2.full.min.js'))
+@basset('https://unpkg.com/select2@4.0.13/dist/js/select2.full.min.js')
 @endpush
 @push('crud_list_scripts')
 <script>
