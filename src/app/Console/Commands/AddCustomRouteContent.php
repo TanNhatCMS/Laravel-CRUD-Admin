@@ -14,7 +14,7 @@ class AddCustomRouteContent extends Command
      *
      * @var string
      */
-    protected $signature = 'tannhatcms:add-custom-route
+    protected $signature = 'backpack:add-custom-route
                                 {code : HTML/PHP code that registers a route. Use either single quotes or double quotes. Never both. }
                                 {--route-file=routes/backpack/custom.php : The file where the code should be added relative to the root of the project. }';
 
