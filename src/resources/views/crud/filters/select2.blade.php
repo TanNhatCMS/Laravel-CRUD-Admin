@@ -1,5 +1,5 @@
 <li filter-name="{{ $filter->name }}" filter-type="{{ $filter->type }}" filter-key="{{ $filter->name }}" class="nav-item dropdown ">
-    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Extra {{ $filter->name }} <span class="caret"></span></a>
+    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ $filter->label }} <span class="caret"></span></a>
     <div class="dropdown-menu p-0">
         <div class="form-group backpack-filter mb-0">
             <select
@@ -10,7 +10,6 @@
                 data-filter-key="{{ $filter->name }}"
                 data-filter-type="{{ $filter->type }}"
                 data-filter-name="{{ $filter->name }}"
-                data-language="en"
             >
                 <option value="">-</option>
                 @foreach ($filter->values as $option)
@@ -20,9 +19,9 @@
         </div>
     </div>
 </li>
+@push('after_styles')
 @basset('https://unpkg.com/select2@4.0.13/dist/css/select2.min.css')
 @basset('https://unpkg.com/select2-bootstrap-theme@0.1.0-beta.10/dist/select2-bootstrap.min.css')
-@push('crud_fields_styles')
 <style>
     .form-inline .select2-container {
         display: inline-block;
@@ -50,8 +49,6 @@
 
 @push('after_scripts')
 @basset('https://unpkg.com/select2@4.0.13/dist/js/select2.full.min.js')
-@endpush
-@push('crud_list_scripts')
 <script>
     jQuery(document).ready(function ($) {
         // trigger select2 for each untriggered select2 box
