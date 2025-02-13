@@ -2,8 +2,8 @@
 
 namespace Backpack\CRUD\app\Console\Commands;
 
-use Illuminate\Support\Facades\Artisan;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 
 class Fix extends Command
 {
@@ -56,7 +56,7 @@ class Fix extends Command
         $views = scandir($errorsDirectory);
         $views = array_filter($views, function ($file) {
             // eliminate ".", ".." and any hidden files like .gitignore or .gitkeep
-            return !str_starts_with($file, '.');
+            return ! str_starts_with($file, '.');
         });
 
         // check if there are actually views inside the directory
@@ -71,7 +71,7 @@ class Fix extends Command
             $contents = file_get_contents($errorsDirectory.'/'.$view);
 
             // does it even work with exception messages?
-            if (!strpos($contents, '->getMessage()')) {
+            if (! strpos($contents, '->getMessage()')) {
                 continue;
             }
 
@@ -94,7 +94,7 @@ class Fix extends Command
             $autofixed = false;
         }
 
-        if (!$autofixed) {
+        if (! $autofixed) {
             $this->error('Some error views could not be fixed automatically. Please look inside your "resources/views/errors" directory and make sure exception messages are escaped before outputting. It should be e($exception->getMessage()) instead of $exception->getMessage(). Alternatively, outputting should be done using {{ }} instead of {!! !!}');
         }
     }

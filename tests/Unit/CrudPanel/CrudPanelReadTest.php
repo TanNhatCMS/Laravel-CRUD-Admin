@@ -285,7 +285,6 @@ class CrudPanelReadTest extends \Backpack\CRUD\Tests\config\CrudPanel\BaseDBCrud
 
     public function testEnableDetailsRow()
     {
-
         $this->crudPanel->setOperation('create');
         $this->crudPanel->enableDetailsRow();
 
