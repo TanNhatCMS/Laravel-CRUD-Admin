@@ -3,6 +3,7 @@
 namespace Backpack\CRUD\app\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Str;
 
 
 class Setup extends Command
@@ -25,7 +26,7 @@ class Setup extends Command
      *
      * @var string
      */
-    protected $description = 'Install LMS.';
+    protected $description = 'Setup LMS.';
 
     /**
      * Execute the console command.
@@ -34,33 +35,21 @@ class Setup extends Command
      */
     public function handle(): void
     {
-        $this->infoBlock('Installing LMS CRUD.', 'Step 1');
-
-        // Publish files
-        $this->progressBlock('Installing CRUD.');
-        $this->executeArtisanProcess('backpack:install', $this->option('no-interaction') ? ['--no-interaction' => true] : []);
+        $this->infoBlock('Setup LMS.', 'Installing Basset');
+        // Install Backpack Basset
+        $this->progressBlock('Installing Basset');
+        $this->executeArtisanProcess('basset:install --no-check --no-interaction');
         $this->closeProgressBlock();
+        $this->infoBlock('Setup LMS.', 'Basset Check');
+        //execute basset checks
+        $this->progressBlock('Basset Check');
+        $this->call('basset:check');
+        $this->closeProgressBlock();
+        // Done
+        $url = Str::of(config('app.url'))->finish('/')->append('admin/');
+        $this->infoBlock('Backpack installation complete.', 'done');
+        $this->note("Go to <fg=blue>$url</> to access your new admin panel.");
+        $this->note('You may need to run <fg=blue>php artisan serve</> to serve your Laravel project.');
         $this->newLine();
-    }
-
-
-
-
-
-
-
-
-
-
-    public function themes()
-    {
-        return collect($this->themes)
-            ->map(function ($class) {
-                return (object) $class::$addon;
-            })->each(function (&$theme) {
-                $isInstalled = file_exists($theme->path);
-                $theme->status = $isInstalled ? 'installed' : 'not installed';
-                $theme->statusColor = $isInstalled ? 'green' : 'yellow';
-            });
     }
 }

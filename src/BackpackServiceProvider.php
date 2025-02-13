@@ -20,7 +20,7 @@ class BackpackServiceProvider extends ServiceProvider
 {
     use Stats;
 
-    protected array $commands = [
+    protected mixed $commands = [
         app\Console\Commands\Install::class,
         app\Console\Commands\AddMenuContent::class,
         app\Console\Commands\AddCustomRouteContent::class,
@@ -36,6 +36,7 @@ class BackpackServiceProvider extends ServiceProvider
         app\Console\Commands\Themes\RequireThemeCoreuiv4::class,
         app\Console\Commands\Fix::class,
         app\Console\Commands\PublishHeaderMetas::class,
+        app\Console\Commands\Setup::class
     ];
 
     // Indicates if loading of the provider is deferred.

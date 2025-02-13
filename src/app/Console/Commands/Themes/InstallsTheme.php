@@ -2,10 +2,13 @@
 
 namespace Backpack\CRUD\app\Console\Commands\Themes;
 
+use Backpack\CRUD\app\Console\Commands\Traits\AddonsHelper;
+use Backpack\CRUD\app\Console\Commands\Traits\PrettyCommandOutput;
+
 trait InstallsTheme
 {
-    use \Backpack\CRUD\app\Console\Commands\Traits\PrettyCommandOutput;
-    use \Backpack\CRUD\app\Console\Commands\Traits\AddonsHelper;
+    use PrettyCommandOutput;
+    use AddonsHelper;
 
     /**
      * The name and signature of the console command.

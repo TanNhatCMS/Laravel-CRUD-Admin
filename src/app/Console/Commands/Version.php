@@ -43,14 +43,10 @@ class Version extends Command
         $this->comment('### BACKPACK PACKAGE VERSIONS:');
         $packages = InstalledVersions::getInstalledPackages();
         foreach ($packages as $package) {
-            if (str_starts_with($package, 'backpack/')) {
-                $this->line($package.': '. InstalledVersions::getPrettyVersion($package));
+            if($package == 'backpack/crud') {
+                $this->line($package.': '. InstalledVersions::getPrettyVersion('tannhatcms/crud-lms'));
             }
-        }
-        $this->comment('### TANNHATCMS PACKAGE VERSIONS:');
-        $packages = InstalledVersions::getInstalledPackages();
-        foreach ($packages as $package) {
-            if (substr($package, 0, 9) == 'tannhatcms/') {
+            if (str_starts_with($package, 'backpack/')) {
                 $this->line($package.': '. InstalledVersions::getPrettyVersion($package));
             }
         }

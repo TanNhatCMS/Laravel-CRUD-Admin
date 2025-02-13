@@ -35,9 +35,9 @@ class Install extends Command
     /**
      * Addons variable.
      *
-     * @var array
+     * @var mixed
      */
-    protected array $addons = [
+    protected mixed $addons = [
         Addons\RequirePro::class,
         Addons\RequireDevTools::class,
         Addons\RequireEditableColumns::class,
@@ -46,9 +46,9 @@ class Install extends Command
     /**
      * Themes variable.
      *
-     * @var array
+     * @var mixed
      */
-    protected array $themes = [
+    protected mixed $themes = [
         Themes\RequireThemeTabler::class,
         Themes\RequireThemeCoreuiv4::class,
         Themes\RequireThemeCoreuiv2::class,
