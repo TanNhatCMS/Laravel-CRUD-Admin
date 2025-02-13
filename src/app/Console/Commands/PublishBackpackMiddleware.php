@@ -56,8 +56,9 @@ class PublishBackpackMiddleware extends GeneratorCommand
     /**
      * Build the class. Replace Backpack namespace with App one.
      *
-     * @param string $name
+     * @param  string  $name
      * @return string
+     *
      * @throws FileNotFoundException
      */
     protected function buildClass($name = false)
