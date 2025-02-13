@@ -10,8 +10,8 @@ class ResetPasswordNotification extends ResetPassword
     /**
      * Build the mail representation of the notification.
      *
-     * @param $notifiable
-     * @param null $email
+     * @param  $notifiable
+     * @param  null  $email
      * @return MailMessage
      */
     public function toMail($notifiable, $email = null): MailMessage
