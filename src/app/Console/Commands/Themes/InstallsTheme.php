@@ -44,7 +44,7 @@ trait InstallsTheme
      *
      * @return void
      */
-    public function installTheme()
+    public function installTheme(): void
     {
         // Check if it is installed
         if ($this->isInstalled()) {
@@ -101,12 +101,12 @@ trait InstallsTheme
         $this->newLine();
     }
 
-    public function isInstalled()
+    public function isInstalled(): bool
     {
         return file_exists(self::$addon['path'].'/composer.json');
     }
 
-    public function useViewNamespaceInConfigFile()
+    public function useViewNamespaceInConfigFile(): void
     {
         $config_file = config_path('backpack/ui.php');
         $config_contents = file_get_contents($config_file);

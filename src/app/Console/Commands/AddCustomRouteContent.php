@@ -2,11 +2,12 @@
 
 namespace Backpack\CRUD\app\Console\Commands;
 
+use Backpack\CRUD\app\Console\Commands\Traits\PrettyCommandOutput;
 use Illuminate\Console\Command;
 
 class AddCustomRouteContent extends Command
 {
-    use \Backpack\CRUD\app\Console\Commands\Traits\PrettyCommandOutput;
+    use PrettyCommandOutput;
 
     /**
      * The name and signature of the console command.
@@ -70,7 +71,7 @@ class AddCustomRouteContent extends Command
         $cleanContent = $this->cleanContentArray($originalContent);
 
         // if the content contains code, don't add it again.
-        if (array_search($code, $cleanContent, true) !== false) {
+        if (in_array($code, $cleanContent, true)) {
             $this->closeProgressBlock('Already existed', 'yellow');
 
             return;
@@ -87,7 +88,7 @@ class AddCustomRouteContent extends Command
 
         // in case the last line contains the last } but also the last {, we need to split them
         // so that we can create a space between them and add the new code
-        if (strpos($cleanContent[$lastLine], '{') !== false) {
+        if (str_contains($cleanContent[$lastLine], '{')) {
             $lastLineContent = explode('{', $originalContent[$lastLine]);
             $originalContent[$lastLine] = $lastLineContent[0].'{'.PHP_EOL;
             // push all other elements one line down creating space for the new code
@@ -140,7 +141,7 @@ class AddCustomRouteContent extends Command
         $this->closeProgressBlock('done', 'green');
     }
 
-    private function cleanContentArray(array $content)
+    private function cleanContentArray(array $content): array
     {
         return array_filter(array_map(function ($line) {
             $lineText = trim($line);
@@ -169,14 +170,14 @@ class AddCustomRouteContent extends Command
     /**
      * Parse the given file stream and return the line number where a string is found.
      *
-     * @param  string  $needle  The string that's being searched for.
-     * @param  array  $haystack  The file where the search is being performed.
+     * @param string $needle  The string that's being searched for.
+     * @param array $haystack  The file where the search is being performed.
      * @return bool|int The last line number where the string was found. Or false.
      */
-    private function getLastLineNumberThatContains($needle, $haystack)
+    private function getLastLineNumberThatContains(string $needle, array $haystack): bool|int
     {
         $matchingLines = array_filter($haystack, function ($k) use ($needle) {
-            return strpos($k, $needle) !== false;
+            return str_contains($k, $needle);
         });
 
         if ($matchingLines) {

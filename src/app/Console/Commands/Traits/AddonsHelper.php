@@ -14,7 +14,7 @@ trait AddonsHelper
      *
      * @return void
      */
-    public function composerRepositories()
+    public function composerRepositories(): void
     {
         $backpackRepo = 'https://repo.backpackforlaravel.com/';
 
@@ -73,7 +73,7 @@ trait AddonsHelper
      *
      * @return void
      */
-    public function checkForAuthentication()
+    public function checkForAuthentication(): void
     {
         // Check if auth exists
         $details = null;

@@ -28,7 +28,7 @@ class RequireThemeCoreuiv4 extends Command
      *
      * @var array
      */
-    public static $addon = [
+    public static array $addon = [
         'name' => 'CoreUIv4',
         'description' => [
             'UI provided by CoreUIv4, a Bootstrap 5 template.',
@@ -45,9 +45,9 @@ class RequireThemeCoreuiv4 extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed Command-line output
+     * @return void Command-line output
      */
-    public function handle()
+    public function handle(): void
     {
         $this->installTheme();
     }

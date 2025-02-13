@@ -13,7 +13,7 @@ class PublishHeaderMetas extends Command
      *
      * @var string
      */
-    protected $signature = 'tannhatcms:publish-header-metas';
+    protected $signature = 'backpack:publish-header-metas';
 
     /**
      * The console command description.
@@ -25,7 +25,7 @@ class PublishHeaderMetas extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): void
     {
         $appName = $this->ask('What is the application name ?', config('app.name').' Backoffice');
         $backpackPrefix = config('backpack.base.route_prefix');
@@ -96,7 +96,7 @@ class PublishHeaderMetas extends Command
         $this->comment('[DONE] Metas and favicon assets published successfully.');
     }
 
-    private function checkIfFaviconIsLaravelDefault(string $path)
+    private function checkIfFaviconIsLaravelDefault(string $path): void
     {
         if (File::exists(public_path($path.'favicon.ico'))) {
             // check the file size. if it's 0 it's the laravel dummy favicon, remove it.

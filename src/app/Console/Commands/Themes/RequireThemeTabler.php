@@ -28,7 +28,7 @@ class RequireThemeTabler extends Command
      *
      * @var array
      */
-    public static $addon = [
+    public static array $addon = [
         'name' => 'Tabler <fg=green>(default)</>',
         'description' => [
             'UI provided by Tabler, a Bootstrap 5 template. Lots of new features, including a dark mode.',
@@ -45,9 +45,9 @@ class RequireThemeTabler extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed Command-line output
+     * @return void Command-line output
      */
-    public function handle()
+    public function handle(): void
     {
         $this->installTheme();
     }

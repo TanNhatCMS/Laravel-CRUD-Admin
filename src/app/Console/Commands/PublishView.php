@@ -11,7 +11,7 @@ class PublishView extends Command
      *
      * @var string
      */
-    protected $name = 'tanhatcms:publish';
+    protected $name = 'backpack:publish';
 
     /**
      * The name and signature of the console command.
@@ -33,14 +33,14 @@ class PublishView extends Command
      *
      * @var string
      */
-    public $sourcePath = 'vendor/backpack/crud/src/resources/views/';
+    public string $sourcePath = 'vendor/backpack/crud/src/resources/views/';
 
     /**
      * The directory where the views will pe published TO.
      *
      * @var string
      */
-    public $destinationPath = 'resources/views/vendor/backpack/';
+    public string $destinationPath = 'resources/views/vendor/backpack/';
 
     /**
      * Create a new command instance.
@@ -57,7 +57,7 @@ class PublishView extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(): mixed
     {
         $this->file = strtolower($this->argument('subpath'));
 

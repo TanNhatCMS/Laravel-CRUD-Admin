@@ -3,6 +3,7 @@
 namespace Backpack\CRUD\app\Console\Commands;
 
 use Illuminate\Console\GeneratorCommand;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class PublishBackpackMiddleware extends GeneratorCommand
 {
@@ -25,7 +26,7 @@ class PublishBackpackMiddleware extends GeneratorCommand
      *
      * @return string
      */
-    protected function getStub()
+    protected function getStub(): string
     {
         return __DIR__.'/../../Http/Middleware/CheckIfAdmin.php';
     }
@@ -55,8 +56,9 @@ class PublishBackpackMiddleware extends GeneratorCommand
     /**
      * Build the class. Replace Backpack namespace with App one.
      *
-     * @param  string  $name
+     * @param string $name
      * @return string
+     * @throws FileNotFoundException
      */
     protected function buildClass($name = false)
     {

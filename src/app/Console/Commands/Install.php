@@ -21,7 +21,7 @@ class Install extends Command
      *
      * @var string
      */
-    protected $signature = 'tannhatcms:install
+    protected $signature = 'backpack:install
                                 {--timeout=300} : How many seconds to allow each process to run.
                                 {--debug} : Show process output or not. Useful for debugging.';
 
@@ -37,7 +37,7 @@ class Install extends Command
      *
      * @var array
      */
-    protected $addons = [
+    protected array $addons = [
         Addons\RequirePro::class,
         Addons\RequireDevTools::class,
         Addons\RequireEditableColumns::class,
@@ -48,7 +48,7 @@ class Install extends Command
      *
      * @var array
      */
-    protected $themes = [
+    protected array $themes = [
         Themes\RequireThemeTabler::class,
         Themes\RequireThemeCoreuiv4::class,
         Themes\RequireThemeCoreuiv2::class,
@@ -57,9 +57,9 @@ class Install extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed Command-line output
+     * @return void Command-line output
      */
-    public function handle()
+    public function handle(): void
     {
         $this->infoBlock('Installing Backpack CRUD.', 'Step 1');
 
@@ -123,7 +123,7 @@ class Install extends Command
         $this->newLine();
     }
 
-    private function createUsers()
+    private function createUsers(): void
     {
         $userClass = config('backpack.base.user_model_fqn', 'App\Models\User');
         $userModel = new $userClass();
@@ -196,14 +196,14 @@ class Install extends Command
         }
     }
 
-    private function isEveryAddonInstalled()
+    private function isEveryAddonInstalled(): bool
     {
         return collect($this->addons)->every(function ($addon) {
             return file_exists($addon->path);
         });
     }
 
-    private function updateAddonsStatus()
+    private function updateAddonsStatus(): void
     {
         $this->addons = $this->addons->each(function (&$addon) {
             $isInstalled = file_exists($addon->path);
@@ -212,7 +212,7 @@ class Install extends Command
         });
     }
 
-    private function installAddons()
+    private function installAddons(): void
     {
         // map the addons
         $this->addons = collect($this->addons)
@@ -283,14 +283,14 @@ class Install extends Command
         });
     }
 
-    private function isAnyThemeInstalled()
+    private function isAnyThemeInstalled(): bool
     {
         return $this->themes()->filter(function ($theme) {
             return $theme->status == 'installed';
         })->count() > 0;
     }
 
-    private function installTheme()
+    private function installTheme(): void
     {
         // if all themes are installed do nothing
         if ($this->isEveryThemeInstalled()) {

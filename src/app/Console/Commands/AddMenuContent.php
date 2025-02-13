@@ -2,19 +2,20 @@
 
 namespace Backpack\CRUD\app\Console\Commands;
 
+use Backpack\CRUD\app\Console\Commands\Traits\PrettyCommandOutput;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Storage;
 
 class AddMenuContent extends Command
 {
-    use \Backpack\CRUD\app\Console\Commands\Traits\PrettyCommandOutput;
+    use PrettyCommandOutput;
 
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'tannhatcms:add-menu-content
+    protected $signature = 'backpack:add-menu-content
                                 {code : HTML/PHP code that shows menu items. Use either single quotes or double quotes. Never both. }';
 
     /**
@@ -79,14 +80,14 @@ class AddMenuContent extends Command
     /**
      * Parse the given file stream and return the line number where a string is found.
      *
-     * @param  string  $needle  The string that's being searched for.
-     * @param  array  $haystack  The file where the search is being performed.
+     * @param string $needle  The string that's being searched for.
+     * @param array $haystack  The file where the search is being performed.
      * @return bool|int The last line number where the string was found. Or false.
      */
-    private function getLastLineNumberThatContains($needle, $haystack)
+    private function getLastLineNumberThatContains(string $needle, array $haystack): bool|int
     {
         $matchingLines = array_filter($haystack, function ($k) use ($needle) {
-            return strpos($k, $needle) !== false;
+            return str_contains($k, $needle);
         });
 
         if ($matchingLines) {

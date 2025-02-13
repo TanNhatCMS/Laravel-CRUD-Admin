@@ -2,12 +2,14 @@
 
 namespace Backpack\CRUD\app\Console\Commands\Addons;
 
+use Backpack\CRUD\app\Console\Commands\Traits\AddonsHelper;
+use Backpack\CRUD\app\Console\Commands\Traits\PrettyCommandOutput;
 use Illuminate\Console\Command;
 
 class RequireEditableColumns extends Command
 {
-    use \Backpack\CRUD\app\Console\Commands\Traits\PrettyCommandOutput;
-    use \Backpack\CRUD\app\Console\Commands\Traits\AddonsHelper;
+    use PrettyCommandOutput;
+    use AddonsHelper;
 
     /**
      * The name and signature of the console command.

@@ -2,12 +2,14 @@
 
 namespace Backpack\CRUD\app\Console\Commands\Addons;
 
+use Backpack\CRUD\app\Console\Commands\Traits\AddonsHelper;
+use Backpack\CRUD\app\Console\Commands\Traits\PrettyCommandOutput;
 use Illuminate\Console\Command;
 
 class RequirePro extends Command
 {
-    use \Backpack\CRUD\app\Console\Commands\Traits\PrettyCommandOutput;
-    use \Backpack\CRUD\app\Console\Commands\Traits\AddonsHelper;
+    use PrettyCommandOutput;
+    use AddonsHelper;
 
     /**
      * The name and signature of the console command.
@@ -29,7 +31,7 @@ class RequirePro extends Command
      *
      * @var array
      */
-    public static $addon = [
+    public static array $addon = [
         'name' => 'Backpack Pro',
         'description' => [
             'Adds 5 operations, 10 filters, 28 fields, 6 columns, charts',

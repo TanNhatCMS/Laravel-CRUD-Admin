@@ -13,12 +13,12 @@ trait PrettyCommandOutput
     /**
      * Run a SSH command.
      *
-     * @param  string  $command  The SSH command that needs to be run
-     * @param  bool  $beforeNotice  Information for the user before the command is run
-     * @param  bool  $afterNotice  Information for the user after the command is run
-     * @return mixed Command-line output
+     * @param string $command  The SSH command that needs to be run
+     * @param bool $beforeNotice  Information for the user before the command is run
+     * @param bool $afterNotice  Information for the user after the command is run
+     * @return void Command-line output
      */
-    public function executeProcess($command, $beforeNotice = false, $afterNotice = false)
+    public function executeProcess(mixed $command, bool $beforeNotice = false, bool $afterNotice = false): void
     {
         $this->echo('info', $beforeNotice ? ' '.$beforeNotice : implode(' ', $command));
 
@@ -51,13 +51,13 @@ trait PrettyCommandOutput
     /**
      * Run an artisan command.
      *
-     * @param  string  $command  the artisan command to be run
-     * @param  array  $arguments  key-value array of arguments to the artisan command
-     * @param  bool  $beforeNotice  Information for the user before the command is run
-     * @param  bool  $afterNotice  Information for the user after the command is run
-     * @return mixed Command-line output
+     * @param string $command  the artisan command to be run
+     * @param array $arguments  key-value array of arguments to the artisan command
+     * @param bool $beforeNotice  Information for the user before the command is run
+     * @param bool $afterNotice  Information for the user after the command is run
+     * @return void Command-line output
      */
-    public function executeArtisanProcess($command, $arguments = [], $beforeNotice = false, $afterNotice = false)
+    public function executeArtisanProcess(string $command, array $arguments = [], bool $beforeNotice = false, bool $afterNotice = false): void
     {
         $beforeNotice = $beforeNotice ? ' '.$beforeNotice : 'php artisan '.implode(' ', (array) $command).' '.implode(' ', $arguments);
 
@@ -84,9 +84,9 @@ trait PrettyCommandOutput
      * @param  string  $type  line, info, comment, question, error
      * @param  string  $content
      */
-    public function echo($type, $content)
+    public function echo($type, $content): void
     {
-        if ($this->option('debug') == false) {
+        if (!$this->option('debug')) {
             return;
         }
 
@@ -99,9 +99,9 @@ trait PrettyCommandOutput
     /**
      * Write a title inside a box.
      *
-     * @param  string  $header
+     * @param string $header
      */
-    public function box($header, $color = 'green')
+    public function box(string $header, $color = 'green'): void
     {
         $line = str_repeat('─', strlen($header));
 
@@ -114,9 +114,13 @@ trait PrettyCommandOutput
     /**
      * List choice element.
      *
-     * @return void
+     * @param string $question
+     * @param array $options
+     * @param string $default
+     * @param string|null $hint
+     * @return mixed
      */
-    public function listChoice(string $question, array $options, string $default = 'no', ?string $hint = null)
+    public function listChoice(string $question, array $options, string $default = 'no', ?string $hint = null): mixed
     {
         foreach ($options as $key => $option) {
             $value = $key + 1;
@@ -134,7 +138,10 @@ trait PrettyCommandOutput
     /**
      * Default info block element.
      *
-     * @return void
+     * @param string $text
+     * @param string $title
+     * @param string $background
+     * @param string $foreground
      */
     public function infoBlock(string $text, string $title = 'info', string $background = 'blue', string $foreground = 'white')
     {
@@ -157,9 +164,10 @@ trait PrettyCommandOutput
      * Default error block element
      * Shortcute to info block with error message.
      *
+     * @param string $text
      * @return void
      */
-    public function errorBlock(string $text)
+    public function errorBlock(string $text): void
     {
         $this->infoBlock($text, 'ERROR', 'red');
     }
@@ -168,9 +176,12 @@ trait PrettyCommandOutput
      * Note element, usually used after an info block
      * Prints an indented text with a lighter color.
      *
+     * @param string $text
+     * @param string $color
+     * @param string $barColor
      * @return void
      */
-    public function note(string $text, string $color = 'gray', string $barColor = 'gray')
+    public function note(string $text, string $color = 'gray', string $barColor = 'gray'): void
     {
         $this->line("  <fg=$barColor>│</> $text", "fg=$color");
     }
@@ -178,9 +189,12 @@ trait PrettyCommandOutput
     /**
      * Progress element generates a pending in progress line block.
      *
+     * @param string $text
+     * @param string $progress
+     * @param string $color
      * @return void
      */
-    public function progressBlock(string $text, string $progress = 'running', string $color = 'blue')
+    public function progressBlock(string $text, string $progress = 'running', string $color = 'blue'): void
     {
         $this->maxWidth = $this->maxWidth ?? 128;
         $this->terminal = $this->terminal ?? new Terminal();
@@ -203,9 +217,11 @@ trait PrettyCommandOutput
     /**
      * Closes a progress block after it has been started.
      *
+     * @param string $progress
+     * @param string $color
      * @return void
      */
-    public function closeProgressBlock(string $progress = 'done', string $color = 'green')
+    public function closeProgressBlock(string $progress = 'done', string $color = 'green'): void
     {
         $deleteSize = max(strlen($this->consoleProgress ?? ''), strlen($progress)) + 1;
         $newDotSize = $deleteSize - strlen($progress) - 1;
@@ -223,9 +239,10 @@ trait PrettyCommandOutput
     /**
      * Closes a progress block with an error.
      *
+     * @param string $text
      * @return void
      */
-    public function errorProgressBlock(string $text = 'error')
+    public function errorProgressBlock(string $text = 'error'): void
     {
         $this->closeProgressBlock($text, 'red');
     }
@@ -233,17 +250,21 @@ trait PrettyCommandOutput
     /**
      * Deletes one or multiple lines.
      *
+     * @param int $amount
      * @return void
      */
-    public function deleteLines(int $amount = 1)
+    public function deleteLines(int $amount = 1): void
     {
         $this->output->write(str_repeat("\033[A\33[2K\r", $amount));
     }
 
     /**
-     * @return void
+     * @param string $question
+     * @param array $hints
+     * @param string $default
+     * @return mixed
      */
-    public function askHint(string $question, array $hints, string $default)
+    public function askHint(string $question, array $hints, string $default): mixed
     {
         $hints = collect($hints)
             ->map(function ($hint) {
@@ -257,9 +278,10 @@ trait PrettyCommandOutput
     /**
      * Deletes one or multiple chars.
      *
+     * @param int $amount
      * @return void
      */
-    public function deleteChars(int $amount = 1)
+    public function deleteChars(int $amount = 1): void
     {
         $this->output->write(str_repeat(chr(8), $amount));
     }

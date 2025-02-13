@@ -20,7 +20,7 @@ class BackpackServiceProvider extends ServiceProvider
 {
     use Stats;
 
-    protected $commands = [
+    protected array $commands = [
         app\Console\Commands\Install::class,
         app\Console\Commands\AddMenuContent::class,
         app\Console\Commands\AddCustomRouteContent::class,

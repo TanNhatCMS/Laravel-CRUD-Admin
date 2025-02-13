@@ -2,6 +2,7 @@
 
 namespace Backpack\CRUD\app\Console\Commands;
 
+use Composer\InstalledVersions;
 use Illuminate\Console\Command;
 
 class Version extends Command
@@ -36,21 +37,21 @@ class Version extends Command
         $this->line('');
 
         $this->comment('### LARAVEL VERSION:');
-        $this->line(\Composer\InstalledVersions::getVersion('laravel/framework'));
+        $this->line(InstalledVersions::getVersion('laravel/framework'));
         $this->line('');
 
         $this->comment('### BACKPACK PACKAGE VERSIONS:');
-        $packages = \Composer\InstalledVersions::getInstalledPackages();
+        $packages = InstalledVersions::getInstalledPackages();
         foreach ($packages as $package) {
-            if (substr($package, 0, 9) == 'backpack/') {
-                $this->line($package.': '.\Composer\InstalledVersions::getPrettyVersion($package));
+            if (str_starts_with($package, 'backpack/')) {
+                $this->line($package.': '. InstalledVersions::getPrettyVersion($package));
             }
         }
         $this->comment('### TANNHATCMS PACKAGE VERSIONS:');
-        $packages = \Composer\InstalledVersions::getInstalledPackages();
+        $packages = InstalledVersions::getInstalledPackages();
         foreach ($packages as $package) {
             if (substr($package, 0, 9) == 'tannhatcms/') {
-                $this->line($package.': '.\Composer\InstalledVersions::getPrettyVersion($package));
+                $this->line($package.': '. InstalledVersions::getPrettyVersion($package));
             }
         }
     }

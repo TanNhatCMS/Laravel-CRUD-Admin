@@ -2,7 +2,7 @@
 
 namespace Backpack\CRUD\app\Console\Commands;
 
-use Artisan;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Console\Command;
 
 class Fix extends Command
@@ -12,7 +12,7 @@ class Fix extends Command
      *
      * @var string
      */
-    protected $signature = 'tannhatcms:fix';
+    protected $signature = 'backpack:fix';
 
     /**
      * The console command description.
@@ -40,7 +40,7 @@ class Fix extends Command
         }
     }
 
-    private function fixErrorViews()
+    private function fixErrorViews(): void
     {
         $errorsDirectory = base_path('resources/views/errors');
 
@@ -56,7 +56,7 @@ class Fix extends Command
         $views = scandir($errorsDirectory);
         $views = array_filter($views, function ($file) {
             // eliminate ".", ".." and any hidden files like .gitignore or .gitkeep
-            return substr($file, 0, 1) != '.';
+            return !str_starts_with($file, '.');
         });
 
         // check if there are actually views inside the directory
@@ -71,12 +71,12 @@ class Fix extends Command
             $contents = file_get_contents($errorsDirectory.'/'.$view);
 
             // does it even work with exception messages?
-            if (strpos($contents, '->getMessage()') == false) {
+            if (!strpos($contents, '->getMessage()')) {
                 continue;
             }
 
             // does it already escape the exception message?
-            if (strpos($contents, 'e($exception->getMessage())') !== false) {
+            if (str_contains($contents, 'e($exception->getMessage())')) {
                 $this->info($view.' was ok.');
                 continue;
             }
@@ -94,7 +94,7 @@ class Fix extends Command
             $autofixed = false;
         }
 
-        if ($autofixed == false) {
+        if (!$autofixed) {
             $this->error('Some error views could not be fixed automatically. Please look inside your "resources/views/errors" directory and make sure exception messages are escaped before outputting. It should be e($exception->getMessage()) instead of $exception->getMessage(). Alternatively, outputting should be done using {{ }} instead of {!! !!}');
         }
     }
