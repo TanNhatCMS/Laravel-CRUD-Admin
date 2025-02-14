@@ -34,9 +34,10 @@ class BackpackServiceProvider extends ServiceProvider
         app\Console\Commands\Themes\RequireThemeTabler::class,
         app\Console\Commands\Themes\RequireThemeCoreuiv2::class,
         app\Console\Commands\Themes\RequireThemeCoreuiv4::class,
+        app\Console\Commands\Themes\RequireThemeCoreuiv4LMS::class,
         app\Console\Commands\Fix::class,
         app\Console\Commands\PublishHeaderMetas::class,
-        app\Console\Commands\Setup::class,
+        app\Console\Commands\SetupLMS::class,
     ];
 
     // Indicates if loading of the provider is deferred.

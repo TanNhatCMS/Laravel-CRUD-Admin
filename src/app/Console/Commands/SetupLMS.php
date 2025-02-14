@@ -5,7 +5,7 @@ namespace Backpack\CRUD\app\Console\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Str;
 
-class Setup extends Command
+class SetupLMS extends Command
 {
     use Traits\PrettyCommandOutput;
 
