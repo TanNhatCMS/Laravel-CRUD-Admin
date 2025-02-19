@@ -9,6 +9,7 @@ use Illuminate\Routing\Route as RouteInstance;
 use Illuminate\Support\Facades\Route;
 use Orchestra\Testbench\TestCase;
 use Prologue\Alerts\AlertsServiceProvider;
+use Spatie\Translatable\TranslatableServiceProvider;
 
 abstract class BaseTestClass extends TestCase
 {
@@ -41,6 +42,7 @@ abstract class BaseTestClass extends TestCase
             BackpackServiceProvider::class,
             AlertsServiceProvider::class,
             TestsServiceProvider::class,
+            TranslatableServiceProvider::class,
         ];
     }
 
