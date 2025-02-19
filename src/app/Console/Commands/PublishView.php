@@ -33,7 +33,7 @@ class PublishView extends Command
      *
      * @var string
      */
-    public string $sourcePath = 'vendor/backpack/crud/src/resources/views/';
+    public string $sourcePath = 'vendor/tannhatcms/crud-lms/src/resources/views/';
 
     /**
      * The directory where the views will pe published TO.
