@@ -227,7 +227,8 @@ trait Input
                 $jsonCastables = ['array', 'object', 'json'];
                 $fieldCasting = $casted_attributes[$field['name']];
 
-                if (in_array($fieldCasting, $jsonCastables) && isset($input[$field['name']]) && ! empty($input[$field['name']]) && ! is_array($input[$field['name']]) && ! in_array($field['name'], $translatableAttributes)) {                    try {
+                if (in_array($fieldCasting, $jsonCastables) && isset($input[$field['name']]) && ! empty($input[$field['name']]) && ! is_array($input[$field['name']]) && ! in_array($field['name'], $translatableAttributes)) {
+                    try {
                         $input[$field['name']] = json_decode($input[$field['name']]);
                     } catch (\Exception $e) {
                         $input[$field['name']] = [];
